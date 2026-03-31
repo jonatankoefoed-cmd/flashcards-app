@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="referrer" content="origin"/>
+  <title>IB Prep · Flashcards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ══════════ HOME VIEW ══════════ -->
+<div id="v-home" class="view active">
+  <header class="bar">
+    <div class="bar-brand">
+      <div class="bar-logo"><i data-lucide="layers" width="18" height="18"></i></div>
+      <span class="bar-title">IB Prep</span>
+    </div>
+    <div class="bar-right">
+      <button class="ghost-btn" onclick="showView('v-browse')">
+        <i data-lucide="layout-grid" width="15" height="15"></i> Browse
+      </button>
+      <button class="ghost-btn danger" onclick="resetAll()" title="Reset all progress">
+        <i data-lucide="rotate-ccw" width="15" height="15"></i>
+      </button>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <div class="home-hero">
+      <h1>What do you want to study today?</h1>
+      <p>Choose a deck or train everything at once.</p>
+    </div>
+    <div class="deck-grid" id="deck-grid"></div>
+  </main>
+</div>
+
+<!-- ══════════ STUDY VIEW ══════════ -->
+<div id="v-study" class="view">
+  <header class="bar study-bar" id="study-bar">
+    <button class="back-btn" onclick="goHome()">
+      <i data-lucide="arrow-left" width="18" height="18"></i>
+    </button>
+    <div class="study-bar-center">
+      <span id="sh-name" class="sh-name"></span>
+      <span id="sh-progress" class="sh-prog">1 / 1</span>
+    </div>
+    <div class="sh-pills">
+      <span class="sh-pill due-pill" id="sh-due">0 due</span>
+      <span class="sh-pill new-pill" id="sh-new">0 new</span>
+      <span class="sh-pill done-pill" id="sh-done">0 done</span>
+    </div>
+  </header>
+
+  <div class="prog-wrap">
+    <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+
+  <main class="study-main">
+    <div class="scene" id="scene">
+      <div class="card" id="flashcard" onclick="flipCard()">
+
+        <!-- ── FRONT ── -->
+        <div class="cface cfront" id="cfront">
+          <div class="cf-top">
+            <span class="cf-num" id="cf-num">01</span>
+            <span class="cf-tag" id="cf-tag"></span>
+          </div>
+
+          <!-- People: avatar -->
+          <div class="avatar-lg-wrap" id="av-front-wrap">
+            <img class="av-photo" id="av-photo" src="" alt="" style="display:none"/>
+            <div class="av-initials av-lg" id="av-initials"></div>
+          </div>
+
+          <!-- Knowledge: question -->
+          <div class="q-wrap" id="q-wrap" style="display:none">
+            <div class="q-icon" id="q-icon"></div>
+            <div class="q-text" id="q-text"></div>
+            <div class="company-front" id="company-front" style="display:none"></div>
+          </div>
+
+          <div class="cf-hint" id="cf-hint">
+            <i data-lucide="mouse-pointer-click" width="13" height="13"></i>
+            <span id="cf-hint-label">Tap to reveal name &amp; grade</span>
+          </div>
+        </div><!-- /cfront -->
+
+        <!-- ── BACK ── -->
+        <div class="cface cback" id="cback">
+          <div class="cb-deck-tag" id="cb-deck-tag"></div>
+
+          <!-- People back -->
+          <div id="cb-people">
+            <div class="avatar-sm-wrap">
+              <img class="av-photo av-sm" id="cb-photo" src="" alt="" style="display:none"/>
+              <div class="av-initials av-sm" id="cb-initials"></div>
+            </div>
+            <h2 class="cb-name" id="cb-name"></h2>
+            <div class="level-chip" id="cb-level"></div>
+            <p class="cb-title" id="cb-title"></p>
+            <p class="cb-note" id="cb-note"></p>
+          </div>
+
+          <!-- Knowledge back -->
+          <div id="cb-knowledge" style="display:none">
+            <div class="cb-answer" id="cb-answer"></div>
+            <div class="company-back" id="company-back" style="display:none"></div>
+          </div>
+
+          <div class="cb-hint">
+            <i data-lucide="rotate-cw" width="13" height="13"></i> Tap to flip back
+          </div>
+        </div><!-- /cback -->
+
+      </div><!-- /card -->
+    </div><!-- /scene -->
+
+    <!-- ── CONTROLS ── -->
+    <div class="ctrl-row">
+      <button class="nav-arr" onclick="prevCard()"><i data-lucide="chevron-left" width="22" height="22"></i></button>
+
+      <div class="ctrl-center">
+        <!-- pre-flip -->
+        <div class="flip-hint-row" id="flip-row">
+          <span class="flip-txt">Flip card to rate</span>
+          <div class="dots" id="dots"></div>
+        </div>
+        <!-- post-flip rating -->
+        <div class="rate-row" id="rate-row" style="display:none">
+          <p class="rate-label">How well did you know this?</p>
+          <div class="rate-btns">
+            <button class="rb rb-again" onclick="rateCard(0)">
+              <i data-lucide="x-circle" width="16" height="16"></i>
+              <span>Again</span><small id="rn-0"></small>
+            </button>
+            <button class="rb rb-hard" onclick="rateCard(2)">
+              <i data-lucide="flame" width="16" height="16"></i>
+              <span>Hard</span><small id="rn-2"></small>
+            </button>
+            <button class="rb rb-good" onclick="rateCard(4)">
+              <i data-lucide="check-circle" width="16" height="16"></i>
+              <span>Good</span><small id="rn-4"></small>
+            </button>
+            <button class="rb rb-easy" onclick="rateCard(5)">
+              <i data-lucide="zap" width="16" height="16"></i>
+              <span>Easy</span><small id="rn-5"></small>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav-arr" onclick="nextCard()"><i data-lucide="chevron-right" width="22" height="22"></i></button>
+    </div>
+  </main>
+</div>
+
+<!-- ══════════ BROWSE VIEW ══════════ -->
+<div id="v-browse" class="view">
+  <header class="bar">
+    <button class="back-btn" onclick="goHome()"><i data-lucide="arrow-left" width="18" height="18"></i></button>
+    <span class="bar-title">All Cards</span>
+    <input class="srch" id="srch" type="search" placeholder="Search…" oninput="renderBrowse()"/>
+  </header>
+  <main class="browse-main" id="browse-main"></main>
+</div>
+
+<!-- ══════════ SESSION COMPLETE MODAL ══════════ -->
+<div class="overlay" id="overlay" style="display:none" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-emoji">🎉</div>
+    <h2>Session Complete!</h2>
+    <p id="modal-sub" class="modal-sub"></p>
+    <div class="modal-stats" id="modal-stats"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="closeModal()">Continue <i data-lucide="arrow-right" width="14" height="14"></i></button>
+      <button class="btn-outline" onclick="restartStudy()">Restart</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
