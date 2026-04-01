@@ -366,6 +366,42 @@ const KNOWLEDGE = [
   { deckId:'multiples', q:'Hvad justeres EBITDA for i M&A?',
     a:`EBITDA justeres typisk til <strong>Normalized EBITDA</strong>:<br><br><ul><li>Engangsomkostninger (One-offs)</li><li>SBC (Share-based compensation)</li><li>IFRS 16 / leasing</li><li>Earn-outs</li></ul>` },
 
+  { deckId:'multiples', q:'EV/EBITDA vs P/E — Hvornår bruges hvilken?',
+    a:`<strong>EV/EBITDA:</strong> Kapitalstruktur-neutral. Bruges til at vurdere den underliggende drift og "core business". Standardmålet i M&A, fordi en køber typisk køber hele virksomheden gældfri.<br><br><strong>P/E:</strong> Kapitalstruktur-afhængig (efter renter). Relevant for <em>minoritetsaktionærer</em> og banker/finans, hvor renter er en del af "core business" (driften).` },
+
+  { deckId:'multiples', q:'EV Bridge: Hvordan går man fra Equity Value til Enterprise Value?',
+    a:`<strong>Enterprise Value (EV)</strong> =<br>+ Market Capitalization (Equity Value)<br>+ Net Interest-Bearing Debt (NIBD)<br>+ Minoritetsinteresser<br>+ Foretrukne aktier (Preferred Equity)<br>+ / - Pension Deficits / Leases (Gældslignende poster)<br><br><em>Husk regel: Frakald kontanter (fordi de kan betale gæld af) for at finde NIBD.</em>` },
+
+  { deckId:'multiples', q:'Football Field Valuation: Hvad er det, og hvordan læses det?',
+    a:`Et chart, der viser valuation-intervallerne fra forskellige metoder side om side (DCF, Comps, Precedent Transactions, LBO).<br><br><strong>Formål:</strong> Viser at værdiansættelse er en <em>range</em>, ikke et eksakt tal. Bliver brugt til at forhandle og synliggøre et "Fair Value" spænd for klienten.` },
+
+  { deckId:'multiples', q:'DCF vs. Comps vs. Precedent Transactions — Hvornår stoler man mest på hvad?',
+    a:`<strong>DCF:</strong> Intrinsic valuation. God for stabile cash flows, men meget følsom over for WACC og Terminal Rate.<br><strong>Comps (Trading Multiples):</strong> Relativ valuation. God når der findes mange meget ens peers, afspejler dagsprisen.<br><strong>Precedent Transactions:</strong> Inkluderer kontrolpræmie og synergier, men det er ofte ældre transaktioner fra et andet makromiljø.` },
+
+  { deckId:'multiples', q:'LTM vs. NTM Multiples — Bør du benytte historik eller estimater?',
+    a:`<strong>NTM (Next Twelve Months) / Forward Multiples:</strong> Foretrækkes altid, da fremtidig indtjening driver værdi for investorer.<br><br><strong>LTM (Last Twelve Months):</strong> Bruges kun hvis selskabet ikke har analytikerdækning, eller fremtiden er umulig at forudsige pga. ekstrem cyklikalitet.<br>M&A handler altid om <em>hvad køber får om 1-2 år</em>.` },
+
+  { deckId:'multiples', q:'WACC — Komponenter og typiske ranges',
+    a:`<strong>WACC (Weighted Average Cost of Capital)</strong>.<br>Den rate, man diskonterer fremtidige cash flows med i en DCF.<br><br><ul><li><strong>Sikkert utility selskab:</strong> 5-7%</li><li><strong>Stabilt C25 Industri:</strong> 7-9%</li><li><strong>Højvækst Tech / Risiko:</strong> 10-15%+</li></ul>Følsom over for Risk-Free Rate og Equity Risk Premium.` },
+
+  { deckId:'multiples', q:'Terminal Value: Gordon Growth vs. Exit Multiple Method',
+    a:`<strong>Terminal Value (TV)</strong> udgør ofte 60-80% af DCF-værdien.<br><br><strong>Gordon Growth:</strong> (FCF_n * (1+g)) / (WACC - g). Evighedsvækst (typisk 1-2% inflation).<br><strong>Exit Multiple:</strong> Antager at man sælger selskabet i år "n" til en bestemt EV/EBITDA. Ofte mere pålidelig og branche-realistisk end ren perpetuel vækst.` },
+
+  { deckId:'multiples', q:'Sector Multiples: Utilities & Infrastructure',
+    a:`<strong>8-12× EV/EBITDA</strong> (EV/Regulated Asset Base er også populær).<br><br><strong>Drivers:</strong><ul><li>Regulatoriske prisrammer</li><li>Meget stabilt (obligation-lignende) afkast</li><li>Kæmpe CAPEX binding, men ekstremt stabile Cash Flows</li></ul>` },
+
+  { deckId:'multiples', q:'Sector Multiples: Real Estate / Ejendomsselskaber',
+    a:`Måles primært på <strong>P/NAV (Price / Net Asset Value)</strong> og <strong>Implied Yield (Cap Rate)</strong>.<br>EV/EBITDA bruges næsten aldrig.<br><br><strong>Drivers:</strong> Renter, tomgang (vacancy), og porteføljens geografi.` },
+
+  { deckId:'multiples', q:'Sector Multiples: Telecom Operations',
+    a:`<strong>5-8× EV/EBITDA</strong>.<br><br><strong>Drivers:</strong> Lav vækst, men massive infrastrukturinvesteringer (5G, fiber). Man kigger intenst på <em>FCF Yield</em>, da virksomhederne primært er udbyttemaskiner.` },
+
+  { deckId:'multiples', q:'Implied vs. Paid Multiples i Precedent Transactions',
+    a:`Når du kigger på tidligere opkøb (Precedents), vil multiplerne typisk være <strong>højere</strong> end Trading Comps for tilsvarende børsnoterede selskaber.<br>Dette skyldes <strong>kontrolpræmien</strong> (ofte 20-40%) indbygget i opkøbet. Du skal fjerne præmien i tankerne, hvis du sammenligner en "minority stake" vs M&A handel.` },
+
+  { deckId:'multiples', q:'Accretion / Dilution (EPS Impact)',
+    a:`<strong>EPS Accretion (Værdiskabende) / Dilution (Udvanende)</strong>.<br>Nøgleanalysen for en strategisk køber: Stiger vores egen Indtjening Per Aktie (EPS) som følge af opkøbet efter vi har betalt renter af ny gæld / udstedt nye aktier?<br>Man tager 100% Target Net Income over, men trækker finansieringsomkostningerne (renter efter skat) ud. Hvis >0 = Accretive.` },
+
   /* ── DANSKE BANK ── */
   { deckId:'db', q:'Hvornår blev Danske Bank grundlagt, og hvad er dens oprindelse?',
     a:`Grundlagt <strong>1871</strong> som <em>Den Danske Landmandsbank</em>. Omdøbt til Danske Bank i 2000 efter en række fusioner.<br><br><ul><li>Danmarks <strong>største bank</strong></li><li>HQ: Holmens Kanal, København</li><li>Noteret på Nasdaq Copenhagen</li><li>Ca. 18.000 ansatte (efter "Better Bank" besparelser)</li></ul>` },
@@ -390,6 +426,24 @@ const KNOWLEDGE = [
 
   { deckId:'db', q:'Hvad er Realkreditdanmark og dens rolle i Danske Bank?',
     a:`<strong>Realkredit Danmark (RD)</strong> er Danske Banks realkreditinstitut — et datterselskab der udsteder <em>særligt dækkede obligationer (SDO)</em> til finansiering af boliglån.<br><br><ul><li>Danmark har et <strong>unikt realkreditmarked</strong> — obligationerne matches med individuelle lån (match-funding)</li><li>RD er en af Danmarks 4 store realkreditinstitutter</li><li>Lav kreditrisiko (hus er sikkerhed)</li><li>Vigtig margins-driver for Personal Banking</li></ul>` },
+
+  { deckId:'db', q:'Danske Bank IB Track Record — Nævn bemærkelsesværdige (historiske) transactions',
+    a:`Som analytiker bør du kende "Tombstones" (deal credentials):<br><ul><li><strong>M&A Advisory:</strong> DSV / Panalpina / UTI, Mærsks salg af Maersk Oil til Total, salget af TDC til Macquarie-konsortiet.</li><li><strong>ECM (Børsnoteringer/Rights Issues):</strong> Dong Energy (Nu Ørsted) IPO, Nets IPO, SAS re-kapitaliseringer.</li></ul><em>Tip: Kend altid de nyeste 3 publicerede deals fra teamet før interviewet.</em>` },
+
+  { deckId:'db', q:'Key Financial Metrics for Danske Bank (Ca. tal man skal kende)',
+    a:`<ul><li><strong>Return on Equity (RoE):</strong> Target > 13% (Mål nået under "Better Bank", svinger 10-14% alt efter renter).</li><li><strong>Cost/Income Ratio (C/I):</strong> Target < 45% (Hver krone tjent koster nu under 45 øre - stor forbedring = effektivisering).</li><li><strong>CET1 Ratio (Kapitalbuffer):</strong> ~ 18%+ (Meget velpolstret sammenlignet med krav opstået efter Finanskrisen).</li></ul>` },
+
+  { deckId:'db', q:'Competitive Positioning: Hvem er Danske Banks primære konkurrenter for Corporate Finance (IB) mandates i Norden?',
+    a:`<strong>Tier 1 i Norden (De andre store nordiske banker):</strong><br>SEB (Sverige, traditionelt stærk i IB), Nordea, DNB (Norge, konger af energi/shipping), Carnegie (Boutique, meget synlig i ECM).<br><br><strong>Bulge Brackets:</strong> Goldman Sachs, Morgan Stanley, J.P. Morgan m.fl., der flyver ind på de største danske "Jumbo-deals", hvor Danske Bank og SEB ofte agerer Co-Advisor for at levere lokal viden og debt.` },
+
+  { deckId:'db', q:'Bankens Regulatoriske Landskab: Hvilke myndigheder og regelsæt dikterer bankens manøvrerum?',
+    a:`<ul><li><strong>Finanstilsynet (DFSA):</strong> Den lokale danske vagthund (udsteder påbud).</li><li><strong>European Central Bank (ECB):</strong> Sætter renterne / makro-miljøet for euroen (som DKK er låst op mod).</li><li><strong>Basel III / IV compliance:</strong> Strenge internationale krav til hvor meget egenkapital (CET1) banken skal holde tilbage som buffer for hhv. udlån og trading risk. Gør kapitalkrævende M&A lån sværere.</li></ul>` },
+
+  { deckId:'db', q:'Danica Pension & Asset Management — Hvordan hænger det sammen?',
+    a:`<strong>Danica Pension</strong> er et integreret datterselskab i Danske Bank og en af Danmarks største kommercielle pensionskasser.<br><br>Det giver banken en enorm <em>Asset Under Management (AUM)</em> muskel og gebyr-indtægter via Danske Invest. Desuden holder det kunder "inde i huset" helt fra vugge (børneopsparing) til kiste (livrente).` },
+
+  { deckId:'db', q:'Digital Transformation & MobilePay-Historien (Nu samarbejde med Vipps)',
+    a:`MobilePay blev udviklet af Danske Bank i 2013 (ledet af Tonny Thierry) og udgjorde en kæmpe First Mover-succes.<br><br>For at skalere i Norden valgte Danske Bank dog klogt at indgå M&A/konsolidering med norske Vipps og finske Pivo i 2021/2022. I dag ejer Danske Bank ~27.8% af den samlede Nordiske <strong>Vipps MobilePay</strong>.` },
 
   /* ── INTERESSEKONFLIKTER & INCENTIVES (DEEP DIVE) ── */
 
@@ -458,6 +512,24 @@ const KNOWLEDGE = [
 
   { deckId:'stakeholders', q:'Hvorfor tvinges du som IB-analytiker til at forstå Value Chain Incentives fuldstændigt?',
     a:`<ul><li>Når du designer en transaktionsstruktur, ved du hvem der vil blokere og hvem der vil pushe.</li><li>Du kan bygge de rigtige earn-outs, escrow konti eller management bonusser som fjerner barriererne.</li><li>Som rådgiver forbereder du dine klienter (f.eks. ved at bygge en pakke, der blødgør "Target CEO").</li><li>Bankens omdømme står på spil - du skal gennemskue og formidle konflikter overfor compliance afdelingen i banken.</li></ul><br>Ingen tager million / milliard-beslutninger uden at evaluere: <em>"What's in it for me?"</em>` },
+
+  { deckId:'stakeholders', q:'Hvad er et Break Fee og et Reverse Break Fee, og hvordan præger de incitamentet for at lukke en handel?',
+    a:`<strong>Break Fee (Sælger betaler Køber):</strong> En straf på ofte 1-2% af handlen hvis sælgers bestyrelse trækker sig (f.eks. ved et højere bud udefra). Skaber tryghed for købers initialinvesteringer (advokater, DD).<br><br><strong>Reverse Break Fee (Køber betaler Sælger):</strong> Aktiveres hvis køber ikke kan lukke handlen (f.eks. pga. stop fra konkurrencemyndigheder eller hvis banken nægter lånet). Tvinger køber til at tage "financing risk" og regulatorisk risiko tungt på sig selv.` },
+
+  { deckId:'stakeholders', q:'Hvad er og hvem benytter "Escrow" eller "Holdback" Accounts?',
+    a:`En <strong>Escrow</strong> er en spærret konto hos en uafhængig tredjepart (ofte en bank, yay for fees!), hvor en del af købesummen placeres (f.eks. 10%) i 1-2 år efter closing.<br><br><strong>Incitament:</strong> Den frigives kun til sælger efter perioden, HVIS der ikke er opstået brud på garantier (Warranties) eller skeletter i skabet. Det holder sælger skinkelynhurtig og ærlig - de vil have deres sidste penge løs, køber vil have en buffer.` },
+
+  { deckId:'stakeholders', q:'Hvad er Management Incentive Plans (MIP) / "Sweet Equity" i Private Equity Buyouts?',
+    a:`Når PE køber en virksomhed, lader de ofte topledelsen "rulle" deres penge og få adgang til "Sweet Equity" (aktier / optioner) som er super gearet.<br><br><strong>Incitamentet:</strong> I stedet for ledelsen blot er funktionærer dækket ind mod ulykke (Agency konflikt), bliver de partnere der deler the "Upside". Resultat: Management begynder pludselig at arbejde 70+ timer i ugen, skære unødig fedt og optimere aggressivt frem mod The Exit for at tjene deres mange-millioner.` },
+
+  { deckId:'stakeholders', q:'Hvad er Drag-Along og Tag-Along rights (Med-salgsret og Med-salgspligt)?',
+    a:`<strong>Drag-Along (Med-salgspligt):</strong> Giver en majoritetsejer lov til at "tvinge / drakke" minoriteten til at sælge deres aktier til en 3. part. Det sikrer at en minoritet ikke kan blokere et M&A salg.<br><br><strong>Tag-Along (Med-salgsret):</strong> Giver minoriteten ("The Founders who stayed") ret til at få solgt deres aktier ("ride med") til den nye køber på <em>nøjagtig de samme vilkår</em> som Majoriteten. Beskytter de små imod at PE dumper restaktierne.` },
+
+  { deckId:'stakeholders', q:'Hvad er Vendor Due Diligence (VDD), og hvad er interessekonflikten når Sælger bestiller rapporten?',
+    a:`I en Auktions-M&A bestiller Sælgerens rådgiver ofte <strong>Vendor Due Diligence (VDD)</strong> rapporter via BIG4 (commercial, financial, tax) uger i forvejen, så Køber læser den fra day 1.<br><br><strong>Konflikten:</strong> Selvom EY/PwC er stemplet uafhængige, ved BIG4 godt, at deres regning betales af Sælger. Processen er derfor at "sætte selskabet i det bedst mulige lys, mens man stadig holder juridisk rygdækning". Købers PE-analytikere er altid ekstremt skeptiske overfor VDD EBITDA "Normalizations".` },
+
+  { deckId:'stakeholders', q:'Warranty & Indemnity Insurance (W&I / W&I Forsikring) — Hvorfor har det forandret M&A totalt?',
+    a:`Før sad advokater om natten og sloges om hvem af køber / sælger der skulle bære det fulde økonomiske ansvar for, at skattebilag for et selskab for 7 år siden var korrekt.<br><br>I dag købes en forsikring fra AIG eller Beazley <strong>(W&I Insurance)</strong>, der dækker disse brud mod at betale en engangs-præmie. Det sletter en enorm konflikt mellem Køber/Sælger fordi de nu kan vende skytset ud mod en tredjepart, hvilket markant forkorter og "blødgør" de sidste kontraktforhandlinger (SPA negotiations).` },
 
 ];
 
