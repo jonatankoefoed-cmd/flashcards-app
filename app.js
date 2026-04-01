@@ -37,6 +37,69 @@ const DECK_META = {
 };
 const DECK_ORDER = ['people','multiples','c25','db','stakeholders'];
 
+// --- Global State & Firebase ---
+let user = null;
+let cardData = {}; 
+let sessionCards = [];
+let currentIndex = 0;
+let isFlipped = false;
+let currentDeckTitle = "";
+let stats = { new:0, due:0, done:0 };
+let currentSessionWeak = false;
+
+// Helper: Get unique ID for a card
+function getCardId(card) {
+  if (card.type === 'person') return `p-${card.name}`;
+  if (card.deckId === 'c25') return `c-${card.name}`;
+  if (card.id) return `k-${card.id}`;
+  return `k-${card.q ? card.q.substring(0, 20) : (card.question ? card.question.substring(0,20) : Math.random())}`;
+}
+
+async function rateCard(rating) {
+  const c = sessionCards[currentIndex];
+  if (!c) return;
+  const id = getCardId(c);
+  
+  await syncCard(id, rating);
+  
+  // Update stats
+  if (rating >= 4) stats.done++;
+  else stats.due++;
+  
+  nextCard();
+  renderWeakCardsUI(); 
+}
+
+async function syncCard(cardId, rating) {
+  if (!user) {
+    // Fallback: local storage
+    const local = JSON.parse(localStorage.getItem('ib_cards') || '{}');
+    if (!local[cardId]) local[cardId] = { ratings: [] };
+    local[cardId].ratings.push(rating);
+    localStorage.setItem('ib_cards', JSON.stringify(local));
+    cardData = local;
+    return;
+  }
+  
+  if (!cardData[cardId]) cardData[cardId] = { ratings: [] };
+  cardData[cardId].ratings.push(rating);
+  cardData[cardId].lastSeen = Date.now();
+  
+  const docRef = window.doc(window.db, "users", user.uid);
+  await window.updateDoc(docRef, {
+    [`cards.${cardId}`]: cardData[cardId]
+  }).catch(async (e) => {
+    await window.setDoc(docRef, { cards: { [cardId]: cardData[cardId] } });
+  });
+}
+
+function getCardScore(cardId) {
+  const data = cardData[cardId];
+  if (!data || !data.ratings || data.ratings.length === 0) return 5; 
+  const last3 = data.ratings.slice(-3);
+  return last3.reduce((a, b) => a + b, 0) / last3.length;
+}
+
 const LOGO_DEV_PUBLISHABLE_KEY = 'pk_aX_jJ9JBRlmP4UGkAhnIEQ';
 const MARKET_DATA_AS_OF = '2026-03-30';
 function logoUrl(domain, size = 96) {
@@ -68,18 +131,17 @@ const COMPANY_CARDS = [
     name:'Novo Nordisk', ticker:'NOVO-B', domain:'novonordisk.com',
     sector:'Pharma', industry:'GLP-1 / diabetes & obesity',
     frontClues:[
-      'Dansk pharma-megacap med global dominans inden for diabetes og fedmebehandling.',
-      'Et af markedets vigtigste quality compounders med usædvanlig pricing power og cash conversion.',
-      'Investorer fokuserer især på supply, Eli Lilly-konkurrence og hvor længe obesity-væksten kan holde.'
+      'Sælger de indsprøjtninger til diabetes og vægttab, som hele verden efterspørger?',
+      'Kæmper de en indædt kamp mod rivalen Eli Lilly om dominans på fedmemarkedet?',
+      'Er deres overskudsgrad og evne til at skabe kontanter nærmest uset høj i Danmark?'
     ],
-    clue:'Verdensledende dansk pharma-navn med ekstrem pricing power og global vækst inden for diabetes- og fedmebehandling.',
-    focus:'Supply, konkurrence mod Eli Lilly og hvor længe fedmebølgen kan bære toplinjen.',
-    drivers:'FDA-labels, produktion, reimbursement, pipeline og US-penetration.',
-    what:'Udvikler og sælger især diabetes- og fedmebehandlinger. Et af de vigtigste nordiske quality compounders.',
+    what:'De opfinder, producerer og sælger medicin – især mod diabetes og svær overvægt (kendt som bl.a. Wegovy og Ozempic). Det er kerneforretningen skåret helt ind til benet.',
     valuation:'Typisk premium P/E 25-35x i stærke perioder.',
-    avgMcap12mDkkBn:1622.2, dkRank:1,
-    whyTrades:'Markedet betaler for høj vækst, stærk profitabilitet og usædvanlig cash conversion. Multiplen komprimeres hurtigt, hvis væksten skuffer eller konkurrencen tiltager.',
-    challenge:'At fastholde supply discipline og vækst i obesity uden at valuations bliver for langt foran fundamentals.',
+    avgMcap12mDkkBn:2800.0, dkRankText:'Danmarks ubestridt største selskab målt på market cap (Nummer 1).',
+    whyTrades:'Markedet betaler for høj vækst, stærk profitabilitet og usædvanlig cash conversion. Multiplen komprimeres hurtigt, hvis væksten skuffer.',
+    peerValuation: 'Eli Lilly handler f.eks. til over 40x P/E sammenlignet med Novo Nordisks ~30-35x P/E. Forskellen kan ofte skyldes at Eli Lilly har en lidt bredere pipeline og hjemmebanefordel i USA, men begge handles med massiv premium til markedet.',
+    drivers:'FDA-labels, produktion, reimbursement, pipeline og US-penetration.',
+    challenge:'At fastholde udbud og høje forventninger, og undgå at priskrigen med Eli Lilly spiser overskuddet.',
     peers:['Eli Lilly','AstraZeneca','Roche'],
     whyKnow:'Som analyst skal du kende Novo som Danmarks vigtigste børsnavn, et indeksanker og referencecase for pharma premium-multipler.'
   },
@@ -87,17 +149,17 @@ const COMPANY_CARDS = [
     name:'DSV', ticker:'DSV', domain:'dsv.com',
     sector:'Transport & Logistics', industry:'Freight forwarding',
     frontClues:[
-      'Dansk asset-light logistiknavn med global forwarding-forretning.',
-      'Kendt for disciplineret execution og stor værdi fra opkøb og integrationer.',
-      'Casen afhænger lige nu af Schenker-synergier, global fragtcyklus og margin-disciplin.'
+      'Er det et dansk logistik-selskab, der ikke selv ejer særlig mange lastbiler eller skibe?',
+      'Er de kendt i hele verden for at opkøbe konkurrenter (som f.eks. Schenker) og lynhurtigt trimme dem?',
+      'Fokuserer investorerne især på deres evne til at holde omkostningerne nede i et usikkert fragtmarked?'
     ],
-    clue:'Asset-light logistikmaskine kendt for disciplineret execution og value-accretive M&A.',
-    focus:'Integration af Schenker, cost synergies og om volumen kan løfte earnings gennem cyklisk usikkerhed.',
-    drivers:'Fragtvolumener, gross profit per shipment, integrationssynergier og global handel.',
-    what:'Forbinder kunder med luft-, sø- og vejtransport uden selv at eje de tunge aktiver i samme grad som klassiske transportører.',
+    what:'De ejer ikke selv skibe eller fly. Deres forretning er at fungere som mellemmand (speditør), der køber plads hos store rederier og flyselskaber og sælger det videre med en merpris til kunder, der skal have fragtet varer.',
+    dkRankText:'Danmarks 2. største selskab målt på market cap.',
     valuation:'Typisk 12-16x EV/EBITDA.',
-    avgMcap12mDkkBn:354.5, dkRank:2,
-    whyTrades:'DSV får premium for høj ROIC, stærk cash conversion og en troværdig M&A-model. Multiplen afhænger af tillid til integration og cycle timing.',
+    avgMcap12mDkkBn:354.5,
+    whyTrades:'DSV får premium for høj ROIC, stærk cash conversion og en fuldstændig dominerende M&A-model (opkøbsstrategi).',
+    peerValuation: 'DSV handler typisk til ca. 18-20x P/E sammenlignet med Kuehne+Nagel på ca. 18-20x P/E. Deres stærke "execution-premium" giver dem ofte en af branchens absolut højeste multipler, modsat ex Schenker, der tidligere trak branchens snit ned.',
+    drivers:'Fragtvolumener, gross profit per shipment, integrationssynergier og global handel.',
     challenge:'At levere Schenker-integration uden margin-slip eller kundetab i et fortsat volatilt fragtmarked.',
     peers:['Kuehne+Nagel','DHL','Expeditors'],
     whyKnow:'DSV er den danske skolebogscase på, hvordan markedet belønner execution, synergy delivery og asset-light compounding.'
@@ -106,229 +168,229 @@ const COMPANY_CARDS = [
     name:'A.P. Møller - Mærsk', ticker:'MAERSK-B', domain:'maersk.com',
     sector:'Shipping', industry:'Container shipping & logistics',
     frontClues:[
-      'Dansk shipping- og logistikgigant med stærk eksponering mod global handel.',
-      'Earnings svinger voldsomt med containerrater, geopolitik og kapacitetsudbud.',
-      'En klassisk mid-cycle-vs-peak-earnings case snarere end et stabilt compounder-navn.'
+      'Er det en gigant, der fragter varer over verdenshavene i store containere?',
+      'Svinger deres indtjening voldsomt i takt med de globale fragtrater, kriser i Det Røde Hav og udbuddet af nye skibe?',
+      'Tjente de uanede milliarder under Corona-krisen, men opererer nu i en langt lavere indtjeningsfase?'
     ],
-    clue:'Global shipping-gigant hvor earnings svinger voldsomt med fragtrater og geopolitik.',
-    focus:'Red Sea-disruption, normalisering af containerrater og om logistikforretningen kan gøre casen mindre cyklisk.',
-    drivers:'SCFI-rater, global vækst, kapacitetsudbud, bunkerpriser og logistics margins.',
-    what:'En af verdens største containerrederier med stigende fokus på end-to-end logistics.',
+    what:'De ejer hundredevis af store containerskibe og fragter simpelthen varer på tværs af oceanerne. Derudover er de ved at vokse massivt inden for transport på land.',
+    dkRankText:'Typisk Danmarks 3. største selskab (bytter nogle gange plads med DSV).',
     valuation:'Typisk 3-6x EV/EBITDA gennem cyklen.',
-    avgMcap12mDkkBn:195.7, dkRank:4,
-    whyTrades:'Lav multiple afspejler høj cyklikalitet, tung capex og stor usikkerhed om mid-cycle earnings.',
-    challenge:'At bevise at integrated logistics kan stabilisere indtjeningen, når shipping-cyklussen vender ned.',
+    avgMcap12mDkkBn:195.7,
+    whyTrades:'Lav multiple afspejler høj cyklikalitet, dyr capex (skibe) og altid stor asymmetrisk usikkerhed om "mid-cycle earnings".',
+    peerValuation:'Mærsk handler ofte til en meget lav forward P/E (historisk under 10x) og P/B på 0,5-0,7x sammenlignet med Hapag-Lloyd til lignende deprimerede niveauer. Det ekstreme cash loop og tunge stål kræver at investorer betaler en ekstremt "cyklisk rabat".',
+    drivers:'SCFI-rater, global vækst, kapacitetsudbud, bunkerpriser og logistics margins.',
+    challenge:'At bevise at deres "integrated logistics" kan stabilisere indtjeningen, når verdens shipping-cyklus ender i nedgangsperioder.',
     peers:['Hapag-Lloyd','CMA CGM','MSC'],
-    whyKnow:'Mærsk er central for at forstå cykliske multipler, geopolitisk risk premium og forskellen mellem peak og mid-cycle earnings.'
+    whyKnow:'Mærsk er central for at forstå cykliske multipler, geopolitisk risk premium og peak- vs mid-cycle profit.'
   },
   {
     name:'Vestas', ticker:'VWS', domain:'vestas.com',
     sector:'Renewables', industry:'Wind turbines & service',
     frontClues:[
-      'Dansk grøn industriklassiker inden for vindmøller og service.',
-      'Serviceforretningen er mere stabil og kvalitativ end hardwareleverancerne.',
-      'Markedet ser især på prisdisciplin, margin recovery og kvaliteten af nye ordrer.'
+      'Er det et af Danmarks største industriselskaber inden for den grønne omstilling?',
+      'Lever de af at bygge vindmøller og herefter tegne enormt profitable service-aftaler for at vedligeholde dem?',
+      'Er deres aktiekurs ekstremt følsom over for stålpriser og om de reelt tjener penge på fremtidige ordrer?'
     ],
-    clue:'Dansk grøn industriklassiker hvor serviceforretningen er mere værdifuld end den volatile turbineleverance alene.',
-    focus:'Margin recovery, prisdisciplin på nye ordrer og hvor robust serviceforretningen er.',
-    drivers:'Ordreindgang, turbinepriser, input costs, service mix og project execution.',
-    what:'Producerer og servicerer vindmøller globalt på onshore og offshore markeder.',
+    what:'De designer, producerer og rejser vindmøller rundt i hele verden. Og så har de en ekstremt vigtig serviceafdeling, som tjener styrtende med penge på løbende at vedligeholde møllerne resten af deres levetid.',
+    dkRankText:'Ligger oftest solidt parkeret som et Top 10 selskab.',
     valuation:'Typisk 12-18x normaliseret EV/EBITDA.',
-    avgMcap12mDkkBn:131.6, dkRank:7,
-    whyTrades:'Markedet ser både stor strukturel grøn medvind og høj execution-risk. Derfor afhænger multiple meget af margin confidence.',
-    challenge:'At undgå faste kontrakter med dårlig economics og løfte hardware-margin uden at miste markedsandel.',
+    avgMcap12mDkkBn:131.6,
+    whyTrades:'Markedet ser både stor strukturel grøn medvind men også gigantisk execution-risk, bl.a pga høje råvareomkostninger.',
+    peerValuation: 'Vestas handler ofte til forward P/E i 30’erne (eller ingen mening hvis indtjening crasher pga dårlige kontrakter), hvor konkurrenter som Siemens Energy Gamesa har lidt under endnu større milliardtab. Vestas belønnes for deres højdekaliber serviceforretning der agerer sikkerhedsnet.',
+    drivers:'Ordreindgang, turbinepriser, input costs, service mix og project execution.',
+    challenge:'At undgå at tabe penge permanent på selve fremstillingen af nye møller for i stedet at vokse rentabelt.',
     peers:['Siemens Energy Gamesa','GE Vernova','Nordex'],
-    whyKnow:'Vestas lærer dig forskellen mellem strukturel tema-attraktivitet og faktisk kortsigtet industrial profitability.'
+    whyKnow:'Vestas demonstrerer forskellen mellem strukturel tema-hype (grøn energi) og den sværere brutale sandhed i industrial profitability.'
   },
   {
     name:'Coloplast', ticker:'COLO-B', domain:'coloplast.com',
     sector:'MedTech', industry:'Chronic care / ostomy & continence',
     frontClues:[
-      'Dansk medtech-navn med meget defensiv efterspørgsel og høj patientloyalitet.',
-      'Stærk inden for stomi, kontinens, urologi og andre kroniske care-kategorier.',
-      'Premium-multiplen bæres af recurring-lignende demand, høje marginer og meget forudsigelig execution.'
+      'Sælger de diskrete plastik- og silikoneprodukter til f.eks. stomi- eller kateter-brugere?',
+      'Har de ekstremt loyale "abonnements"-kunder, fordi patienterne er tvunget til at stole på og bruge udstyret hver eneste dag?',
+      'Er aktien internt kendt som bundsolid ("kedelig" men tryg), uanset om det globalt går godt eller skidt med økonomien?'
     ],
-    clue:'Ekstremt defensivt dansk quality compounder med meget loyal patientbase og høj forudsigelighed.',
-    focus:'USA-vækst, Kerecis-integration og hvor længe marginerne kan holdes i verdensklasse.',
-    drivers:'Organisk vækst, reimbursement, innovationstakt, salgsmix og integration.',
-    what:'Sælger medico-produkter til patienter med kroniske behov inden for stomi, kontinens, urologi og sårpleje.',
+    what:'De producerer medicinske hjælpemidler (som fx stomiposer og katetre) i plastik og silikone. Produkter, som mennesker med varige eller kroniske lidelser har brug for i deres dagligdag.',
+    dkRankText:'Stabilt placeret inden i midten af top 10 (omkring plads 6-9).',
     valuation:'Typisk 18-24x EV/EBITDA og 25-35x P/E.',
-    avgMcap12mDkkBn:132.3, dkRank:10,
-    whyTrades:'Høj multiple skyldes defensivitet, recurring demand, pricing power og stærke marginer.',
-    challenge:'At forsvare premium-prissætning mens USA og nye kategorier skal levere vækst.',
+    avgMcap12mDkkBn:132.3,
+    whyTrades:'Høj multiple skyldes defensivitet, recurring demand, enorm pricing power og stærke velsmurte global marginer.',
+    peerValuation:'Coloplast handler typisk oppe på 30-35x P/E, mens klassiske peers som Convatec oftest kun trækker 15-20x P/E. Coloplast vinder soleklart på deres overlegne best-in-class drift (EBIT-marginer nær 30%) i modsætning til Convatecs lavere niveau.',
+    drivers:'Organisk vækst, reimbursement, innovationstakt, salgsmix og M&A integration.',
+    challenge:'At forsvare deres enorme markup-priser mod regulatorer i UK og EU, mens USA skal levere vækst.',
     peers:['Convatec','Smith+Nephew','Essity Health'],
-    whyKnow:'Coloplast er en referencecase for defensive healthcare-multipler og recurring-revenue-lignende patient economics.'
+    whyKnow:'Coloplast er en referencecase for defensive healthcare-multipler og recurring-revenue-lignende economics.'
   },
   {
     name:'Pandora', ticker:'PNDORA', domain:'pandoragroup.com',
     sector:'Consumer', industry:'Jewellery',
     frontClues:[
-      'Dansk consumer-brand med vertikal model fra design og produktion til retail.',
-      'Historisk kendt for charms, men casen handler nu bredere om brandstyrke og global eksekvering.',
-      'Investorer følger især brand heat, US-forbrug, Kina og om væksten er mere end marketingdrevet.'
+      'Er det verdens største smykkeselskab målt på antal solgte styk?',
+      'Blev de stiftet og storhedskendt på deres små "charms", som folket samler på?',
+      'Får de oftest en lavere værdiansættelse da nogle investorer (forkert eller rigtigt) er bange for, at populariteten "bare er en mode-dille"?'
     ],
-    clue:'Brand- og retail-case med høj cash conversion, men stadig delvist prissat som cyklisk forbrug.',
-    focus:'Brand heat, US-forbrug, China recovery og lab-grown diamonds som vækstben.',
-    drivers:'Like-for-like sales, gross margin, butikseffektivitet, marketing ROI og metalpriser.',
-    what:'Verdens største smykke-brand målt på volumen med vertikal model fra design til retail.',
+    what:'De designer, får fremstillet masser af små smykker og driver enorme detail-koncepter, hvor de primært sælger armbånd og ringe som mange almindelige piger og kvinder har råd til.',
+    dkRankText:'Ligger klassisk omkring plads 15-20 i Danmark.',
     valuation:'Typisk 10-13x EV/EBITDA.',
-    avgMcap12mDkkBn:62.6, dkRank:23,
-    whyTrades:'Stærk execution og buybacks støtter casen, men markedet giver stadig rabat pga. fashion/cycle-risk.',
-    challenge:'At bevise at væksten er branddrevet og ikke kun marketing- eller prisdrevet i et mere presset forbrugermarked.',
+    avgMcap12mDkkBn:62.6,
+    whyTrades:'Stærk turnaround-execution og gigantiske udbud af aktietilbagekøb støtter kursen, men markedet giver fashion-rabat.',
+    peerValuation: 'Pandora prissættes typisk relativt lavt omkring 12-14x P/E, imens high-end luksus som Richemont handles på markant højere ~20x+ P/E. De lavere multipler bunder i frygten for at massesmykker udgår af mode relativt let.',
+    drivers:'Like-for-like sales, gross margin, butikseffektivitet, marketing ROI og sølvpriser.',
+    challenge:'At bevise de rent faktisk kan opretholde vækst gennem stærkt brand (fx lab-grown diamanter) trods at hele USA snavet.',
     peers:['Signet','Richemont','Tapestry'],
-    whyKnow:'Pandora er vigtig som dansk consumer-brand case med høj FCF, stor international skalering og tydelig rerating-historik.'
+    whyKnow:'Pandora er vigtig consumer-brand case. Lære om retail, marketing ROI og FCF.'
   },
   {
     name:'Ørsted', ticker:'ORSTED', domain:'orsted.com',
     sector:'Utilities', industry:'Offshore wind development',
     frontClues:[
-      'Dansk offshore-wind navn og et af de mest kendte europæiske grønne utility-assets.',
-      'Projektøkonomien er meget følsom for renter, capex, kontraktstruktur og execution.',
-      'Markedet tester stadig troværdigheden efter store nedskrivninger og projektproblemer.'
+      'Hed de tidligere DONG Energy, før de dræbte olien og blev verdens frontløber for havvind?',
+      'Lever de af at bygge og drive gigantiske havvindmølleparker over hele kloden?',
+      'Faldt aktien vanvittig voldsomt da renterne begyndte at stige drastisk og smadrede afkastet fra deres fremtidige byggeprojekter?'
     ],
-    clue:'Flagship for grøn omstilling, men også skoleeksempel på hvor hårdt renter og project risk kan ramme infrastructure equity.',
-    focus:'Projektselektion, partner/farm-downs, kapitaldisciplin og troværdighed efter projektproblemer.',
-    drivers:'Renter, capex per MW, power prices, regulatory regimes og construction execution.',
-    what:'Udvikler, bygger og driver især havvindprojekter med stor eksponering mod regulering og langsigtede kontrakter.',
+    what:'De designer, opfører og driver ekstremt store vindmølleparker nede i vandet (offshore). De får strømmen sat i land, og sælger den mod faste kontrakter.',
+    dkRankText:'Stabilt top 10 selskab, var historisk næsten Danmarks største, men styrtdykkede tilbage under inflation.',
     valuation:'Typisk 8-12x EV/EBITDA.',
-    avgMcap12mDkkBn:252.4, dkRank:5,
-    whyTrades:'Casen handler mere om balance mellem growth options og capital intensity end om klassisk utility-stabilitet alene.',
-    challenge:'At genskabe investorernes tillid til project economics og afkastdisciplin efter store nedskrivninger.',
+    avgMcap12mDkkBn:252.4,
+    whyTrades:'Mellem "vækst venture" og "bundstabil utility".',
+    peerValuation: 'Ørsted handler i et utilty legetøj på ca 10-12x EV/EBITDA. Nærmeste europæiske peer RWE handler typisk noget lavere, fx omkring 6-8x. Forskellen skyldes at RWE bærer på legacy kul/fossile aktiver, mens Ørsted får en ren "green premium".',
+    drivers:'Renter, capex per MW, power prices, og regulatoriske udbuds-rammer.',
+    challenge:'At beskytte afkast-indtjeningen mens konkurrenter priser aggressive hav-bud op – og genopbygge investor-tilliden.',
     peers:['RWE Renewables','Iberdrola','EDP Renovaveis'],
-    whyKnow:'Ørsted er central for at forstå hvordan markedet priser energiomstilling, renter og execution-risk i projektbaserede modeller.'
+    whyKnow:'Lær at prissætte infra-equity under rentesving.'
   },
   {
     name:'Carlsberg', ticker:'CARL-B', domain:'carlsberggroup.com',
     sector:'Consumer Staples', industry:'Brewing',
     frontClues:[
-      'Dansk brygger med stærke brands og stor eksponering mod Europa og Asien.',
-      'Casen er defensiv, men ikke helt premium på niveau med de bedste global consumer compounders.',
-      'Vigtige temaer er premiumisering, Britvic-integration og emerging market execution.'
+      'Er det et stort hæderkronet, fondsejet dansk bryggeri der sælger primært mod Asien og Europa?',
+      'Prøver de i årevis at vriste danskerne væk fra billige "grønne bajere" over til meget dyrere specialøl uden procenter?',
+      'Var deres seneste forfærdelige krise, at de var enormt eksponeret i Rusland der blev overtaget?'
     ],
-    clue:'Defensiv FMCG-case med stærke brands, men med geopolitik og emerging market exposure som ekstra lag.',
-    focus:'Britvic-integration, premiumisering, Asien-eksekvering og effekten af det post-russiske setup.',
-    drivers:'Volume/mix, premium share, input costs, weather og emerging market demand.',
-    what:'Global bryggerigruppe med stærke markedspositioner i Europa og Asien samt fokus på premium- og alkoholfri vækst.',
+    what:'De koger vand, humle og gær, brygger en global mængde øl under forskellige brands og forsøger især at skabe en premiumisering, hvor de tjener mere på dyre øl.',
+    dkRankText:'Klassikeren vipper op og ned oftest omkring en rank nummer 6-8 i Danmark.',
     valuation:'Typisk 10-13x EV/EBITDA.',
-    avgMcap12mDkkBn:115.0, dkRank:8,
-    whyTrades:'Stabil cash flow støtter multiple, men markedet giver ikke luxury-lignende premium pga. lavere strukturel vækst og geopolitisk eksponering.',
-    challenge:'At bevise bedre vækstprofil via premiumisering og integration af større opkøb uden marginpres.',
+    avgMcap12mDkkBn:115.0,
+    whyTrades:'Stabil cash flow i masserne, men de får normalt lavere multipler fordi væksten på "almindelig øl" altid er tærsko-flad.',
+    peerValuation: 'Carlsberg handler lidt historisk set lavere (omkring 13-14x P/E) end fx global mastodont Heineken (~16-18x P/E). Heineken belønnes med højere premium pga total brand-fokus globalt og uafhængighed af de fejlslagne øst-geopolitiske kampe.',
+    drivers:'Volume/mix opgraderinger (fx til Craft eller Alkoholfri øl) vejret og råvarepriserne i Asien.',
+    challenge:'At få Britvic handlen slugt mens prisen på kinesiske supermarkeder stagnerer.',
     peers:['Heineken','AB InBev','Molson Coors'],
-    whyKnow:'Carlsberg er en god dansk staple-case for at forstå brand, distribution og emerging market risk i valuation.'
+    whyKnow:'Helt central FMCG-model der understreger betydningen at sælge premium volume mod flat "normal" volume.'
   },
   {
     name:'Novonesis', ticker:'NSIS-B', domain:'novonesis.com',
     sector:'Biosolutions', industry:'Enzymes & cultures',
     frontClues:[
-      'Dansk biosolutions-navn skabt af en stor fusion inden for enzymer og kulturer.',
-      'Sælger biologiske løsninger til fødevarer, vask, landbrug og industrielle processer.',
-      'Investeringscasen afhænger af innovationskraft plus troværdig integration og synergy capture.'
+      'Gætter du selskabet bag en gigantisk historisk C25 fusion mellem Novozymes og Chr. Hansen?',
+      'Finder du deres usynlige biologiske materialer i bl.a. ost, yoghurt og koldtvands-vaskemiddel verden over?',
+      'Er investerings-spørgsmålet om de 2 firmaer rent faktisk er de 1+1=3 de prædikede før fusionen?'
     ],
-    clue:'Dansk biosolutions-leder skabt via mega-merger, hvor vækst og synergi skal bevises samtidigt.',
-    focus:'Merger integration, cross-selling, innovation og nye anvendelser inden for fødevarer, landbrug og industrielle processer.',
-    drivers:'Organisk vækst, synergy capture, innovation pipeline og mix mod højværdisegmenter.',
-    what:'Leverer enzymer, kulturer og biologiske løsninger til kunder i fødevarer, vask, landbrug og industrial biotech.',
+    what:'De producerer biologi på fabrik. Vigtigst producerer de enzymer og mælkesyrebakterier (biosolutions), som gør holdbarheden bedst i mejerimad og tillader vaskepulver at virke i helt koldt vand.',
+    dkRankText:'Stærk kandidat midt i toplisten – som oftest omkring plads nummer 6 herhjemme.',
     valuation:'Typisk 17-22x EV/EBITDA.',
-    avgMcap12mDkkBn:191.6, dkRank:6,
-    whyTrades:'Premium skyldes skalerbar IP, høje barrierer og stærke margener, men integration og vækstleverance skal være troværdig.',
-    challenge:'At omsætte fusionen til reel accelereret vækst og ikke kun cost synergies.',
+    avgMcap12mDkkBn:191.6,
+    whyTrades:'Premium pga monopol-agtige indtrængningsbarrierer, stor markedsandel og meget svær biotek (IP).',
+    peerValuation: 'Novonesis handles dyrt og premium (ca. 25x P/E), meget lig sin primære gigantkonkurrent DSM-Firmenich. Premiummet eksisterer simpelthen fordi deres nicher er oligopolistisk lukket i store dele af verden og afhængigheden enorm på B2B.',
+    drivers:'Merger integration, cross-selling, innovation pipeline.',
+    challenge:'At omsætte 2 af Danmarks tungeste kultur-firmaer til reel accelereret vækst uden blot at tælle "omkostnings-synergier" sammen.',
     peers:['DSM-Firmenich','IFF','Kerry'],
-    whyKnow:'Novonesis er vigtig som dansk large-cap merger case og som reference på how-to-price high-quality niche B2B science assets.'
+    whyKnow:'Skoleeksempel på M&A Mega-mergers samt hvordan biotek-kemi gøres til recurring profits.'
   },
   {
     name:'Tryg', ticker:'TRYG', domain:'tryg.com',
     sector:'Insurance', industry:'P&C insurance',
     frontClues:[
-      'Nordisk skadesforsikringsnavn hvor combined ratio betyder mere end klassiske EV-multipler.',
-      'Defensivt cash flow, stærk distribution og kapitaldisciplin er kernen i equity casen.',
-      'Markedet følger især claims inflation, vejrhændelser og pricing discipline.'
+      'Er dette et selskab som primært lever af at sælge tryghed (bil, indbo, ansvarsforsikring)?',
+      'Elsker udbytte-investorerne dette selskab, fordi deres kernekunde altid er utrolig sløv til at skifte væk?',
+      'Hænger deres årsregnskab i høj grad sammen med, om efteråret/vinteren i de nordiske lande byder på voldsomt regnvejr og blæst?'
     ],
-    clue:'Nordisk compounder-case hvor combined ratio og kapitaldisciplin betyder mere end klassiske EV-multipler.',
-    focus:'Claims inflation, vejrhændelser, pricing discipline og kapitalallokering efter større M&A.',
-    drivers:'Combined ratio, premium growth, investment income og weather claims.',
-    what:'Et af Nordens største skadesforsikringsselskaber med stærke private og kommercielle markedspositioner.',
-    valuation:'Typisk P/E 13-16x; P/B og dividend yield er vigtige referencepunkter.',
-    avgMcap12mDkkBn:96.0, dkRank:11,
-    whyTrades:'Defensiv cash flow og høj distributionsstyrke støtter premium mod svagere europæiske peers.',
-    challenge:'At holde prissætningen foran claims inflation uden at miste volumen eller forstyrre retention.',
-    peers:['Sampo / If','Gjensidige','Topdanmark'],
-    whyKnow:'Tryg er central for at lære bank/forsikring-lignende valuation, hvor underwriting quality og kapitalstyrke dominerer equity casen.'
+    what:'De udbyder lovpligtige ansvarsforsikringer og frie forsikringer. De tjener milliarder på, at deres kunders faste månedlige betalinger overstiger, hvad de selv må smække ud, når stormen Bodil har ramt.',
+    dkRankText:'Konsekvent tryg midterligger, omkring placering 10-12.',
+    valuation:'Typisk P/E 13-16x; P/B.',
+    avgMcap12mDkkBn:96.0,
+    whyTrades:'Fremstår som nordens mest udbyttestabile cash-maskine over P/B multiple.',
+    peerValuation: 'Tryg handler P/E ~15-16x, som generelt er en lille premie sammenlignet mod konkurrenter som Sampo eller Storebrand (ofte i low/mid-teens). Dette belønnes særligt af "RSA / Codan"-synergierne i norden og exceptionel fastholdelsesevne af kunder.',
+    drivers:'Combined ratio (nøgletal over overskud margin der skal være lille), forsikrings inflation og regn i norden.',
+    challenge:'At holde forsikringspriserne foran inflationen på en stjålen cykel, uden at kunden smutter.',
+    peers:['Sampo','Gjensidige','Topdanmark'],
+    whyKnow:'Fordi forsikrings-valuation fuldstændigt ignorerer EBIDTA, det gælder combined ratio.'
   },
   {
     name:'Genmab', ticker:'GMAB', domain:'genmab.com',
     sector:'Biotech', industry:'Oncology antibodies',
     frontClues:[
-      'Dansk biotech-navn med meget høj profitabilitet drevet af royalties.',
-      'Et af de vigtigste spørgsmål er, om pipeline kan bære værdien efter den nuværende cash cow.',
-      'Casen balancerer mellem kvaliteten i Darzalex og frygten for patent-/pipeline-risiko.'
+      'Er denne bio-aktie overvejende hængt fuldstændig op på ét vidunderkræftmiddel (Darzalex)?',
+      'Sælger de stort set ingen æsker medicin selv, men tager derimod gigantiske royalties fra gigantpartnere?',
+      'Skriger aktionærerne og gyserne efter at finde ud af, hvordan de tjener penge efter "patentet" på det her lægemiddel udløber?'
     ],
-    clue:'Royalties og pipeline i ét navn: enorm profitabilitet i dag, men værdiansættelsen styres af tillid til næste bølge.',
-    focus:'Darzalex durability, pipeline read-outs og transition mod bredere egen produktportefølje.',
-    drivers:'Royalty growth, kliniske data, partnering economics og patenthorisont.',
-    what:'Biotekselskab med stærk antistofplatform og stor eksponering mod kræftbehandlinger, især gennem partneraftaler.',
-    valuation:'Typisk 15-20x EV/EBITDA, men følsom for pipeline-nyheder.',
-    avgMcap12mDkkBn:104.5, dkRank:9,
-    whyTrades:'Markedet giver høj profit-premium, men komprimerer multiplen hvis patent-cliff eller pipeline-skuffelser rykker tættere på.',
-    challenge:'At bevise at næste generation af assets kan bære værdien, når Darzalex modnes.',
+    what:'De opfinder bioteknologi - udelukkende kure (antistoffer) mod forfærdelige former for især kræft. Derefter lægger de opskriften i hænderne på større farmavirksomheder, som sælger det derimod at sende mange procent retur (royalty).',
+    dkRankText:'Største danske Biotech navngivning (læg Novo i Pharma branchen). Oftest nede i andelen af top 10.',
+    valuation:'Typisk 15-20x EV/EBITDA, men ekstremt volatil.',
+    avgMcap12mDkkBn:104.5,
+    whyTrades:'Cash generering pga royalty er enorm, dog frygter markedet rygter for det tørlægges i løbet af pipeline-kløften.',
+    peerValuation: 'Genmab handler ned mod de lavere p/e multipler 15-18x modsat ren pharma, ligesom partnerne (fx Johnson&Johnson der handler under 15x). De indkasserer en høj margin premie for platformen men rammes hårdt af "concentration risk".',
+    drivers:'Overlevelse i årene, ny pipe-line, patent-domstole og R&D udgifter mod loftet.',
+    challenge:'At fange guldgåsen en gang til og bevise platformen fungerer - Før J&J æder midlerne.',
     peers:['argenx','BioNTech','Beigene'],
-    whyKnow:'Genmab lærer dig forskellen mellem royalty quality, pipeline optionality og binary event-risk i biotech valuation.'
+    whyKnow:'Genmab repræsenterer den totale difference fra Novo i pharmainvesteringer. Det her er 100% R&D og Binær risiko.'
   },
   {
     name:'Demant', ticker:'DEMANT', domain:'demant.com',
     sector:'MedTech', industry:'Hearing care',
     frontClues:[
-      'Dansk høreapparat- og hearing care-navn i et globalt oligopol.',
-      'Distributionskanaler og produktcyklusser er næsten lige så vigtige som ren volumenvækst.',
-      'Markedet belønner innovationstempo og retail execution, men straffer hurtigt produktsvigt.'
+      'Opererer de i et marked som et fåmandsvælde (oligopol) omkring at give ældre mennesker hørelsen tilbage?',
+      'Ejer de som noget helt specielt selve "detailforretningerne" deres høreapparater sælges ned igennem?',
+      'Straffes de hårdt på markedet, da de i en længere tid traskede fuldstændigt ubeslutsomt rundt oven på et cyber-angreb forrige år?'
     ],
-    clue:'Oligopolisk høreapparatmarked med stærke distributionskanaler og høj betydning af produktcyklusser.',
-    focus:'Produktlanceringer, retail/hearing care execution og fortsat stabilisering efter cyber-forløb.',
-    drivers:'Nye produktplatforme, demografi, clinics/distribution og mix mellem devices og hearing care.',
-    what:'Udvikler og sælger høreapparater og driver egne hearing care-kanaler i mange markeder.',
+    what:'Sælger og udvikler primært dyrt og superteknologisk høreudstyr til høretab oftest til ældre segmenter verden over - samt driver selve test butikkerne som fx AudioNova.',
+    dkRankText:'Placeret midt-ude i enden (omkring top 15).',
     valuation:'Typisk 14-18x EV/EBITDA.',
-    avgMcap12mDkkBn:48.9, dkRank:18,
-    whyTrades:'Oligopol og sticky channels giver premium, men multiple afhænger af innovationslederskab og execution i retailnetværket.',
-    challenge:'At holde innovationstempo og distributionsstyrke højt i et marked hvor produktsvigt straffes hurtigt.',
+    avgMcap12mDkkBn:48.9,
+    whyTrades:'Høreapparat er defensiv luksus-vækst. Multiplikatoren dikteres af den teknologiske overlegenhed per nye cyklus (Lancering 1 gang p.a.)',
+    peerValuation: 'Demant handler til p/e 18-20x, hvilket er en rabat i tillid i forhold til den historiske gigant-konkurrent schweiziske Sonova som handler på premium 20-25x grundet at Sonovas retail eksekvering i vesten var en drøm at regne på.',
+    drivers:'Demografi bølgen i ældre, de nye lanceringsmåneder, produktcykler.',
+    challenge:'Aldrig at ramme uheld på den spæde teknik lancering og genvinde tabte markedsandele.',
     peers:['Sonova','WS Audiology','Amplifon'],
-    whyKnow:'Demant er nyttig for at forstå medtech-oligopoler, kanalstyrke og hvordan teknologi-cyklus påvirker healthcare-multipler.'
+    whyKnow:'Du lærer Oligopol investering. Konkurrenten er ikke 50 andre som i transport. Her er kampen blodig mod snært 4 brødre på en flage.'
   },
   {
     name:'ISS', ticker:'ISS', domain:'issworld.com',
     sector:'Business Services', industry:'Facility management',
     frontClues:[
-      'Dansk facility management-navn med global workforce og lavmarginforretning.',
-      'Kvaliteten i casen ligger i kontraktdisciplin og simplificering, ikke i høj topline-vækst.',
-      'Multiplen løfter kun, hvis margin, cash conversion og execution forbedres samtidigt.'
+      'Leverer de mad overskud, gulvvask og hundrede tusind andre kontorfacilitets-jobs?',
+      'Har de historisk verdens absolut laveste profit-margin på det de omsætter for?',
+      'Sidder investorer med sved på panden omkring hvorvidt deres nyere turnaround endelig lykkedes i at skabe "Free Cash Flow"?'
     ],
-    clue:'Lavmargin service-case hvor kontraktdisciplin og turnaround-eksekvering er langt vigtigere end topline alene.',
-    focus:'Marginløft, kontraktkvalitet, wage inflation og cash conversion i et globalt service-setup.',
-    drivers:'Retention, pricing, labor costs, margin expansion og working capital.',
-    what:'Leverer facility services som rengøring, catering, workplace og support til store virksomheder og institutioner.',
+    what:'Er reelt verdens største lejer af servicepersonel. Rengøringsassistenter og kokke i store bygningers kontorer for bla. de andre selskaber du analyserer overalt på kloden.',
+    dkRankText:'Typisk svag markedsplads omkring den 20 plads mod fald og fremgang.',
     valuation:'Typisk 8-11x EV/EBITDA.',
-    avgMcap12mDkkBn:31.8, dkRank:20,
-    whyTrades:'Rabatteres for lavere marginer og execution complexity, men rerates når simplificering og cash conversion forbedres.',
-    challenge:'At holde kontraktdisciplin stram nok til at løfte afkast uden at miste skala eller kunder.',
+    avgMcap12mDkkBn:31.8,
+    whyTrades:'Rabat over alt andet, der er minimal kvalitet udover "Free cash flow konvertering".',
+    peerValuation: "ISS handler historisk p/e-billigere (10-12x) end branchens absolutte markedsleder Compass Group som oftest praler af margin-sikre cateringaftaler. ISS' komplekse, globale lavere indtjening per person dikterer discount.",
+    drivers:'Contract churn (beholder de aftalen uoverskueligt stort nok) og global inflation (løndrevet).',
+    challenge:'At trække 1 procent margin ned igennem regnskabet fordi hele lortet udbetales som minimalt dækkede lønninger globalt.',
     peers:['Compass Group','Sodexo','Mitie'],
-    whyKnow:'ISS er en klassisk turnaround- og margin-recovery-case, som er meget relevant for at lære kvalitetsforskelle i business services.'
+    whyKnow:'Service i bundklassen. Komplekst Turnaround med FCF-model analyse og "Asset Light Margin Compression".'
   },
   {
     name:'Ambu', ticker:'AMBU-B', domain:'ambu.com',
     sector:'MedTech', industry:'Single-use endoscopy',
     frontClues:[
-      'Dansk medtech-case bygget op omkring single-use endoskopi og disruption.',
-      'Navnet blev længe prissat på potentiale snarere end på moden earnings-power.',
-      'Markedet fokuserer nu på adoption, profitabel scale og om narrativet bliver til reel execution.'
+      'Bringer dette selskab plastik indoskoper (kikkerter) til sygehuse der netop er beregnet til at smide i skralderen bagefter?',
+      'Skiftede de narrativ fuldstændig efter "Covid vaskeklap" til at skulle vise de rent faktisk tjener penge?',
+      'Lænede deres vanvittige pris som selskab sig udelukkende op af en "Klinisk Disruption - Fremtiden skal ikke mere desinficeres" ?'
     ],
-    clue:'Disruptiv dansk medtech-case hvor investorer betaler for markedsudvidelse og ikke kun nuværende earnings.',
-    focus:'Profitabilitet, adoption inden for pulmonologi/urologi og hvor hurtigt single-use kan tage markedsandel.',
-    drivers:'Volume growth, gross margin, procedure adoption, R&D discipline og manufacturing scale.',
-    what:'Sælger engangs-endoskoper og andre single-use løsninger til hospitaler med fokus på infektionskontrol og workflow-forbedring.',
-    valuation:'Typisk høj growth-multiple; ofte 20x+ EV/EBITDA når markedet tror på scale-up.',
-    avgMcap12mDkkBn:25.1, dkRank:28,
-    whyTrades:'Markedet priser optionalitet og disruption højt, men straffer hårdt hvis vækst eller marginer ikke materialiseres.',
-    challenge:'At bevise bæredygtig profitabel scale og ikke kun teknologisk potentiale.',
+    what:'De designer plastik engangskikkerter. Tidligere har overlæger brugt flergangs udstyr til bl.a. at føre ned i patienter, der tog for evigt at desinficere med kemi og øget risiko, Ambu rev løsningen med plastic i skralderen.',
+    dkRankText:'I den laveste C25 trøst - bund top 28.',
+    valuation:'Typisk høj growth-multiple; 40-50x+ P/E.',
+    avgMcap12mDkkBn:25.1,
+    whyTrades:'Man spekulerede udelukkende at teknologien slog alt af branchens metaludstyr fuldstændigt ihjel.',
+    peerValuation: 'Ambu handles prissat mod månen (~P/E >40x/EPS eller mere). I kontrast drives konventionelle titaner som Olympus som langsomt kørende stabile aktiekøb. P/E skilsmisse er 1:1 "The Future Vs The Dinosaur".',
+    drivers:'Lægers vilje (adoption) mod grønt miljø contra infektion / Præcision og plastik pris / Bruttomargin udtræk.',
+    challenge:'Det er dyrt af helvedes til at udvikle billig plastik kirurgi kikkert.',
     peers:['Olympus','Boston Scientific','Teleflex'],
-    whyKnow:'Ambu er god træning i at analysere high-expectation growth assets, hvor narrativ og adoption betyder næsten lige så meget som nuværende tal.'
+    whyKnow:'Klassisk aktiehistorie på dansk bund. Fortælling om Disruption vs Cost Execution vs Management Overloof i healthcare.'
   }
 ];
 
@@ -338,46 +400,217 @@ const COMPANY_CARDS = [
 ────────────────────────────────────────────── */
 const PEOPLE = [
   // Leadership
-  { name:'Atilla Olesen',           niveau:'Leadership',        titel:'Head of Investment Banking',            firma:'Danske Bank IB', note:'', photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
-  { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Danmark',                       firma:'Danske Bank IB', note:'', photo:'Pictures/Christian Lindholm (implementeret).jpg' },
-  { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Danmark',                       firma:'Danske Bank IB', note:'', photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
+  { name:'Atilla Olesen',           niveau:'Leadership',        titel:'Head of Investment Banking',            firma:'Danske Bank IB',
+    note:'Tidl: SEB (9½ år – Head of Equities, Prime Brokerage Sales London, Head of Solutions) | EVP Global Head of Asset Management, Danske Bank (2020-21)',
+    photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
+  { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
+    note:'Director i Danske Bank siden 1998 (28 år!)',
+    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 30%' },
+  { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
+    note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 3½ år) | Udd: MBA London Business School | Cand.jur. KU',
+    photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
   // Managing Directors
-  { name:'Henrik Ljungstrom',       niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB', note:'', photo:'Pictures/Henrik Ljungstrom (implementeret).jpeg' },
-  { name:'Bjarke Skovgaard',        niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB', note:'', photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg' },
-  { name:'Christian Blinkenberg',   niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB', note:'', photo:'Pictures/Christian Blinkenberg (implementeret).jpeg' },
-  { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB', note:'Tidl: Managing Director - Director Corporate Finance', photo:'Pictures/Jesper Buchardt (implementeret).jpeg' },
+  { name:'Henrik Ljungstrom',       niveau:'Managing Director', titel:'Managing Director (London)',             firma:'Danske Bank IB',
+    note:'London-baseret, Loan Syndications. Tidl: ING VP (3 år), Mizuho AD, Lloyds Banking Group (3½ år, Syndicated Loans & Corp Banking)',
+    photo:'Pictures/Henrik Ljungstrom (implementeret).jpeg' },
+  { name:'Bjarke Skovgaard',        niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
+    note:'Tidl: SEB Director CF (3½ år, M&A/ECM/Family Office) | DONG Energy Senior M&A Specialist (2 år, Group M&A)',
+    photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg' },
+  { name:'Christian Blinkenberg',   niveau:'Managing Director', titel:'Co-Head Corporate Finance DK (London)',  firma:'Danske Bank IB',
+    note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
+    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 35%' },
+  { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
+    note:'MD siden apr 2024. Tidl: Director Corporate Finance (8 år, sept 2016 - juni 2024)',
+    photo:'Pictures/Jesper Buchardt (implementeret).jpeg', photoCrop:'center 35%' },
+  { name:'Ulrik Rasmussen',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
+    note:'Tidl: SEB Managing Director (15 år!, feb 2001 - maj 2016) | Udd: MSc Accounting & Finance, CBS (1995-2000)',
+    photo:'Pictures/Ulrik Rasmussen.jpeg' },
   // Directors
-  { name:'Mikko Hirvonen',          niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB', note:'', photo:'Pictures/Mikko Hirvonen (implementeret).jpeg' },
-  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB', note:'Tidl. Carnegie | Ekceptionelt dygtig iflg. Futtrup', photo:'Pictures/Filip R. Monefeldt (implementeret).jpeg' },
-  { name:'Ulrik Rasmussen',         niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB', note:'' },
-  { name:'Janus Nygaard',           niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB', note:'', photo:'Pictures/Janus Nygaard (implementeret).jpeg' },
+  { name:'Mikko Hirvonen',          niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
+    note:'',
+    photo:'Pictures/Mikko Hirvonen (implementeret).jpeg' },
+  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
+    note:'Tidl: Carnegie IB (6½ år) | Handelsbanken Equity Research | Nykredit Credit Research | Udd: MSc Finance & Accounting CBS | Ekceptionelt dygtig iflg. Futtrup',
+    photo:'Pictures/Filip R. Monefeldt (implementeret).jpeg' },
+  { name:'Janus Nygaard',           niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
+    note:'Tidl: Carnegie Senior Associate (4½ år) | Falck BD Director (Group M&A & Strategy) | Udd: MSc Finance, Aarhus Uni',
+    photo:'Pictures/Janus Nygaard (implementeret).jpeg' },
+  { name:'Christian D. Helvind',    niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
+    note:'Tidl: ATRIUM Partners (10 år! - fra Analyst til Director) | Ramboll MC | Eksportrådet Atlanta | Udd: MSc Economics, KU',
+    photo:'Pictures/Christian D. Helvind (implementeret).jpeg', photoCrop:'center center' },
   // Associate Directors
-  { name:'Casper Jul Rask Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'Tidl: Associate Director, Corporate Finance - Investment Banking (M&A / ECM) - Associate, Corporate Finance | Udd: Copenhagen Business School - Master\'s Degree (M.Sc.), Finance and Accounting  · (2015 - 2017)', photo:'Pictures/Casper Jul Rask Jensen (implementeret).jpeg' },
-  { name:'Troels L. Johansen',      niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'' },
-  { name:'Peter Christian Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'Tidl: Associate Director - Copenhagen, Denmark - Investment Banking - M&A and ECM | Udd: Copenhagen Business School - Master of Science (M.Sc.), Applied Economics and Finance  · (2016 - 2018)', photo:'Pictures/Peter Christian Jensen (implementeret).jpeg' },
-  { name:'Frederik Uggerhøj',       niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'Tidl: Associate | Corporate Finance | Investment Banking - Analyst | Corporate Finance | Investment Banking - Junior Analyst (student) | Corporate Finance | Investment Banking | Udd: Copenhagen Business School - Master of Science - MS, Finance and Strategic Management  · (2018 - 2020)', photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg' },
-  { name:'Anders Højlund',          niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'Tidl: Associate Director | Corporate Finance - Investment Banking (M&A and ECM advisory) - Associate | Corporate Finance | Udd: Aarhus Universitet - Master of Science (M.Sc.), Finance  · (2018 - 2020)', photo:'Pictures/Anders Højlund (implementeret).jpeg' },
-  { name:'Jonas Mulvad Vendelbo',   niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB', note:'Tidl: Associate Director | Corporate Finance (M&A and ECM) - Associate Director | Corporate Finance (M&A and ECM) - Copenhagen Business School | Udd: Copenhagen Business School - Master\'s degree, Finance & Investment', photo:'Pictures/Jonas Mulvad Vendelbo (implementeret).jpeg' },
+  { name:'Casper Jul Rask Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'10+ år i Danske Bank CF (student analyst til AD). Tidl: Hess Corporation | Udd: MSc Finance & Accounting CBS | Exchange ESADE & Regent\'s London',
+    photo:'Pictures/Casper Jul Rask Jensen (implementeret).jpeg' },
+  { name:'Troels L. Johansen',      niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'' },
+  { name:'Peter Christian Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'Tidl: FIH Partners IB Analyst (1½ år, M&A) | Nykredit (Capital & Risk) | Udd: MSc Applied Economics & Finance CBS | Exchange Singapore Mgmt Uni',
+    photo:'Pictures/Peter Christian Jensen (implementeret).jpeg' },
+  { name:'Frederik Uggerhøj',       niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'6+ år Danske Bank CF (junior analyst til AD). Tidl: Capitalmind M&A (student) | Connected Cars BD | Familiefirma Uggerhøj Biler | Udd: MSc Finance & Strategic Mgmt CBS | Privat pilotcertifikat',
+    photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg' },
+  { name:'Anders Højlund',          niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'Tidl: Clearwater International CF (2 år, Analyst til Associate) | Jyske Bank (Market Risk) | Ramboll MC | TA Aarhus Uni (Statistik) | Udd: MSc Finance, Aarhus Uni',
+    photo:'Pictures/Anders Højlund (implementeret).jpeg' },
+  { name:'Jonas Mulvad Vendelbo',   niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
+    note:'Tidl: HCN Partners (2 år, AD M&A) | Handelsbanken IB M&A (2 år) | Julius Baer Luxembourg (summer) | Ekstern CBS-rådgiver (M&A/Valuation) | Udd: MSc Finance CBS | Harvard',
+    photo:'Pictures/Jonas Mulvad Vendelbo (implementeret).jpeg' },
   // Associates
-  { name:'Mohamad Al-Saraf',        niveau:'Associate',         titel:'Associate, FX Strategy',                firma:'Danske Bank IB', note:'' },
-  { name:'Valdemar Stengaard',      niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB', note:'', photo:'Pictures/Valdemar Stengaard (implementeret).jpeg' },
-  { name:'Magnus Johansen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB', note:'Gruppe 1 med Casper Jul | Tidl: Associate, Corporate Finance - Analyst, Corporate Finance - Student Analyst, Corporate Finance | Udd: Copenhagen Business School - Master\'s degree, Finance and Accounting (Cand.merc.fir)  · (2019 - 2021)', photo:'Pictures/Magnus Johansen (implementeret).jpeg' },
-  { name:'Martin Andersen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB', note:'', photo:'Pictures/Martin Andersen (implementeret).jpeg' },
+  { name:'Valdemar Stengaard',      niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
+    note:'',
+    photo:'Pictures/Valdemar Stengaard (implementeret).jpeg' },
+  { name:'Magnus Johansen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
+    note:'Gruppe 1 med Casper Jul. Tidl: Handelsbanken CF (Part-time Analyst) | Grant Thornton FAS | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
+    photo:'Pictures/Magnus Johansen (implementeret).jpeg' },
+  { name:'Martin Andersen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
+    note:'',
+    photo:'Pictures/Martin Andersen (implementeret).jpeg' },
   // Analysts
-  { name:'Christian Dahl',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'', photo:'Pictures/Christian Dahl (implementeret).jpeg' },
-  { name:'Mikkel R. Christensen',   niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Analyst, Corporate Finance - Investment Banking (M&A and ECM advisory) - Novo Holdings | Udd: Copenhagen Business School - MSc in Finance and Accounting (FIR)', photo:'Pictures/Mikkel R. Christensen (implementeret).jpeg' },
-  { name:'Bavendra Rajendra',       niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Analyst, Corporate Finance - M&A & ECM. - Credit Suisse | Udd: Copenhagen Business School - M.Sc. in Finance and Strategic Management  · (2022 - 2024)', photo:'Pictures/Bavendra Rajendra (implementeret).jpeg' },
-  { name:'Caroline Louise With',    niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'' },
-  { name:'Mathilde Saigal',         niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Analyst, Leveraged Finance - Nordea Markets, Corporates & Institutions - Relationship Manager - Large Corporates & Institutions | Udd: Copenhagen Business School - Master\'s degree, Finance & Strategic Management  · (september 2022 - juli', photo:'Pictures/Mathilde Saigal (implementeret).jpeg' },
-  { name:'Anders C. Jakobsen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Associate, Corporate Finance - Copenhagen - Investment Banking (M&A and ECM advisory) | Udd: Copenhagen Business School - MSc, Finance and Investments   · (september 2020 - juni 2022)', photo:'Pictures/Anders C. Jakobsen (implementeret).jpeg' },
-  { name:'Laura P. Pedersen',       niveau:'Analyst',           titel:'Analyst (1. år)',                       firma:'Danske Bank IB', note:'', photo:'Pictures/Laura P. Pedersen (implementeret).jpeg' },
-  { name:'Marcus Christensen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'', photo:'Pictures/Marcus Christensen (implementeret).jpeg' },
-  { name:'Lukas Hvidkjær',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Analyst | Corporate Finance - København og omegn - DSV - Global Transport and Logistics | Udd: Copenhagen Business School - M.Sc. Finance and Accounting   · (september 2022 - juni 2024)', photo:'Pictures/Lukas Hvidkjær (implementeret).jpeg' },
-  { name:'Christian D. Helvind',    niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB', note:'', photo:'Pictures/Christian D. Helvind (implementeret).jpeg', photoCrop:'center center' },
-  { name:'Frederik Emil Haven',     niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Analyst | Corporate Finance - Investment Banking (M&A and ECM advisory) - Waterland Private Equity | Udd: Copenhagen Business School - Master of Science - MS, Finance and Accounting (FIR)  · (2023 - 2025)', photo:'Pictures/Frederik Emil Haven (implementeret).jpeg' },
-  { name:'Julius B. Sørensen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'Tidl: Investment Banking Analyst - Investment Banking - Slättö | Udd: Copenhagen Business School - Master of Science - MSc, Finance and Accounting   · (2023 - 2025)', photo:'Pictures/Julius B. Sørensen (implementeret).jpeg' },
-  { name:'Frederik (målmand)',       niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB', note:'' },
+  { name:'Christian Dahl',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'',
+    photo:'Pictures/Christian Dahl (implementeret).jpeg' },
+  { name:'Mikkel R. Christensen',   niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: Novo Holdings PE (2 år!, Investment Analyst) | Thylander PE Real Estate (1½ år) | Gottlieb+Partners | CBS Instructor (Statistik) | Udd: MSc Finance & Accounting CBS | Exchange Melbourne',
+    photo:'Pictures/Mikkel R. Christensen (implementeret).jpeg' },
+  { name:'Bavendra Rajendra',       niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: Credit Suisse IB London (Summer Analyst, Healthcare & Consumer - tilbudt fuldtid UBS) | CataCap PE | Tofte & Co IB (1½ år) | Udd: MSc Finance & Strategic Mgmt CBS | Exchange MIT Sloan + Harvard',
+    photo:'Pictures/Bavendra Rajendra (implementeret).jpeg' },
+  { name:'Mathilde Saigal',         niveau:'Analyst',           titel:'Analyst, Leveraged Finance',            firma:'Danske Bank IB',
+    note:'Leveraged Finance (ikke CF). Tidl: Nordea Markets C&I (3 år - RM Large Corporates, Analyst) | Nordea Operations (3½ år) | Udd: MSc Finance & Strategic Mgmt CBS',
+    photo:'Pictures/Mathilde Saigal (implementeret).jpeg' },
+  { name:'Anders C. Jakobsen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: Nykredit Derivatives (Student) | Jyske Bank CIB (Student) | Udd: MSc Finance & Investments CBS | LSE Summer School | BSc Aarhus Uni | Exchange UNSW Sydney',
+    photo:'Pictures/Anders C. Jakobsen (implementeret).jpeg' },
+  { name:'Laura P. Pedersen',       niveau:'Analyst',           titel:'Analyst (1. år)',                       firma:'Danske Bank IB',
+    note:'',
+    photo:'Pictures/Laura P. Pedersen (implementeret).jpeg' },
+  { name:'Marcus Christensen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: AIP Management Junior Analyst (1½ år) | Carnegie (Equity Research & Sales) | Nordea AM (Student, Group Risk) | Udd: MSc Finance & Accounting CBS',
+    photo:'Pictures/Marcus Christensen (implementeret).jpeg' },
+  { name:'Lukas Hvidkjær',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: DSV M&A team (2½ år - inkl. EUR 14,3 mia. Schenker-deal!) | Udd: MSc Finance & Accounting CBS',
+    photo:'Pictures/Lukas Hvidkjær (implementeret).jpeg' },
+  { name:'Frederik Emil Haven',     niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: Waterland PE (Student Analyst, 2½ år) | Accunia Credit Mgmt (1½ år) | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
+    photo:'Pictures/Frederik Emil Haven (implementeret).jpeg' },
+  { name:'Julius B. Sørensen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
+    note:'Tidl: FIH Partners IB Analyst (2 år, M&A) | Slättö RE PE (Intern) | Grant Thornton TAS | Deloitte Audit (1½ år) | Udd: MSc Finance & Accounting CBS',
+    photo:'Pictures/Julius B. Sørensen (implementeret).jpeg' },
 ];
+
+/* ──────────────────────────────────────────────
+   FIREBASE & SYNC LOGIC
+────────────────────────────────────────────── */
+
+async function login() {
+  try {
+    const result = await window.signInWithPopup(window.auth, window.provider);
+    console.log("Logged in:", result.user);
+    showToast("Logged ind som " + result.user.displayName);
+  } catch (err) {
+    console.error(err);
+    showToast("Login fejlede");
+  }
+}
+
+async function logout() {
+  await window.signOut(window.auth);
+  showToast("Logged ud");
+  location.reload();
+}
+
+// Listen for auth changes
+if (window.auth) {
+  window.onAuthStateChanged(window.auth, async (u) => {
+    user = u;
+    const loginBtn = document.getElementById('btn-login');
+    const userInfo = document.getElementById('user-info');
+    
+    if (user) {
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (userInfo) {
+        userInfo.style.display = 'flex';
+        document.getElementById('user-pic').src = user.photoURL;
+        document.getElementById('user-name').textContent = user.displayName.split(' ')[0];
+      }
+      await loadUserData();
+    } else {
+      if (loginBtn) loginBtn.style.display = 'flex';
+      if (userInfo) userInfo.style.display = 'none';
+    }
+    renderDecks();
+  });
+}
+
+async function loadUserData() {
+  if (!user) return;
+  const docRef = window.doc(window.db, "users", user.uid);
+  const docSnap = await window.getDoc(docRef);
+  if (docSnap.exists()) {
+    cardData = docSnap.data().cards || {};
+  } else {
+    // New user
+    await window.setDoc(docRef, { cards: {} });
+  }
+}
+
+async function syncCard(cardId, rating) {
+  if (!user) {
+    // Fallback to local storage if not logged in
+    const local = JSON.parse(localStorage.getItem('ib_cards') || '{}');
+    if (!local[cardId]) local[cardId] = { ratings: [] };
+    local[cardId].ratings.push(rating);
+    localStorage.setItem('ib_cards', JSON.stringify(local));
+    cardData = local;
+    return;
+  }
+  
+  if (!cardData[cardId]) cardData[cardId] = { ratings: [] };
+  cardData[cardId].ratings.push(rating);
+  cardData[cardId].lastSeen = Date.now();
+  
+  const docRef = window.doc(window.db, "users", user.uid);
+  await window.updateDoc(docRef, {
+    [`cards.${cardId}`]: cardData[cardId]
+  });
+}
+
+function getCardScore(cardId) {
+  const data = cardData[cardId];
+  if (!data || !data.ratings || data.ratings.length === 0) return 5; 
+  // Average of last 3 ratings
+  const last3 = data.ratings.slice(-3);
+  return last3.reduce((a, b) => a + b, 0) / last3.length;
+}
+
+function getWeakCards() {
+  const all = [...PEOPLE.map(p => ({...p, type:'person'})), ...KNOWLEDGE.map(k => ({...k, type:'knowledge'}))];
+  return all
+    .map(c => ({ card: c, id: getCardId(c), score: getCardScore(getCardId(c)) }))
+    .filter(item => item.score < 3.5) // Anything less than Good (4) is weak
+    .sort((a,b) => a.score - b.score)
+    .slice(0, 8);
+}
+
+function studyWeak() {
+  const weak = getWeakCards().map(item => item.card);
+  if (weak.length === 0) {
+    showToast("Ingen svage kort endnu! Prøv at træne nogle decks først.");
+    return;
+  }
+  currentSessionWeak = true;
+  startStudyManual(weak, "Dine Svage Kort");
+}
+
+function startStudyManual(cards, title) {
+  sessionCards = [...cards];
+  currentIndex = 0;
+  currentDeckTitle = title;
+  showView('v-study');
+  updateProgress();
+  renderCard();
+}
 
 /* ──────────────────────────────────────────────
    KNOWLEDGE CARDS
@@ -689,6 +922,7 @@ function renderHome() {
     grid.appendChild(card);
   });
 
+  renderWeakCardsUI();
   lucide.createIcons();
 }
 
@@ -784,8 +1018,9 @@ function renderPeopleFront(c, meta) {
   const phEl = document.getElementById('av-photo');
   if (c.photo) { 
     phEl.src = c.photo; 
+    phEl.className = 'av-photo av-lg';
     phEl.style.display = ''; 
-    phEl.style.objectPosition = c.photoCrop ? c.photoCrop : 'top center';
+    phEl.style.objectPosition = c.photoCrop ? c.photoCrop : 'center 25%';
     avEl.style.display = 'none'; 
   }
   else { 
@@ -847,31 +1082,23 @@ function renderCompanyFront(c, meta) {
   document.getElementById('q-text').style.display = 'none';
 
   const wrap = document.getElementById('company-front');
-  const clues = (c.frontClues || [c.clue, c.focus, c.challenge].filter(Boolean)).slice(-2);
+  const clues = c.frontClues || [];
   wrap.style.display = '';
   wrap.innerHTML = `
     <div class="company-front-head">
       <div>
         <div class="company-eyebrow">Flashcard</div>
-        <div class="company-clue-title">Hvilket selskab er det?</div>
+        <div class="company-clue-title">Hvad er det for et selskab?</div>
         <div class="company-clue-sub">Svar uden hjælp fra logo eller navn.</div>
       </div>
     </div>
     <div class="company-grid">
       ${clues.map((clue, i) => `
         <div class="company-block full">
-          <div class="company-label">Clue ${i + 1}</div>
+          <div class="company-label">Spørgsmål ${i + 1}</div>
           <div class="company-value">${clue}</div>
         </div>
       `).join('')}
-      <div class="company-block full">
-        <div class="company-label">Spørgsmål 1</div>
-        <div class="company-value"><strong>Hvad hedder selskabet?</strong></div>
-      </div>
-      <div class="company-block full">
-        <div class="company-label">Spørgsmål 2</div>
-        <div class="company-value"><strong>Hvilken valuation-lens er vigtigst</strong>, og <strong>hvor handler det cirka nu</strong>?</div>
-      </div>
     </div>
   `;
 
@@ -916,6 +1143,11 @@ function renderCompanyBack(c, meta) {
 
   const body = document.getElementById('company-back');
   body.style.display = '';
+  
+  // Optional mapping in case some properties are missing
+  const peerText = c.peerValuation || '';
+  const rankText = c.dkRankText || `Aktuel DK-rang: #${c.dkRank} i top 50`;
+
   body.innerHTML = `
     <div class="company-back">
       <div class="company-back-head">
@@ -932,27 +1164,20 @@ function renderCompanyBack(c, meta) {
       <div class="company-back-body">
         <div class="company-summary">
           <div class="company-summary-card accent">
-            <div class="company-label">Hvad Laver De?</div>
+            <div class="company-label">Hvad Laver De Egentlig?</div>
             <p>${c.what}</p>
-          </div>
-          <div class="company-summary-card accent company-metrics">
-            <div class="company-label">Konkrete Markedsmultipler</div>
-            <div class="company-metric-grid">
-              <div class="company-metric-item">
-                <span class="company-metric-name">${c.primaryMetricLabel}</span>
-                <strong>${c.primaryMetricValue}</strong>
-              </div>
-              <div class="company-metric-item">
-                <span class="company-metric-name">${c.secondaryMetricLabel}</span>
-                <strong>${c.secondaryMetricValue}</strong>
-              </div>
-            </div>
-            <p class="company-metric-note">${c.metricWhy} Snapshot pr. ${MARKET_DATA_AS_OF}.</p>
           </div>
           <div class="company-summary-card">
             <div class="company-label">Størrelse & Placering</div>
-            <p>12M avg market cap: ${fmtDkkBn(c.avgMcap12mDkkBn)}<br>Aktuel DK-rang: #${c.dkRank} i top 50</p>
+            <p><strong>${rankText}</strong></p>
           </div>
+          
+          <div class="company-summary-card accent company-metrics">
+            <div class="company-label">Konkrete Markedsmultipler & Comparable</div>
+            <p style="font-size:14px; margin-bottom:12px; line-height: 1.4">${peerText}</p>
+            <div class="company-metric-grid" style="display:none;"></div> <!-- hidden market data if unused -->
+          </div>
+          
           <div class="company-summary-card">
             <div class="company-label">Hvorfor Handler De Som De Gør?</div>
             <p>${c.whyTrades}</p>
@@ -960,18 +1185,6 @@ function renderCompanyBack(c, meta) {
           <div class="company-summary-card">
             <div class="company-label">Hvad Driver Casen Nu?</div>
             <p>${c.drivers}</p>
-          </div>
-          <div class="company-summary-card">
-            <div class="company-label">Vigtigste Udfordring</div>
-            <p>${c.challenge}</p>
-          </div>
-          <div class="company-summary-card">
-            <div class="company-label">Comparable Names</div>
-            <div class="company-peer-list">${c.peers.map(peer => `<span class="company-peer">${peer}</span>`).join('')}</div>
-          </div>
-          <div class="company-summary-card">
-            <div class="company-label">Hvorfor Skal Du Kende Casen?</div>
-            <p>${c.whyKnow}</p>
           </div>
         </div>
       </div>
@@ -1222,3 +1435,75 @@ document.addEventListener('keydown', e=>{
 
 /* ── START ── */
 init();
+
+/* ──────────────────────────────────────────────
+   WEAK CARDS LOGIC (STRENGTHS & WEAKNESSES)
+────────────────────────────────────────────── */
+
+function getWeakCards() {
+  const allCards = [...PEOPLE.map(p => ({...p, type:'person'})), ...KNOWLEDGE.map(k => ({...k, type:'knowledge'})), ...COMPANY_CARDS.map(c => ({...c, type:'company', deckId:'c25'}))];
+  return allCards
+    .map(c => ({ card: c, id: getCardId(c), score: getCardScore(getCardId(c)) }))
+    .filter(item => item.score < 4.0) // Alt under "Good" (4) er svagt
+    .sort((a,b) => a.score - b.score)
+    .slice(0, 8);
+}
+
+function renderWeakCardsUI() {
+  const weakRow = document.getElementById('weak-cards-row');
+  const weakList = document.getElementById('weak-cards-list');
+  if (!weakRow || !weakList) return;
+  
+  const weakData = getWeakCards();
+  
+  if (weakData.length > 0) {
+    weakRow.style.display = 'block';
+    weakList.innerHTML = '';
+    weakData.forEach(item => {
+      const c = item.card;
+      const el = document.createElement('div');
+      el.className = 'weak-card-mini';
+      
+      let visual = '';
+      if (c.type === 'person') {
+        const initialsStr = c.name.split(' ').map(n=>n[0]).join('').substring(0,2);
+        visual = c.photo 
+          ? `<img src="${c.photo}" class="weak-mini-av">`
+          : `<div class="weak-initials">${initialsStr}</div>`;
+      } else if (c.type === 'company' || c.deckId === 'c25') {
+        visual = `<img src="${logoUrl(c.domain)}" class="weak-mini-av" onerror="this.src='https://via.placeholder.com/48?text=${c.name[0]}'">`;
+      } else {
+        visual = `<div class="weak-initials" style="background:var(--purple)"><i data-lucide="help-circle" width="18"></i></div>`;
+      }
+      
+      el.innerHTML = `
+        ${visual}
+        <div class="weak-mini-name">${c.name || (c.q ? c.q.substring(0,30) : '')}</div>
+        <div class="weak-mini-score">Score: ${item.score.toFixed(1)}</div>
+      `;
+      el.onclick = () => startStudyManual([c], "Fokustræning");
+      weakList.appendChild(el);
+    });
+    if (window.lucide) window.lucide.createIcons();
+  } else {
+    weakRow.style.display = 'none';
+  }
+}
+
+function studyWeak() {
+  const weak = getWeakCards().map(item => item.card);
+  if (weak.length === 0) {
+    toast("Ingen svage kort endnu! Træn nogle flere for at generere data.");
+    return;
+  }
+  startStudyManual(weak, "Dine Svage Kort");
+}
+
+function startStudyManual(cardsToStudy, title) {
+  sessionCards = [...cardsToStudy];
+  currentIndex = 0;
+  currentDeckTitle = title;
+  showView('v-study');
+  updateProgress();
+  renderCard();
+}

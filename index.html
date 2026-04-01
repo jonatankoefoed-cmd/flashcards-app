@@ -20,6 +20,18 @@
       <span class="bar-title">IB Prep</span>
     </div>
     <div class="bar-right">
+      <div id="user-status" class="user-status">
+        <button id="btn-login" class="ghost-btn" onclick="login()">
+          <i data-lucide="log-in" width="15" height="15"></i> Login
+        </button>
+        <div id="user-info" style="display:none" class="user-info">
+          <img id="user-pic" class="user-pic" src="" alt=""/>
+          <span id="user-name" class="user-name"></span>
+          <button class="ghost-btn sm" onclick="logout()" title="Logout">
+            <i data-lucide="log-out" width="13" height="13"></i>
+          </button>
+        </div>
+      </div>
       <button class="ghost-btn" onclick="showView('v-browse')">
         <i data-lucide="layout-grid" width="15" height="15"></i> Browse
       </button>
@@ -35,6 +47,14 @@
       <p>Choose a deck or train everything at once.</p>
     </div>
     <div class="deck-grid" id="deck-grid"></div>
+
+    <div class="weak-cards-row" id="weak-cards-row" style="display:none">
+      <div class="row-header">
+        <h2 class="row-title"><i data-lucide="zap" width="18" height="18" style="color:var(--accent)"></i> Kort du bør træne mere</h2>
+        <button class="btn-text" onclick="studyWeak()">Start træning <i data-lucide="arrow-right" width="14" height="14"></i></button>
+      </div>
+      <div class="weak-cards-list" id="weak-cards-list"></div>
+    </div>
   </main>
 </div>
 
@@ -184,6 +204,39 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDKs -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDcCkSrP7-cCOi1aP9TUE35EPWaKiZVP-k",
+    authDomain: "flashcard-app-1938e.firebaseapp.com",
+    projectId: "flashcard-app-1938e",
+    storageBucket: "flashcard-app-1938e.firebasestorage.app",
+    messagingSenderId: "366909765682",
+    appId: "1:366909765682:web:24a9453322523c9e79642b",
+    measurementId: "G-C5MG1Z11EK"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // Expose to global window
+  window.auth = auth;
+  window.db = db;
+  window.provider = provider;
+  window.doc = doc;
+  window.getDoc = getDoc;
+  window.setDoc = setDoc;
+  window.updateDoc = updateDoc;
+  window.signInWithPopup = signInWithPopup;
+  window.signOut = signOut;
+
+</script>
 <script src="app.js"></script>
 </body>
 </html>
