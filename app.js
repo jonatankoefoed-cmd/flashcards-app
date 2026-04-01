@@ -110,20 +110,20 @@ function fmtDkkBn(v) {
   return new Intl.NumberFormat('da-DK', { minimumFractionDigits:1, maximumFractionDigits:1 }).format(v) + ' mia. DKK';
 }
 const COMPANY_MARKET_DATA = {
-  'Novo Nordisk': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'11,0x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'7,5x', metricWhy:'Markedet kigger primært på earnings-power og quality growth.' },
-  'DSV': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'17,3x', secondaryMetricLabel:'7D avg EV/Sales', secondaryMetricValue:'1,8x', metricWhy:'For DSV er execution og cash conversion vigtigere end en simpel asset-base-metrik.' },
-  'A.P. Møller - Mærsk': { primaryMetricLabel:'7D avg Trailing P/E', primaryMetricValue:'14,6x', secondaryMetricLabel:'7D avg P/B', secondaryMetricValue:'0,69x', metricWhy:'For stærkt cykliske rederier er bogført værdi og mid-cycle earnings ofte mere relevante end forward P/E alene.' },
-  'Vestas': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'15,6x', secondaryMetricLabel:'7D avg EV/Sales', secondaryMetricValue:'8,7x', metricWhy:'Hardware-marginer er volatile, så sales- og forward earnings-lens bruges ofte sammen.' },
-  'Coloplast': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'15,8x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'14,0x', metricWhy:'Coloplast vurderes som et defensivt quality medtech-navn med stærke marginer.' },
-  'Pandora': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'11,0x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'5,3x', metricWhy:'Retail-casen balancerer earnings-power, brandstyrke og cash returns.' },
-  'Ørsted': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'16,3x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'9,8x', metricWhy:'Ørsted handles på kombinationen af project economics, kapitalintensitet og utility-lignende cash flow.' },
-  'Carlsberg': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'11,2x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'9,7x', metricWhy:'Bryggerier vurderes ofte på en kombination af earnings, cash flow og stabil brandfranchise.' },
-  'Novonesis': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'21,0x', secondaryMetricLabel:'7D avg P/B', secondaryMetricValue:'2,1x', metricWhy:'Fusionen og accounting-støj gør forward earnings mere brugbar end rå EV/EBITDA i øjeblikket.' },
-  'Tryg': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'14,9x', secondaryMetricLabel:'7D avg P/B', secondaryMetricValue:'2,41x', metricWhy:'Forsikring bør læses gennem underwriting-kvalitet, P/B og earnings snarere end EV/EBITDA.' },
-  'Genmab': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'15,2x', secondaryMetricLabel:'7D avg P/B', secondaryMetricValue:'2,71x', metricWhy:'Royalty- og pipelinecases bliver ofte værdisat via earnings plus balance-sheet quality.' },
-  'Demant': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'12,5x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'12,5x', metricWhy:'Demant er et klassisk medtech-navn hvor både earnings og operating margin kvalitet betyder meget.' },
-  'ISS': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'10,8x', secondaryMetricLabel:'7D avg EV/EBITDA', secondaryMetricValue:'11,7x', metricWhy:'ISS skal læses via margin recovery, cash conversion og kontraktkvalitet.' },
-  'Ambu': { primaryMetricLabel:'7D avg Forward P/E', primaryMetricValue:'20,6x', secondaryMetricLabel:'7D avg EV/Sales', secondaryMetricValue:'3,0x', metricWhy:'For growth-medtech er adoption og topline-kvalitet stadig en stor del af valuation-lensen.' },
+  'Novo Nordisk': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'11,0x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'7,5x', metricWhy:'Markedet kigger primært på earnings-power og quality growth.', peerComp:{ vs:'Eli Lilly', status:'rabat' } },
+  'DSV': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'17,3x', secondaryMetricLabel:'EV/Sales', secondaryMetricValue:'1,8x', metricWhy:'For DSV er execution og cash conversion vigtigere end en simpel asset-base-metrik.', peerComp:{ vs:'K+N', status:'praemie' } },
+  'A.P. Møller - Mærsk': { primaryMetricLabel:'Trailing P/E', primaryMetricValue:'14,6x', secondaryMetricLabel:'P/B', secondaryMetricValue:'0,69x', metricWhy:'For stærkt cykliske rederier er bogført værdi og mid-cycle earnings ofte mere relevante end forward P/E alene.', peerComp:{ vs:'Hapag-Lloyd', status:'par' } },
+  'Vestas': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'15,6x', secondaryMetricLabel:'EV/Sales', secondaryMetricValue:'8,7x', metricWhy:'Hardware-marginer er volatile, så sales- og forward earnings-lens bruges ofte sammen.', peerComp:{ vs:'Siemens Gamesa', status:'praemie' } },
+  'Coloplast': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'15,8x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'14,0x', metricWhy:'Coloplast vurderes som et defensivt quality medtech-navn med stærke marginer.', peerComp:{ vs:'Convatec', status:'praemie' } },
+  'Pandora': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'11,0x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'5,3x', metricWhy:'Retail-casen balancerer earnings-power, brandstyrke og cash returns.', peerComp:{ vs:'Richemont', status:'rabat' } },
+  'Ørsted': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'16,3x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'9,8x', metricWhy:'Ørsted handles på kombinationen af project economics, kapitalintensitet og utility-lignende cash flow.', peerComp:{ vs:'RWE', status:'praemie' } },
+  'Carlsberg': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'11,2x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'9,7x', metricWhy:'Bryggerier vurderes ofte på en kombination af earnings, cash flow og stabil brandfranchise.', peerComp:{ vs:'Heineken', status:'rabat' } },
+  'Novonesis': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'21,0x', secondaryMetricLabel:'P/B', secondaryMetricValue:'2,1x', metricWhy:'Fusionen og accounting-støj gør forward earnings mere brugbar end rå EV/EBITDA i øjeblikket.', peerComp:{ vs:'DSM-Firmenich', status:'par' } },
+  'Tryg': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'14,9x', secondaryMetricLabel:'P/B', secondaryMetricValue:'2,41x', metricWhy:'Forsikring bør læses gennem underwriting-kvalitet, P/B og earnings snarere end EV/EBITDA.', peerComp:{ vs:'Sampo', status:'praemie' } },
+  'Genmab': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'15,2x', secondaryMetricLabel:'P/B', secondaryMetricValue:'2,71x', metricWhy:'Royalty- og pipelinecases bliver ofte værdisat via earnings plus balance-sheet quality.', peerComp:{ vs:'argenx', status:'par' } },
+  'Demant': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'12,5x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'12,5x', metricWhy:'Demant er et klassisk medtech-navn hvor både earnings og operating margin kvalitet betyder meget.', peerComp:{ vs:'Sonova', status:'rabat' } },
+  'ISS': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'10,8x', secondaryMetricLabel:'EV/EBITDA', secondaryMetricValue:'11,7x', metricWhy:'ISS skal læses via margin recovery, cash conversion og kontraktkvalitet.', peerComp:{ vs:'Compass', status:'rabat' } },
+  'Ambu': { primaryMetricLabel:'Fwd P/E', primaryMetricValue:'20,6x', secondaryMetricLabel:'EV/Sales', secondaryMetricValue:'3,0x', metricWhy:'For growth-medtech er adoption og topline-kvalitet stadig en stor del af valuation-lensen.', peerComp:{ vs:'Olympus', status:'praemie' } },
 };
 
 const COMPANY_CARDS = [
@@ -405,7 +405,7 @@ const PEOPLE = [
     photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
   { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
     note:'Director i Danske Bank siden 1998 (28 år!)',
-    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 20%' },
+    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 5%' },
   { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
     note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 3½ år) | Udd: MBA London Business School | Cand.jur. KU',
     photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
@@ -418,7 +418,7 @@ const PEOPLE = [
     photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg' },
   { name:'Christian Blinkenberg',   niveau:'Managing Director', titel:'Co-Head Corporate Finance DK (London)',  firma:'Danske Bank IB',
     note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
-    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 10%' },
+    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 40%' },
   { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
     note:'MD siden apr 2024. Tidl: Director Corporate Finance (8 år, sept 2016 - juni 2024)',
     photo:'Pictures/Jesper Buchardt (implementeret).jpeg', photoCrop:'center 35%' },
@@ -1079,32 +1079,39 @@ function renderCompanyFront(c, meta) {
   document.getElementById('q-wrap').style.display = '';
   document.getElementById('q-wrap').classList.add('q-wrap-company');
   document.getElementById('cfront').style.setProperty('--deck-color', meta.color);
-
   document.getElementById('q-icon').style.display = 'none';
   document.getElementById('q-text').style.display = 'none';
 
   const wrap = document.getElementById('company-front');
-  const clues = c.frontClues || [];
+  const clues = c.frontClues || ['', '', ''];
+  const qLabels = [
+    'Hvad hedder selskabet?',
+    'Hvordan handler det ift. peers?',
+    'Hvad er den primære udfordring / driver?'
+  ];
   wrap.style.display = '';
   wrap.innerHTML = `
-    <div class="company-front-head">
-      <div>
-        <div class="company-eyebrow">Flashcard</div>
-        <div class="company-clue-title">Hvad er det for et selskab?</div>
-        <div class="company-clue-sub">Svar uden hjælp fra logo eller navn.</div>
+    <div class="cf-clue-header">
+      <div class="cf-clue-badge">
+        <span>🔒</span>
+        <span>CLUE BOX</span>
+        <span class="cf-difficulty-chip">SVÆR</span>
       </div>
+      <div class="cf-clue-sector">${c.sector} · ${c.industry}</div>
     </div>
-    <div class="company-grid">
-      ${clues.map((clue, i) => `
-        <div class="company-block full">
-          <div class="company-label">Spørgsmål ${i + 1}</div>
-          <div class="company-value">${clue}</div>
+    <div class="cf-questions">
+      ${clues.slice(0,3).map((clue, i) => `
+        <div class="cf-question-tile">
+          <div class="cf-q-header">
+            <span class="cf-q-num" style="background:${meta.color}">Q${i+1}</span>
+            <span class="cf-q-label">${qLabels[i]}</span>
+          </div>
+          <div class="cf-q-clue">${clue}</div>
         </div>
       `).join('')}
     </div>
   `;
-
-  document.getElementById('cf-hint-label').textContent = 'Tap to reveal company answer';
+  document.getElementById('cf-hint-label').textContent = 'Tap for at afsløre svaret';
 }
 
 function renderKnowledgeFront(c, meta) {
@@ -1145,49 +1152,62 @@ function renderCompanyBack(c, meta) {
 
   const body = document.getElementById('company-back');
   body.style.display = '';
-  
-  // Optional mapping in case some properties are missing
-  const peerText = c.peerValuation || '';
-  const rankText = c.dkRankText || `Aktuel DK-rang: #${c.dkRank} i top 50`;
+
+  const md = COMPANY_MARKET_DATA[c.name] || {};
+  const rankText = c.dkRankText || `DK-rang: #${c.dkRank}`;
+  const mcap = c.avgMcap12mDkkBn ? fmtDkkBn(c.avgMcap12mDkkBn) : '–';
+  const pc = md.peerComp || {};
+  const peerStatusLabel = pc.status === 'praemie' ? 'Præmie' : pc.status === 'rabat' ? 'Rabat' : 'Par';
+  const peerCls = pc.status === 'praemie' ? 'peer-praemie' : pc.status === 'rabat' ? 'peer-rabat' : 'peer-par';
 
   body.innerHTML = `
-    <div class="company-back">
-      <div class="company-back-head">
+    <div class="cbv2">
+      <div class="cbv2-head">
         <div>
-          <div class="company-name">${c.name}</div>
-          <div class="company-ticker">
+          <div class="cbv2-name">${c.name}</div>
+          <div class="cbv2-pills">
             <span class="company-pill">${c.ticker}</span>
             <span class="company-pill">${c.sector}</span>
-            <span class="company-pill">${c.industry}</span>
           </div>
         </div>
-        ${companyLogoMarkup(c, 84)}
+        ${companyLogoMarkup(c, 80)}
       </div>
-      <div class="company-back-body">
-        <div class="company-summary">
-          <div class="company-summary-card accent">
-            <div class="company-label">Hvad Laver De Egentlig?</div>
-            <p>${c.what}</p>
-          </div>
-          <div class="company-summary-card">
-            <div class="company-label">Størrelse & Placering</div>
-            <p><strong>${rankText}</strong></p>
-          </div>
-          
-          <div class="company-summary-card accent company-metrics">
-            <div class="company-label">Konkrete Markedsmultipler & Comparable</div>
-            <p style="font-size:14px; margin-bottom:12px; line-height: 1.4">${peerText}</p>
-            <div class="company-metric-grid" style="display:none;"></div> <!-- hidden market data if unused -->
-          </div>
-          
-          <div class="company-summary-card">
-            <div class="company-label">Hvorfor Handler De Som De Gør?</div>
-            <p>${c.whyTrades}</p>
-          </div>
-          <div class="company-summary-card">
-            <div class="company-label">Hvad Driver Casen Nu?</div>
-            <p>${c.drivers}</p>
-          </div>
+
+      <div class="cbv2-mcap">
+        <div>
+          <div class="cbv2-mcap-label">Market Cap (12M snit)</div>
+          <div class="cbv2-mcap-val">${mcap}</div>
+        </div>
+        <div class="cbv2-rank-chip">${rankText.split('(')[0].trim()}</div>
+      </div>
+
+      <div class="cbv2-metrics">
+        <div class="cbv2-metric">
+          <div class="cbv2-metric-lbl">${md.primaryMetricLabel || 'Fwd P/E'}</div>
+          <div class="cbv2-metric-val">${md.primaryMetricValue || '–'}</div>
+        </div>
+        <div class="cbv2-metric">
+          <div class="cbv2-metric-lbl">${md.secondaryMetricLabel || 'EV/EBITDA'}</div>
+          <div class="cbv2-metric-val">${md.secondaryMetricValue || '–'}</div>
+        </div>
+        <div class="cbv2-metric ${peerCls}">
+          <div class="cbv2-metric-lbl">vs. ${pc.vs || 'Peers'}</div>
+          <div class="cbv2-metric-val">${peerStatusLabel}</div>
+        </div>
+      </div>
+
+      <div class="cbv2-body">
+        <div class="cbv2-section cbv2-section--accent">
+          <div class="cbv2-section-lbl">💼 Hvad Laver De Egentlig?</div>
+          <p>${c.what}</p>
+        </div>
+        <div class="cbv2-section">
+          <div class="cbv2-section-lbl">📊 Peer Valuation</div>
+          <p>${c.peerValuation || c.whyTrades}</p>
+        </div>
+        <div class="cbv2-section">
+          <div class="cbv2-section-lbl">🚀 Hvad Driver Casen Fremadrettet?</div>
+          <p>${c.drivers}</p>
         </div>
       </div>
     </div>
@@ -1195,6 +1215,7 @@ function renderCompanyBack(c, meta) {
 
   document.getElementById('cb-deck-tag').textContent = meta.name;
 }
+
 
 function showEmpty() {
   document.getElementById('cf-num').textContent = '–';
@@ -1393,8 +1414,117 @@ function showView(id) {
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   if (id==='v-browse') renderBrowse();
+  if (id==='v-dashboard') renderDashboard();
 }
 function goHome() { renderHome(); showView('v-home'); }
+
+/* ──────────────────────────────────────────────
+   DASHBOARD
+────────────────────────────────────────────── */
+function renderDashboard() {
+  const main = document.getElementById('dashboard-main');
+  if (!main) return;
+  const data = load();
+
+  const total    = ALL_CARDS.length;
+  const studied  = ALL_CARDS.filter(c => data[c.id] && data[c.id].reps > 0).length;
+  const mastered = ALL_CARDS.filter(c => { const sr = data[c.id]; return sr && sr.reps >= 2 && sr.lastRating >= 4; }).length;
+  const due      = ALL_CARDS.filter(c => { const sr = getSR(data, c.id); return isDue(sr) || isLearn(sr); }).length;
+
+  const deckRows = DECK_ORDER.map(did => {
+    const meta = DECK_META[did];
+    const dc   = ALL_CARDS.filter(c => c.deckId === did);
+    const studiedDc  = dc.filter(c => data[c.id] && data[c.id].reps > 0).length;
+    const masteredDc = dc.filter(c => { const sr = data[c.id]; return sr && sr.reps >= 2 && sr.lastRating >= 4; }).length;
+    const pct = dc.length ? Math.round(masteredDc / dc.length * 100) : 0;
+    return { meta, dc, studiedDc, masteredDc, pct };
+  });
+
+  const weakCards = ALL_CARDS
+    .map(c => ({ c, sr: getSR(data, c.id) }))
+    .filter(({ sr }) => sr.reps > 0 && (sr.ef < 2.2 || sr.lastRating <= 2))
+    .sort((a, b) => a.sr.ef - b.sr.ef)
+    .slice(0, 8);
+
+  const pct = total ? Math.round(studied / total * 100) : 0;
+
+  main.innerHTML = `
+    <div class="dash-hero">
+      <div class="dash-hero-title">Dit Fremskridt</div>
+      <div class="dash-hero-sub">${studied} af ${total} kort studeret · ${pct}% af alt materiale</div>
+    </div>
+
+    <div class="dash-stats-row">
+      <div class="dash-stat-card">
+        <div class="dash-stat-n">${studied}</div>
+        <div class="dash-stat-l">Studerede</div>
+      </div>
+      <div class="dash-stat-card highlight">
+        <div class="dash-stat-n">${mastered}</div>
+        <div class="dash-stat-l">Mestrede</div>
+      </div>
+      <div class="dash-stat-card warn">
+        <div class="dash-stat-n">${due}</div>
+        <div class="dash-stat-l">Til review</div>
+      </div>
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">📚 Fremskridt pr. Deck</div>
+      ${deckRows.map(({ meta, dc, studiedDc, masteredDc, pct }) => `
+        <div class="dash-deck-row">
+          <div class="dash-deck-meta">
+            <div class="dash-deck-icon" style="background:${meta.colorLt};color:${meta.color}">
+              <i data-lucide="${meta.icon}" width="14" height="14"></i>
+            </div>
+            <div>
+              <div class="dash-deck-name">${meta.nameShort}</div>
+              <div class="dash-deck-sub">${masteredDc}/${dc.length} mestret</div>
+            </div>
+          </div>
+          <div class="dash-deck-prog">
+            <div class="dash-deck-track">
+              <div class="dash-deck-fill" style="width:${pct}%;background:${meta.color}"></div>
+            </div>
+            <span class="dash-deck-pct">${pct}%</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="dash-section">
+      <div class="dash-section-title">⚡ Dine Svagheder</div>
+      ${weakCards.length ? `
+        <div class="dash-weak-grid">
+          ${weakCards.map(({ c, sr }) => {
+            const label = c.type === 'people' ? c.name
+              : c.type === 'company' ? c.name
+              : (c.q || '').substring(0, 28) + '…';
+            const typeLabel = c.type === 'people' ? 'Person' : c.type === 'company' ? 'Selskab' : 'Viden';
+            const deckMeta = DECK_META[c.deckId] || {};
+            return `
+              <div class="dash-weak-tile" onclick="startStudy('${c.deckId}')">
+                <div class="dash-weak-type" style="color:${deckMeta.color||'#BE123C'}">${typeLabel}</div>
+                <div class="dash-weak-name">${label}</div>
+                <div class="dash-weak-ef">EF ${sr.ef.toFixed(1)}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : `<div class="dash-empty">🎉 Ingen svagheder endnu – bliv ved med at træne!</div>`}
+    </div>
+
+    <div class="dash-section dash-cta-row">
+      <button class="btn-primary" onclick="studyWeak()">
+        <i data-lucide="zap" width="14" height="14"></i> Træn Svage Kort
+      </button>
+      <button class="btn-outline" onclick="startStudy(null)">
+        Træn Alt <i data-lucide="arrow-right" width="14" height="14"></i>
+      </button>
+    </div>
+  `;
+  lucide.createIcons();
+}
 
 /* ──────────────────────────────────────────────
    RESET

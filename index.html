@@ -35,6 +35,9 @@
       <button class="ghost-btn" onclick="showView('v-browse')">
         <i data-lucide="layout-grid" width="15" height="15"></i> Browse
       </button>
+      <button class="ghost-btn" onclick="showView('v-dashboard')">
+        <i data-lucide="bar-chart-2" width="15" height="15"></i> Dashboard
+      </button>
       <button class="ghost-btn danger" onclick="resetAll()" title="Reset all progress">
         <i data-lucide="rotate-ccw" width="15" height="15"></i>
       </button>
@@ -200,6 +203,18 @@
       <button class="btn-outline" onclick="restartStudy()">Restart</button>
     </div>
   </div>
+</div>
+
+
+<!-- ══════════ DASHBOARD VIEW ══════════ -->
+<div id="v-dashboard" class="view">
+  <header class="bar">
+    <button class="back-btn" onclick="goHome()">
+      <i data-lucide="arrow-left" width="18" height="18"></i>
+    </button>
+    <span class="bar-title">📊 Mit Fremskridt</span>
+  </header>
+  <main class="dashboard-main" id="dashboard-main"></main>
 </div>
 
 <div class="toast" id="toast"></div>
