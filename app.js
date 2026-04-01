@@ -505,12 +505,16 @@ const PEOPLE = [
 
 async function login() {
   try {
+    if (!window.auth || !window.provider) {
+      alert("Firebase is not initialized yet. Please wait a moment.");
+      return;
+    }
     const result = await window.signInWithPopup(window.auth, window.provider);
     console.log("Logged in:", result.user);
-    showToast("Logged ind som " + result.user.displayName);
+    toast("Velkommen, " + result.user.displayName.split(' ')[0]);
   } catch (err) {
-    console.error(err);
-    showToast("Login fejlede");
+    console.error("Login detail error:", err);
+    alert("Login fejl: " + err.message);
   }
 }
 
