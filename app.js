@@ -34,8 +34,38 @@ const DECK_META = {
     icon:'briefcase', desc:'Store danske børsnavne, industrier, valuation og aktuelle fokusområder',
     color:'#E11D48', colorLt:'#FFE4E6',
   },
+  ma_process: {
+    id:'ma_process', name:'M&A Process', nameShort:'M&A Process',
+    icon:'git-pull-request', desc:'Sell-side & buy-side faser, terminologi og dokumenter',
+    color:'#0891B2', colorLt:'#ECFEFF',
+  },
+  ecm_abb: {
+    id:'ecm_abb', name:'ECM & ABB', nameShort:'ECM & ABB',
+    icon:'trending-up', desc:'IPO-proces, ABB overnight, Main Market vs First North',
+    color:'#6366F1', colorLt:'#EEF2FF',
+  },
+  dcm_financing: {
+    id:'dcm_financing', name:'DCM & Financing', nameShort:'DCM & Fin.',
+    icon:'banknote', desc:'LBO-kapitalstruktur, stapled financing, covenants',
+    color:'#DC2626', colorLt:'#FEF2F2',
+  },
+  pe_bnb: {
+    id:'pe_bnb', name:'PE & Buy-and-Build', nameShort:'PE & B&B',
+    icon:'layers', desc:'Nøglefonde, B&B-strategi, multiple arbitrage, exits',
+    color:'#16A34A', colorLt:'#F0FDF4',
+  },
+  cases: {
+    id:'cases', name:'Case Studies', nameShort:'Cases',
+    icon:'file-text', desc:'Reverse-engineer virkelige nordiske transaktioner',
+    color:'#9333EA', colorLt:'#FAF5FF',
+  },
+  toolkit: {
+    id:'toolkit', name:'Analyst Toolkit', nameShort:'Toolkit',
+    icon:'wrench', desc:'Excel, kommunikation, kvalitetskontrol, staffing',
+    color:'#EA580C', colorLt:'#FFF7ED',
+  },
 };
-const DECK_ORDER = ['people','multiples','c25','db','stakeholders'];
+const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit'];
 
 // --- Global State & Firebase ---
 let user = null;
@@ -545,6 +575,9 @@ const ALL_CARDS = [
   })),
   ...COMPANY_CARDS.map((c, i) => ({
     id: `c${i}`, type: 'company', deckId: 'c25', ...c, ...(COMPANY_MARKET_DATA[c.name] || {}),
+  })),
+  ...(typeof KNOWLEDGE_2 !== 'undefined' ? KNOWLEDGE_2 : []).map((k, i) => ({
+    id: `k2_${i}`, type: 'knowledge', ...k,
   })),
 ];
 
@@ -1205,6 +1238,7 @@ function showView(id) {
   document.getElementById(id).classList.add('active');
   if (id==='v-browse') renderBrowse();
   if (id==='v-dashboard') renderDashboard();
+  if (id==='v-flows' && typeof renderFlows === 'function') renderFlows();
 }
 function goHome() { renderHome(); showView('v-home'); }
 

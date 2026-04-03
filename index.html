@@ -32,6 +32,9 @@
           </button>
         </div>
       </div>
+      <button class="ghost-btn" onclick="showView('v-flows')">
+        <i data-lucide="git-branch" width="15" height="15"></i> Processer
+      </button>
       <button class="ghost-btn" onclick="showView('v-browse')">
         <i data-lucide="layout-grid" width="15" height="15"></i> Browse
       </button>
@@ -206,6 +209,15 @@
 </div>
 
 
+<!-- ══════════ PROCESS FLOWS VIEW ══════════ -->
+<div id="v-flows" class="view">
+  <header class="bar">
+    <button class="back-btn" onclick="goHome()"><i data-lucide="arrow-left" width="18" height="18"></i></button>
+    <span class="bar-title">Process Flows</span>
+  </header>
+  <main class="flows-main" id="flows-main"></main>
+</div>
+
 <!-- ══════════ DASHBOARD VIEW ══════════ -->
 <div id="v-dashboard" class="view">
   <header class="bar">
@@ -255,6 +267,8 @@
 <script src="data_scripts.js"></script>
 <script src="data_scripts_2.js"></script>
 <script src="data_scripts_3.js"></script>
+<script src="data_knowledge_2.js"></script>
 <script src="app.js"></script>
+<script src="process_flows.js"></script>
 </body>
 </html>
