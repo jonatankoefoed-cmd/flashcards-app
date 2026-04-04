@@ -246,6 +246,52 @@ const PEOPLE = [
 ];
 
 /* ──────────────────────────────────────────────
+   OFFLINE STATUS & SYNC QUEUE
+────────────────────────────────────────────── */
+const OFFLINE_QUEUE_KEY = 'ibprep_offline_queue';
+
+function updateOnlineStatus() {
+  const pill = document.getElementById('offline-pill');
+  if (pill) pill.style.display = navigator.onLine ? 'none' : 'flex';
+  if (!navigator.onLine) {
+    // Reinitialise icons in case the pill just appeared
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+async function flushOfflineQueue() {
+  if (!navigator.onLine) return;
+  const queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+  if (!queue.length) return;
+
+  // Need a logged-in user to push to Firestore
+  const u = window.auth && window.auth.currentUser;
+  if (!u) return;
+
+  const docRef = window.doc(window.db, 'users', u.uid);
+  const updates = {};
+  queue.forEach(({ cardId, data }) => { updates[`cards.${cardId}`] = data; });
+
+  try {
+    await window.updateDoc(docRef, updates).catch(async () => {
+      await window.setDoc(docRef, { cards: Object.fromEntries(
+        queue.map(({ cardId, data }) => [cardId, data])
+      )});
+    });
+    localStorage.removeItem(OFFLINE_QUEUE_KEY);
+    toast(`☁️ ${queue.length} svar synkroniseret`);
+  } catch (e) {
+    console.warn('[Sync] Flush failed:', e);
+  }
+}
+
+window.addEventListener('online',  () => { updateOnlineStatus(); flushOfflineQueue(); });
+window.addEventListener('offline', () => { updateOnlineStatus(); toast('✈️ Offline — svar gemmes lokalt'); });
+
+// Run once on startup
+document.addEventListener('DOMContentLoaded', updateOnlineStatus);
+
+/* ──────────────────────────────────────────────
    FIREBASE & SYNC LOGIC
 ────────────────────────────────────────────── */
 
@@ -295,13 +341,19 @@ if (window.auth) {
 
 async function loadUserData() {
   if (!user) return;
-  const docRef = window.doc(window.db, "users", user.uid);
-  const docSnap = await window.getDoc(docRef);
-  if (docSnap.exists()) {
-    cardData = docSnap.data().cards || {};
-  } else {
-    // New user
-    await window.setDoc(docRef, { cards: {} });
+  try {
+    const docRef = window.doc(window.db, "users", user.uid);
+    const docSnap = await window.getDoc(docRef);
+    if (docSnap.exists()) {
+      cardData = docSnap.data().cards || {};
+    } else {
+      // New user — only write if we're online
+      if (navigator.onLine) await window.setDoc(docRef, { cards: {} });
+    }
+    // Flush any pending offline writes now that we're authenticated + online
+    if (navigator.onLine) flushOfflineQueue();
+  } catch (e) {
+    console.warn('[loadUserData] Offline or error:', e);
   }
 }
 
@@ -315,14 +367,28 @@ async function syncCard(cardId, rating) {
     cardData = local;
     return;
   }
-  
+
   if (!cardData[cardId]) cardData[cardId] = { ratings: [] };
   cardData[cardId].ratings.push(rating);
   cardData[cardId].lastSeen = Date.now();
-  
+
+  // Offline → queue for later sync (SM-2 data already saved to localStorage)
+  if (!navigator.onLine) {
+    const queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+    // Upsert: replace existing entry for same cardId with latest data
+    const idx = queue.findIndex(q => q.cardId === cardId);
+    const entry = { cardId, data: cardData[cardId], ts: Date.now() };
+    if (idx >= 0) queue[idx] = entry; else queue.push(entry);
+    localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+    return;
+  }
+
   const docRef = window.doc(window.db, "users", user.uid);
   await window.updateDoc(docRef, {
     [`cards.${cardId}`]: cardData[cardId]
+  }).catch(async () => {
+    // If updateDoc fails (e.g. doc doesn't exist yet) fall back to setDoc
+    await window.setDoc(docRef, { cards: { [cardId]: cardData[cardId] } });
   });
 }
 

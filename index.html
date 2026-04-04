@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="referrer" content="origin"/>
   <title>IB Prep · Flashcards</title>
+  <meta name="theme-color" content="#0057B8"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="IB Prep"/>
+  <link rel="manifest" href="/manifest.json"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -20,6 +25,9 @@
       <span class="bar-title">IB Prep</span>
     </div>
     <div class="bar-right">
+      <div id="offline-pill" class="offline-pill" style="display:none">
+        <i data-lucide="wifi-off" width="12" height="12"></i> Offline
+      </div>
       <div id="user-status" class="user-status">
         <button id="btn-login" class="ghost-btn" onclick="login()">
           <i data-lucide="log-in" width="15" height="15"></i> Login
@@ -270,5 +278,16 @@
 <script src="data_knowledge_2.js"></script>
 <script src="app.js"></script>
 <script src="process_flows.js"></script>
+
+<!-- Service Worker registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('[SW] Registered, scope:', reg.scope))
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  });
+}
+</script>
 </body>
 </html>
