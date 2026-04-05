@@ -2,7 +2,7 @@
    IB Prep · Service Worker
    Offline-first caching for plane/no-network study
 ═══════════════════════════════════════════════ */
-const CACHE_NAME = 'ibprep-v2';
+const CACHE_NAME = 'ibprep-v3';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -14,6 +14,8 @@ const PRECACHE_ASSETS = [
   '/data_scripts_2.js',
   '/data_scripts_3.js',
   '/data_knowledge_2.js',
+  '/data_deals.js',
+  '/market_map.js',
   '/manifest.json',
 ];
 

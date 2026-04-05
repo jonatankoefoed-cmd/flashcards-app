@@ -64,8 +64,13 @@ const DECK_META = {
     icon:'wrench', desc:'Excel, kommunikation, kvalitetskontrol, staffing',
     color:'#EA580C', colorLt:'#FFF7ED',
   },
+  deals: {
+    id:'deals', name:'Danske Bank Deals', nameShort:'Deals',
+    icon:'trophy', desc:'Nøgletransaktioner 2020-2025 med DB involvering',
+    color:'#0D9488', colorLt:'#CCFBF1',
+  },
 };
-const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit'];
+const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit','deals'];
 
 // --- Global State & Firebase ---
 let user = null;
@@ -149,13 +154,13 @@ function fmtDkkBn(v) {
 const PEOPLE = [
   // Leadership
   { name:'Atilla Olesen',           niveau:'Leadership',        titel:'Head of Investment Banking',            firma:'Danske Bank IB',
-    note:'Tidl: SEB (9½ år – Head of Equities, Prime Brokerage Sales London, Head of Solutions) | EVP Global Head of Asset Management, Danske Bank (2020-21)',
+    note:'Tidl: SEB (9½ år – Head of Equities, Prime Brokerage Sales London, Head of Solutions) | EVP Global Head of Asset Management, Danske Bank (2020-21) | Udd: Cand.jur. KU | IMD High Performance Leadership (2014) | Ridder af Dannebrogordenen (Kong Frederik X) | Driver Forward \'28 "fully-fledged IB"-strategi | Lukkede London ECM-desk 2025 → konsolideret i KBH+Sthlm',
     photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
   { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
-    note:'Director i Danske Bank siden 1998 (28 år!)',
+    note:'I Danske Bank siden 1998 (28 år!) | Udd: KU/CBS | Optaget i Kraks Blå Bog | Nøgle-deals: Penneo/Visma (fairness opinion), Svitzer take-private DKK 9 mia, DSV ABB DKK 37,3 mia, Ørsted DKK 60 mia, Concentric SEK 8,6 mia | Aktiv CBS-rekruttering',
     photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 5%' },
   { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
-    note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 3½ år) | Udd: MBA London Business School | Cand.jur. KU',
+    note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 30 butikker, 400 ansatte, 3½ år) | Udd: MBA London Business School | Cand.jur. KU | Deals: SKAKO Vibration/FCDE EUR 37,5m, Forenede/FSAB | 15+ års M&A-erfaring',
     photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
   // Managing Directors
   { name:'Henrik Ljungstrom',       niveau:'Managing Director', titel:'Managing Director (London)',             firma:'Danske Bank IB',
@@ -168,17 +173,20 @@ const PEOPLE = [
     note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
     photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 40%' },
   { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
-    note:'MD siden apr 2024. Tidl: Director Corporate Finance (8 år, sept 2016 - juni 2024)',
+    note:'MD siden apr 2024. Tidl: Director Corporate Finance (8 år, sept 2016 - juni 2024) | Deals: SKAKO Vibration/FCDE, MML Keystone/Coptersafety | Mangeårig erfaring i dansk M&A',
     photo:'Pictures/Jesper Buchardt (implementeret).jpeg', photoCrop:'center 35%' },
   { name:'Ulrik Rasmussen',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
     note:'Tidl: SEB Managing Director (15 år!, feb 2001 - maj 2016) | Udd: MSc Accounting & Finance, CBS (1995-2000)',
     photo:'Pictures/Ulrik Rasmussen.jpeg' },
+  { name:'Christian Hansen',        niveau:'Managing Director', titel:'MD, Global Co-Head ECM',                 firma:'Danske Bank IB',
+    note:'Global Co-Head Equity Capital Markets (m. Fredrik Segenmark i Sthlm). Tidl: Nordea Head of ECM Denmark / Senior Manager | Udd: MSc Econ Finance & Accounting KU | Stabskursus Forsvarsakademiet | Nøgleperson bag Ørsted DKK 60 mia, Tryg DKK 37 mia, DSV record-ABB DKK 37,3 mia | Alle 3 største nordiske kapitalforhøjelser!',
+    photo:'' },
   // Directors
   { name:'Mikko Hirvonen',          niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
     note:'',
     photo:'Pictures/Mikko Hirvonen (implementeret).jpeg' },
-  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
-    note:'Tidl: Carnegie IB (6½ år) | Handelsbanken Equity Research | Nykredit Credit Research | Udd: MSc Finance & Accounting CBS | Ekceptionelt dygtig iflg. Futtrup',
+  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Head of Corporate Advisory / Director', firma:'Danske Bank IB',
+    note:'Head of Corporate Advisory. Forlod og genindtrådte i DB IB. Tidl: Carnegie IB (6½ år) | Handelsbanken Equity Research | Nykredit Credit Research | Udd: MSc Finance & Accounting CBS | Ekceptionelt dygtig iflg. Futtrup',
     photo:'Pictures/Filip R. Monefeldt (implementeret).jpeg' },
   { name:'Janus Nygaard',           niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
     note:'Tidl: Carnegie Senior Associate (4½ år) | Falck BD Director (Group M&A & Strategy) | Udd: MSc Finance, Aarhus Uni',
@@ -186,18 +194,24 @@ const PEOPLE = [
   { name:'Christian D. Helvind',    niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
     note:'Tidl: ATRIUM Partners (10 år! - fra Analyst til Director) | Ramboll MC | Eksportrådet Atlanta | Udd: MSc Economics, KU',
     photo:'Pictures/Christian D. Helvind (implementeret).jpeg', photoCrop:'center center' },
+  { name:'Maria Malmborg Christensen', niveau:'Director',       titel:'Head of Corporate Advisory DK',          firma:'Danske Bank IB',
+    note:'Head of Corp. Advisory DK siden aug 2024. Tidl: Monitor Deloitte Senior Manager M&A Consulting (People Lead) | Pandora Manager Global Strategy & BD | Clearwater International DK (Analyst→Associate Director) | Udd: MSc Applied Economics & Finance CBS (2012-14)',
+    photo:'' },
+  { name:'Olav Jørgensen',           niveau:'Director',          titel:'Director, Corporate Finance',            firma:'Danske Bank IB',
+    note:'12+ år i Danske Bank. Tidl: KPMG Corporate Finance Manager | "Talented individual with strong skills within finance and IB" — stærk leder',
+    photo:'' },
   // Associate Directors
   { name:'Casper Jul Rask Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
     note:'10+ år i Danske Bank CF (student analyst til AD). Tidl: Hess Corporation | Udd: MSc Finance & Accounting CBS | Exchange ESADE & Regent\'s London',
     photo:'Pictures/Casper Jul Rask Jensen (implementeret).jpeg' },
   { name:'Peter Christian Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'Tidl: FIH Partners IB Analyst (1½ år, M&A) | Nykredit (Capital & Risk) | Udd: MSc Applied Economics & Finance CBS | Exchange Singapore Mgmt Uni',
+    note:'Tidl: FIH Partners IB Analyst (1½ år, M&A) | Nykredit (Capital & Risk) | Udd: MSc Applied Economics & Finance CBS (derivater & fin. instrumenter) | Exchange Singapore Mgmt Uni | Deals: Concentric SEK 8,6 mia, STOK/A&M Capital, Davidsens/Kesko, Better Collective dual listing',
     photo:'Pictures/Peter Christian Jensen (implementeret).jpeg' },
   { name:'Frederik Uggerhøj',       niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
     note:'6+ år Danske Bank CF (junior analyst til AD). Tidl: Capitalmind M&A (student) | Connected Cars BD | Familiefirma Uggerhøj Biler | Udd: MSc Finance & Strategic Mgmt CBS | Privat pilotcertifikat',
     photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg' },
   { name:'Anders Højlund',          niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'Tidl: Clearwater International CF (2 år, Analyst til Associate) | Jyske Bank (Market Risk) | Ramboll MC | TA Aarhus Uni (Statistik) | Udd: MSc Finance, Aarhus Uni',
+    note:'Rekrutteringsansvarlig for CF First Year Analyst-programmet | Tidl: Clearwater International CF (2 år, Analyst til Associate) | Jyske Bank (Market Risk) | Ramboll MC | TA Aarhus Uni (Statistik) | Udd: MSc Finance, Aarhus Uni',
     photo:'Pictures/Anders Højlund (implementeret).jpeg' },
   { name:'Jonas Mulvad Vendelbo',   niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
     note:'Tidl: HCN Partners (2 år, AD M&A) | Handelsbanken IB M&A (2 år) | Julius Baer Luxembourg (summer) | Ekstern CBS-rådgiver (M&A/Valuation) | Udd: MSc Finance CBS | Harvard',
@@ -207,10 +221,10 @@ const PEOPLE = [
     note:'',
     photo:'Pictures/Valdemar Stengaard (implementeret).jpeg' },
   { name:'Magnus Johansen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
-    note:'Gruppe 1 med Casper Jul. Tidl: Handelsbanken CF (Part-time Analyst) | Grant Thornton FAS | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
+    note:'Gruppe 1 med Casper Jul. Tidl: Handelsbanken CF (Part-time Analyst) | Grant Thornton FAS | Udd: MSc Finance & Accounting CBS (kurser: IB, Equity Securities Analysis, Futures/Options & Fin. Risk) | Exchange Boston Uni',
     photo:'Pictures/Magnus Johansen (implementeret).jpeg' },
   { name:'Martin Andersen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
-    note:'',
+    note:'Udd: MSc Finance & Accounting CBS (speciale: Valuation of Stelton A/S, 12-tal) | Deals: Better Collective dual listing, Svitzer demerger, STOK/A&M Capital, Autorola 50%, Davidsens/Kesko EUR 190m',
     photo:'Pictures/Martin Andersen (implementeret).jpeg' },
   // Analysts
   { name:'Christian Dahl',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
@@ -235,7 +249,7 @@ const PEOPLE = [
     note:'Tidl: AIP Management Junior Analyst (1½ år) | Carnegie (Equity Research & Sales) | Nordea AM (Student, Group Risk) | Udd: MSc Finance & Accounting CBS',
     photo:'Pictures/Marcus Christensen (implementeret).jpeg' },
   { name:'Lukas Hvidkjær',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
-    note:'Tidl: DSV M&A team (2½ år - inkl. EUR 14,3 mia. Schenker-deal!) | Udd: MSc Finance & Accounting CBS',
+    note:'Tiltrådt sommer 2024. Tidl: DSV M&A team (2½ år - inkl. EUR 14,3 mia. Schenker-deal!) | Udd: BSc International Business CBS → MSc Finance & Accounting CBS | Arbejder på ECM- og M&A-transaktioner',
     photo:'Pictures/Lukas Hvidkjær (implementeret).jpeg' },
   { name:'Frederik Emil Haven',     niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
     note:'Tidl: Waterland PE (Student Analyst, 2½ år) | Accunia Credit Mgmt (1½ år) | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
@@ -644,6 +658,9 @@ const ALL_CARDS = [
   })),
   ...(typeof KNOWLEDGE_2 !== 'undefined' ? KNOWLEDGE_2 : []).map((k, i) => ({
     id: `k2_${i}`, type: 'knowledge', ...k,
+  })),
+  ...(typeof DEAL_CARDS !== 'undefined' ? DEAL_CARDS : []).map((k, i) => ({
+    id: `dl_${i}`, type: 'knowledge', ...k,
   })),
 ];
 
@@ -1305,6 +1322,7 @@ function showView(id) {
   if (id==='v-browse') renderBrowse();
   if (id==='v-dashboard') renderDashboard();
   if (id==='v-flows' && typeof renderFlows === 'function') renderFlows();
+  if (id==='v-market-map' && typeof renderMarketMap === 'function') renderMarketMap();
 }
 function goHome() { renderHome(); showView('v-home'); }
 

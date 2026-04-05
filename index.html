@@ -43,6 +43,9 @@
       <button class="ghost-btn" onclick="showView('v-flows')">
         <i data-lucide="git-branch" width="15" height="15"></i> Processer
       </button>
+      <button class="ghost-btn" onclick="showView('v-market-map')">
+        <i data-lucide="map" width="15" height="15"></i> Market Map
+      </button>
       <button class="ghost-btn" onclick="showView('v-browse')">
         <i data-lucide="layout-grid" width="15" height="15"></i> Browse
       </button>
@@ -237,6 +240,15 @@
   <main class="dashboard-main" id="dashboard-main"></main>
 </div>
 
+<!-- ══════════ MARKET MAP VIEW ══════════ -->
+<div id="v-market-map" class="view">
+  <header class="bar">
+    <button class="back-btn" onclick="goHome()"><i data-lucide="arrow-left" width="18" height="18"></i></button>
+    <span class="bar-title">Market Map</span>
+  </header>
+  <main class="market-map-main" id="market-map-main"></main>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDKs -->
@@ -276,8 +288,10 @@
 <script src="data_scripts_2.js"></script>
 <script src="data_scripts_3.js"></script>
 <script src="data_knowledge_2.js"></script>
+<script src="data_deals.js"></script>
 <script src="app.js"></script>
 <script src="process_flows.js"></script>
+<script src="market_map.js"></script>
 
 <!-- Service Worker registration -->
 <script>
