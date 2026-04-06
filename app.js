@@ -170,10 +170,10 @@ const PEOPLE = [
       'High Performance Leadership Program, IMD Business School (2014).'
     ],
     personalPoints:[
-      'Medlem af Group Commercial Leadership Team.',
-      'Bestyrelsesmedlem i Aktive Ejere og tidligere aktiv i Dansk Impact Komité.',
-      'Udnævnt til Ridder af Dannebrogordenen.',
-      'Ledte konsolideringen af ECM-aktiviteterne fra London til København og Stockholm i 2025.'
+      'Sidder tæt på kapitalfondsøkosystemet via Aktive Ejere og fungerer som bankens bro ind mod PE-miljøet.',
+      'Har arbejdet eksplicit med impact/ESG-vinkler i investeringsmiljøet, hvilket gør ham mere policy- og markedsarkitektur-orienteret end klassisk deal-eksekverende.',
+      'Stod bag den strategiske beslutning om at samle ECM-platformen i København og Stockholm i 2025.',
+      'Hans tydeligste personlige interesse i kilderne er selve udviklingen af investeringsøkosystemet, ikke bare enkeltdeals.'
     ],
     photo:'Pictures/Atilla Olesen (implementeret).jpeg'
   },
@@ -199,9 +199,10 @@ const PEOPLE = [
       'Uddannelsesbaggrund fra Københavns Universitet og Copenhagen Business School.'
     ],
     personalPoints:[
-      'Optaget i Kraks Blå Bog.',
-      'Kendt for en stærk regulatorisk og prospektteknisk profil på offentlige processer.',
-      'Dokumenteret endurance-profil med halvmaraton-/marathon-tilknytning.'
+      'Er en af de tydeligste regulatoriske specialister i teamet på IPO-prospekter, guidance og comfort-letter-problemer.',
+      'Bruges aktivt i CBS-rekruttering og har derfor også en intern kultur- og talentrolle.',
+      'Har en dokumenteret marathon-/halvmaraton-interesse, som er et af de klareste personlige holdepunkter i kilderne.',
+      'Den sportslige endurance-profil matcher hans ry for høj arbejdskapacitet og stringens.'
     ],
     photo:'Pictures/Christian Lindholm (nyt foto).png',
     photoCrop:'center top',
@@ -227,8 +228,9 @@ const PEOPLE = [
       'Cand.jur., Københavns Universitet.'
     ],
     personalPoints:[
-      'Usædvanlig profil for en senior IB-leder med dokumenteret entreprenør- og turnaround-erfaring.',
-      'Komplementerer Christian Lindholm med mere udpræget kommerciel og relationsbaseret profil.'
+      'Skiller sig ud med reel founder/CEO-turnaround-erfaring fra emmerys, ikke kun ren advisory-baggrund.',
+      'Kilderne peger på, at han i co-head-konstellationen hælder mere mod origination, relationsarbejde og board-facing dialog end mod regulatorisk detaljeniveau.',
+      'Det mest menneskelige hook i profilen er entreprenørsporet og arbejdet med et consumer brand som emmerys.'
     ],
     photo:'Pictures/Thomas Knaack (implementeret).jpeg'
   },
@@ -250,8 +252,9 @@ const PEOPLE = [
       'BSc in Economics, University of Kent.'
     ],
     personalPoints:[
-      'Bringer tydelig The City-erfaring ind i Danske Banks nordiske leveraged finance-platform.',
-      'Profileres som en vigtig bro mellem nordiske sponsorbehov og international syndikering.'
+      'Hans edge er kombinationen af nordisk sponsorforståelse og reel The City-distributionserfaring.',
+      'Er relevant, når en nordisk M&A-case skal oversættes til noget internationale kreditinvestorer faktisk vil købe.',
+      'Profilen peger på en person, der sandsynligvis er mere hjemme i globale markedsmiljøer end i lokal dansk netværkskultur.'
     ],
     photo:'Pictures/Henrik Ljungstrom (implementeret).jpeg'
   },
@@ -267,9 +270,7 @@ const PEOPLE = [
     ],
     deals:[],
     education:[],
-    personalPoints:[
-      'Offentligt fodaftryk er begrænset, hvilket peger på en mere diskret senior rolle i komplekse eller følsomme mandater.'
-    ],
+    personalPoints:[],
     teamContext:'I Danske Banks kompakte seniorlag er denne type profil typisk tæt på board-rådgivning og lavprofileret eksekvering på krævende situationer.',
     photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg'
   },
@@ -290,7 +291,7 @@ const PEOPLE = [
       'Cand.jur.'
     ],
     personalPoints:[
-      'Kombinerer klassisk legal precision med storbank-erfaring fra internationale deals.'
+      'Kombinerer M&A-jura og Goldman Sachs-eksekvering, hvilket er særligt relevant på dokumenttunge cross-border processer.'
     ],
     teamContext:'I kombination med profiler som Jesper Buchardt og Ulrik Rasmussen peger kildematerialet på en rolle tæt på de mest komplekse M&A-forløb.',
     photo:'Pictures/Christian Blinkenberg (nyt foto).jpeg',
@@ -314,7 +315,7 @@ const PEOPLE = [
     ],
     education:[],
     personalPoints:[
-      'Repræsenterer stærk intern kontinuitet i teamets M&A-eksekvering.'
+      'Hans profil er mindre mediedrevet og mere ren execution-senioritet, hvilket gør ham relevant som intern reference på dansk M&A-håndværk.'
     ],
     photo:'Pictures/Jesper Buchardt (implementeret).jpeg',
     photoCrop:'center 35%'
@@ -333,9 +334,7 @@ const PEOPLE = [
     education:[
       'MSc Accounting & Finance, Copenhagen Business School (1995-2000).'
     ],
-    personalPoints:[
-      'Bringer tung nordisk storbank-erfaring ind i teamets seniorlag.'
-    ],
+    personalPoints:[],
     teamContext:'Kildematerialet placerer ham sammen med Christian Blinkenberg og Jesper Buchardt omkring kompleks, ofte grænseoverskridende M&A-eksekvering.',
     photo:'Pictures/Ulrik Rasmussen.jpeg'
   },
@@ -360,8 +359,9 @@ const PEOPLE = [
       'Stabskursus, Forsvarsakademiet.'
     ],
     personalPoints:[
-      'Fremhæver offentligt, at de tre største nordiske kapitalforhøjelser nogensinde alle er danske.',
-      'Kendt for fokus på forberedelse, equity story og brugen af et robust use-of-proceeds-narrativ.'
+      'Har offentligt formuleret ECM-disciplinen som et spørgsmål om timing, forberedelse og et robust use-of-proceeds-narrativ.',
+      'Er en af de få i teamet med tydelig offentlig markedskommentator-profil omkring equity windows og investoradfærd.',
+      'Hvis man skal huske ham som person, er det som den meget udadvendte ECM-stemme snarere end som lavprofil-eksekverende banker.'
     ],
     photo:'Pictures/Christian Hansen.jpeg'
   },
@@ -381,7 +381,7 @@ const PEOPLE = [
       'MSc Finance & Accounting, Copenhagen Business School.'
     ],
     personalPoints:[
-      'Bringer en sjælden kombination af strategy, ECM/M&A og sell-side research til board-rådgivning.'
+      'Hans særkende er kombinationen af advisory, ECM/M&A og research, hvilket gør ham mere strategisk end rent procesdrevet.'
     ],
     teamContext:'Corporate Advisory-funktionen ligger typisk tæt på kapitalstruktur-reviews, værdioptimering og langsigtet bestyrelsessparring.',
     photo:'Pictures/Filip R. Monefeldt (implementeret).jpeg'
@@ -404,7 +404,8 @@ const PEOPLE = [
       'Tidligere Teaching Assistant i makro- og mikroøkonomi.'
     ],
     personalPoints:[
-      'Fremstår som en usædvanligt undervisnings- og teoritung profil i Corporate Finance-laget.'
+      'Hans differentiator er, at han kombinerer corporate finance med egentlig undervisningserfaring og tydelig makro-/mikroteoretisk ballast.',
+      'Det mest personlige kendetegn i kilderne er interesse for at forklare, strukturere og undervise, ikke kun at eksekvere.'
     ],
     photo:'Pictures/Janus Nygaard (implementeret).jpeg'
   },
@@ -422,9 +423,7 @@ const PEOPLE = [
     education:[
       'MSc Economics, Københavns Universitet.'
     ],
-    personalPoints:[
-      'Passer stærkt ind i den del af teamet, der holder komplekse processer og workstreams sammen.'
-    ],
+    personalPoints:[],
     teamContext:'Kildematerialet placerer ham i execution-laget omkring due diligence, koordinering og tværfunktionel projektledelse tæt på signing.',
     photo:'Pictures/Christian D. Helvind (implementeret).jpeg',
     photoCrop:'center center'
@@ -446,7 +445,8 @@ const PEOPLE = [
       'MSc Applied Economics & Finance, Copenhagen Business School (2012-2014).'
     ],
     personalPoints:[
-      'Kombinerer klassisk transaktionsrådgivning med strategisk transformations- og people-led erfaring.'
+      'Skiller sig ud ved at kombinere transaction advisory med in-house strategi og people-lead-erfaring fra consulting.',
+      'People Lead-baggrunden er et sjældent signal om, at hun ikke kun er processtærk, men også optaget af team- og organisationsdimensionen.'
     ],
     photo:'Pictures/Maria Malmborg Christensen.jpeg'
   },
@@ -463,8 +463,8 @@ const PEOPLE = [
     deals:[],
     education:[],
     personalPoints:[
-      'Kilderne peger på en usædvanlig kombination af CF-erfaring og stærk investor-/IR-vinkel.',
-      'Beskrives af kolleger som en stærk finance- og investment banking-profil.'
+      'OSINT-kilderne peger på en usædvanlig dobbeltrolle mellem corporate finance og investor relations til bankens egne investorer.',
+      'Det gør ham mere relevant på kapitalstruktur, rapportering og markedskommunikation end en klassisk execution-director.'
     ],
     photo:'Pictures/Olav Jorgensen.jpeg'
   },
@@ -485,7 +485,7 @@ const PEOPLE = [
       'Udveksling på ESADE og Regent\'s London.'
     ],
     personalPoints:[
-      'Fremstår som et eksempel på bankens evne til at udvikle og fastholde talent internt over mange år.'
+      'Hans vigtigste differentiator er den meget lange interne rejse fra student analyst til Associate Director, hvilket giver stor institutionel hukommelse.'
     ],
     teamContext:'Associate Director-laget driver typisk modeller, IM-materiale, management presentations og datarum frem på tværs af flere workstreams.',
     photo:'Pictures/Casper Jul Rask Jensen (implementeret).jpeg'
@@ -512,7 +512,7 @@ const PEOPLE = [
       'Udveksling på Singapore Management University.'
     ],
     personalPoints:[
-      'Kilderne peger på en meget håndværksnær execution-profil med styrke i tidlige informations- og diligence-materialer.'
+      'Kilderne peger på en håndværksnær execution-profil med styrke i IM-materiale, VDR-struktur og diligence-forberedelse.'
     ],
     photo:'Pictures/Peter Christian Jensen (implementeret).jpeg'
   },
@@ -532,8 +532,8 @@ const PEOPLE = [
       'MSc Finance & Strategic Management, Copenhagen Business School.'
     ],
     personalPoints:[
-      'Har privat pilotcertifikat.',
-      'Kombinerer institutional banking-erfaring med familieejet virksomhedsperspektiv.'
+      'Kombinerer intern bankexecution med et konkret perspektiv fra familieejet virksomhedsmiljø.',
+      'Pilotcertifikatet er det klareste personlige særtræk i profilen og gør ham lettere at huske.'
     ],
     teamContext:'Associate Director-klyngen måles typisk på execution speed, modelkvalitet og evnen til at omsætte strategi til konkret procesmateriale.',
     photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg'
@@ -554,8 +554,7 @@ const PEOPLE = [
       'MSc Finance, Aarhus Universitet.'
     ],
     personalPoints:[
-      'Rekrutteringsansvarlig for Corporate Finance First Year Analyst-programmet.',
-      'Er tæt på den del af teamet, der møder kandidater via karriereevents og analyst-hiring.'
+      'Er central i analyst-hiring og dermed en nøglefigur for, hvordan teamet selekterer og former juniorlaget.'
     ],
     photo:'Pictures/Anders Højlund (implementeret).jpeg'
   },
@@ -629,8 +628,9 @@ const PEOPLE = [
     deals:[],
     education:[],
     personalPoints:[
-      'Kildematerialet peger på bidrag til akademisk arbejde med afsæt i Hannah Arendt og analyser af formel påklædning og institutionskultur.',
-      'Skiller sig ud som en mere meta-reflekterende profil end den typiske analyst.'
+      'Kildematerialet peger på konkret akademisk arbejde med Hannah Arendt og institutionskultur, hvilket er meget atypisk for analyst-laget.',
+      'Hans edge er ikke bare “filosofi”, men evnen til at analysere bankmiljøet som social struktur frem for kun som modelmaskine.',
+      'Det er den mest tydelige intellektuelle særinteresse i hele teammaterialet.'
     ],
     teamContext:'Analyst-laget leverer hovedparten af modelarbejde, deck-opdateringer og data room-understøttelse i det danske team.',
     photo:'Pictures/Christian Dahl (implementeret).jpeg'
@@ -652,7 +652,8 @@ const PEOPLE = [
       'Udveksling i Melbourne.'
     ],
     personalPoints:[
-      'Kommer ind i analyst-laget med mere investerings- og principal-side erfaring end mange peers.'
+      'Kommer ind i analyst-laget med markant mere buy-side- og principal-erfaring end mange peers.',
+      'Statistik-undervisning er det tydeligste personlige/arbejdsmæssige særtræk ud over CV-linjerne.'
     ],
     photo:'Pictures/Mikkel R. Christensen (implementeret).jpeg'
   },
@@ -672,7 +673,8 @@ const PEOPLE = [
       'Udveksling / akademisk eksponering via MIT Sloan og Harvard.'
     ],
     personalPoints:[
-      'Kombinerer tidlig London-eksponering med dansk mid-market og PE-erfaring.'
+      'Kombinerer tidlig London-eksponering med både dansk mid-market advisory og PE-erfaring.',
+      'MIT Sloan og Harvard skiller ham ud som en mere internationalt orienteret profil end den typiske analyst.'
     ],
     photo:'Pictures/Bavendra Rajendra (implementeret).jpeg'
   },
@@ -692,7 +694,8 @@ const PEOPLE = [
       'MSc Finance & Strategic Management, Copenhagen Business School.'
     ],
     personalPoints:[
-      'Profilen forbinder LBO-logik og transaktionsambition med praktisk kredit- og likviditetsdisciplin.'
+      'Hendes relevans ligger i at kunne oversætte sponsorambitioner til faktisk debt capacity, covenant headroom og finansierbarhed.',
+      'Det personlige særtræk i kilderne er ikke hobbyer, men en tydelig specialisering i LevFin frem for klassisk CF.'
     ],
     teamContext:'LevFin-rollen er central, når M&A-caser skal oversættes til gældsstruktur, covenant headroom og syndikerbar finansiering.',
     photo:'Pictures/Mathilde Saigal (implementeret).jpeg'
@@ -747,7 +750,7 @@ const PEOPLE = [
       'MSc Finance & Accounting, Copenhagen Business School.'
     ],
     personalPoints:[
-      'Har været synlig i deling af rekrutteringsopslag for ECM- og M&A-roller.'
+      'Har været synlig omkring rekruttering og virker tæt knyttet til teamets outward-facing analyst pipeline.'
     ],
     photo:'Pictures/Marcus Christensen (implementeret).jpeg'
   },
@@ -768,7 +771,8 @@ const PEOPLE = [
       'MSc Finance & Accounting, Copenhagen Business School.'
     ],
     personalPoints:[
-      'Kommer ind i analyst-laget med usædvanligt direkte corporate M&A-erfaring.'
+      'Kommer ind i analyst-laget med usædvanligt direkte in-house M&A-erfaring fra en megadeal-kontekst.',
+      'DB Schenker-sporet er det letteste konkrete hook at huske ham på.'
     ],
     photo:'Pictures/Lukas Hvidkjær (implementeret).jpeg'
   },
@@ -1653,7 +1657,7 @@ function renderPeopleBack(c, meta) {
     buildPersonProfileSection('Experience', c.experience),
     buildPersonProfileSection('Key deals', c.deals),
     buildPersonProfileSection('Education', c.education),
-    buildPersonProfileSection('Personlige punkter', c.personalPoints),
+    buildPersonProfileSection('Personlige interesser / særtræk', c.personalPoints),
   ].filter(Boolean).join('');
   document.getElementById('cb-profile-sections').innerHTML = sections;
 
