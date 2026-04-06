@@ -158,7 +158,7 @@ const PEOPLE = [
     photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
   { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
     note:'Tidl: Danske Bank (siden 1998, 28+ år) | Udd: KU/CBS | Deals: Penneo/Visma (fairness opinion), Svitzer take-private DKK 9 mia, DSV ABB DKK 37,3 mia, Ørsted DKK 60 mia, Concentric SEK 8,6 mia | Optaget i Kraks Blå Bog | Aktiv CBS-rekruttering',
-    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 30%' },
+    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center top', photoFit:'contain' },
   { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
     note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 30 butikker, 400 ansatte, 3½ år) | Udd: MBA London Business School | Cand.jur. KU | Deals: SKAKO Vibration/FCDE EUR 37,5m, Forenede/FSAB | 15+ års M&A-erfaring',
     photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
@@ -171,7 +171,7 @@ const PEOPLE = [
     photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg' },
   { name:'Christian Blinkenberg',   niveau:'Managing Director', titel:'Co-Head Corporate Finance DK (London)',  firma:'Danske Bank IB',
     note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Tidl: Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
-    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 55%' },
+    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center top', photoFit:'contain' },
   { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
     note:'MD siden apr 2024 | Tidl: Director Corporate Finance DB (8 år, 2016–2024) | Deals: SKAKO Vibration/FCDE, MML Keystone/Coptersafety | Mangeårig erfaring i dansk M&A',
     photo:'Pictures/Jesper Buchardt (implementeret).jpeg', photoCrop:'center 35%' },
@@ -1048,10 +1048,11 @@ function renderPeopleFront(c, meta) {
   const avEl = document.getElementById('av-initials');
   const phEl = document.getElementById('av-photo');
   if (c.photo) { 
-    phEl.src = c.photo; 
+    phEl.src = c.photo;
     phEl.className = 'av-photo av-lg';
-    phEl.style.display = ''; 
-    phEl.style.objectPosition = c.photoCrop ? c.photoCrop : 'center 25%';
+    phEl.style.display = '';
+    phEl.style.objectFit = c.photoFit || 'cover';
+    phEl.style.objectPosition = c.photoCrop || 'center 25%';
     avEl.style.display = 'none'; 
   }
   else { 
@@ -1073,6 +1074,7 @@ function renderPeopleBack(c, meta) {
   if (c.photo) {
     cbPh.src = c.photo;
     cbPh.style.display = '';
+    cbPh.style.objectFit = c.photoFit || 'cover';
     cbPh.style.objectPosition = c.photoCrop || 'center 25%';
     cbAv.style.display = 'none';
   } else {
