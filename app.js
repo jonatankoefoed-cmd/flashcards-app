@@ -64,8 +64,13 @@ const DECK_META = {
     icon:'wrench', desc:'Excel, kommunikation, kvalitetskontrol, staffing',
     color:'#EA580C', colorLt:'#FFF7ED',
   },
+  deals: {
+    id:'deals', name:'Danske Bank Deals', nameShort:'Deals',
+    icon:'trophy', desc:'Nøgletransaktioner 2020-2025 med DB involvering',
+    color:'#0D9488', colorLt:'#CCFBF1',
+  },
 };
-const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit'];
+const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit','deals'];
 
 // --- Global State & Firebase ---
 let user = null;
@@ -149,36 +154,36 @@ function fmtDkkBn(v) {
 const PEOPLE = [
   // Leadership
   { name:'Atilla Olesen',           niveau:'Leadership',        titel:'Head of Investment Banking',            firma:'Danske Bank IB',
-    note:'Tidl: SEB (9½ år – Head of Equities, Prime Brokerage Sales London, Head of Solutions) | EVP Global Head of Asset Management, Danske Bank (2020-21)',
+    note:'Tidl: SEB (9½ år – Head of Equities, Prime Brokerage Sales London, Head of Solutions) | EVP Global Head of Asset Management, Danske Bank (2020-21) | Udd: Cand.jur. KU | IMD High Performance Leadership (2014) | Ridder af Dannebrogordenen (Kong Frederik X) | Driver Forward \'28 "fully-fledged IB"-strategi | Lukkede London ECM-desk 2025 → konsolideret i KBH+Sthlm',
     photo:'Pictures/Atilla Olesen (implementeret).jpeg' },
   { name:'Christian Lindholm',      niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
-    note:'Director i Danske Bank siden 1998 (28 år!)',
-    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 5%' },
+    note:'Tidl: Danske Bank (siden 1998, 28+ år) | Udd: KU/CBS | Deals: Penneo/Visma (fairness opinion), Svitzer take-private DKK 9 mia, DSV ABB DKK 37,3 mia, Ørsted DKK 60 mia, Concentric SEK 8,6 mia | Optaget i Kraks Blå Bog | Aktiv CBS-rekruttering',
+    photo:'Pictures/Christian Lindholm (implementeret).jpg', photoCrop:'center 30%' },
   { name:'Thomas Knaack',           niveau:'Leadership',        titel:'Co-Head Corporate Finance DK',          firma:'Danske Bank IB',
-    note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 3½ år) | Udd: MBA London Business School | Cand.jur. KU',
+    note:'Tidl: SEB Enskilda Director (11½ år, M&A/ECM) | Co-owner & CEO emmerys (turnaround, 30 butikker, 400 ansatte, 3½ år) | Udd: MBA London Business School | Cand.jur. KU | Deals: SKAKO Vibration/FCDE EUR 37,5m, Forenede/FSAB | 15+ års M&A-erfaring',
     photo:'Pictures/Thomas Knaack (implementeret).jpeg' },
   // Managing Directors
   { name:'Henrik Ljungstrom',       niveau:'Managing Director', titel:'Managing Director (London)',             firma:'Danske Bank IB',
-    note:'London-baseret, Loan Syndications. Tidl: ING VP (3 år), Mizuho AD, Lloyds Banking Group (3½ år, Syndicated Loans & Corp Banking)',
+    note:'London-baseret, Loan Syndications | Tidl: ING VP (3 år) | Tidl: Mizuho AD | Tidl: Lloyds Banking Group (3½ år, Syndicated Loans & Corp Banking)',
     photo:'Pictures/Henrik Ljungstrom (implementeret).jpeg' },
   { name:'Bjarke Skovgaard',        niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
     note:'Tidl: SEB Director CF (3½ år, M&A/ECM/Family Office) | DONG Energy Senior M&A Specialist (2 år, Group M&A)',
     photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg' },
   { name:'Christian Blinkenberg',   niveau:'Managing Director', titel:'Co-Head Corporate Finance DK (London)',  firma:'Danske Bank IB',
-    note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
-    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 40%' },
+    note:'Tidl: Goldman Sachs International (6 år, Executive Director) | Tidl: Kromann Reumert advokat (5 år, M&A) | Udd: MBA, Cand.jur.',
+    photo:'Pictures/Christian Blinkenberg (implementeret).jpeg', photoCrop:'center 55%' },
   { name:'Jesper Buchardt',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
-    note:'MD siden apr 2024. Tidl: Director Corporate Finance (8 år, sept 2016 - juni 2024)',
+    note:'MD siden apr 2024 | Tidl: Director Corporate Finance DB (8 år, 2016–2024) | Deals: SKAKO Vibration/FCDE, MML Keystone/Coptersafety | Mangeårig erfaring i dansk M&A',
     photo:'Pictures/Jesper Buchardt (implementeret).jpeg', photoCrop:'center 35%' },
   { name:'Ulrik Rasmussen',         niveau:'Managing Director', titel:'Managing Director',                     firma:'Danske Bank IB',
     note:'Tidl: SEB Managing Director (15 år!, feb 2001 - maj 2016) | Udd: MSc Accounting & Finance, CBS (1995-2000)',
     photo:'Pictures/Ulrik Rasmussen.jpeg' },
+  { name:'Christian Hansen',        niveau:'Managing Director', titel:'MD, Global Co-Head ECM',                 firma:'Danske Bank IB',
+    note:'Global Co-Head ECM m. Fredrik Segenmark (Stockholm) | Tidl: Nordea Head of ECM Denmark / Senior Manager | Udd: MSc Econ Finance & Accounting KU | Stabskursus Forsvarsakademiet | Deals: Ørsted DKK 60 mia, Tryg DKK 37 mia, DSV ABB DKK 37,3 mia | Alle 3 største nordiske kapitalforhøjelser',
+    photo:'Pictures/Christian Hansen.jpeg' },
   // Directors
-  { name:'Mikko Hirvonen',          niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
-    note:'',
-    photo:'Pictures/Mikko Hirvonen (implementeret).jpeg' },
-  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
-    note:'Tidl: Carnegie IB (6½ år) | Handelsbanken Equity Research | Nykredit Credit Research | Udd: MSc Finance & Accounting CBS | Ekceptionelt dygtig iflg. Futtrup',
+  { name:'Filip R. Monefeldt',      niveau:'Director',          titel:'Head of Corporate Advisory / Director', firma:'Danske Bank IB',
+    note:'Forlod og genindtrådte i DB IB | Tidl: Carnegie IB (6½ år) | Tidl: Handelsbanken Equity Research | Tidl: Nykredit Credit Research | Udd: MSc Finance & Accounting CBS | Ekceptionelt dygtig iflg. Futtrup',
     photo:'Pictures/Filip R. Monefeldt (implementeret).jpeg' },
   { name:'Janus Nygaard',           niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
     note:'Tidl: Carnegie Senior Associate (4½ år) | Falck BD Director (Group M&A & Strategy) | Udd: MSc Finance, Aarhus Uni',
@@ -186,31 +191,34 @@ const PEOPLE = [
   { name:'Christian D. Helvind',    niveau:'Director',          titel:'Director',                              firma:'Danske Bank IB',
     note:'Tidl: ATRIUM Partners (10 år! - fra Analyst til Director) | Ramboll MC | Eksportrådet Atlanta | Udd: MSc Economics, KU',
     photo:'Pictures/Christian D. Helvind (implementeret).jpeg', photoCrop:'center center' },
+  { name:'Maria Malmborg Christensen', niveau:'Director',       titel:'Head of Corporate Advisory DK',          firma:'Danske Bank IB',
+    note:'Head of Corp. Advisory DK siden aug 2024 | Tidl: Monitor Deloitte Senior Manager M&A Consulting (People Lead) | Tidl: Pandora Manager Global Strategy & BD | Tidl: Clearwater International DK (Analyst→Associate Director) | Udd: MSc Applied Economics & Finance CBS (2012-14)',
+    photo:'Pictures/Maria Malmborg Christensen.jpeg' },
+  { name:'Olav Jørgensen',           niveau:'Director',          titel:'Director, Corporate Finance',            firma:'Danske Bank IB',
+    note:'12+ år i Danske Bank | Tidl: KPMG Corporate Finance Manager | "Talented individual with strong skills within finance and IB"',
+    photo:'Pictures/Olav Jørgensen.jpeg' },
   // Associate Directors
   { name:'Casper Jul Rask Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'10+ år i Danske Bank CF (student analyst til AD). Tidl: Hess Corporation | Udd: MSc Finance & Accounting CBS | Exchange ESADE & Regent\'s London',
+    note:'10+ år i Danske Bank CF (student analyst → AD) | Tidl: Hess Corporation | Udd: MSc Finance & Accounting CBS | Exchange ESADE & Regent\'s London',
     photo:'Pictures/Casper Jul Rask Jensen (implementeret).jpeg' },
   { name:'Peter Christian Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'Tidl: FIH Partners IB Analyst (1½ år, M&A) | Nykredit (Capital & Risk) | Udd: MSc Applied Economics & Finance CBS | Exchange Singapore Mgmt Uni',
+    note:'Tidl: FIH Partners IB Analyst (1½ år, M&A) | Nykredit (Capital & Risk) | Udd: MSc Applied Economics & Finance CBS (derivater & fin. instrumenter) | Exchange Singapore Mgmt Uni | Deals: Concentric SEK 8,6 mia, STOK/A&M Capital, Davidsens/Kesko, Better Collective dual listing',
     photo:'Pictures/Peter Christian Jensen (implementeret).jpeg' },
   { name:'Frederik Uggerhøj',       niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
     note:'6+ år Danske Bank CF (junior analyst til AD). Tidl: Capitalmind M&A (student) | Connected Cars BD | Familiefirma Uggerhøj Biler | Udd: MSc Finance & Strategic Mgmt CBS | Privat pilotcertifikat',
     photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg' },
   { name:'Anders Højlund',          niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'Tidl: Clearwater International CF (2 år, Analyst til Associate) | Jyske Bank (Market Risk) | Ramboll MC | TA Aarhus Uni (Statistik) | Udd: MSc Finance, Aarhus Uni',
+    note:'Rekrutteringsansvarlig for CF First Year Analyst-programmet | Tidl: Clearwater International CF (2 år, Analyst til Associate) | Jyske Bank (Market Risk) | Ramboll MC | TA Aarhus Uni (Statistik) | Udd: MSc Finance, Aarhus Uni',
     photo:'Pictures/Anders Højlund (implementeret).jpeg' },
-  { name:'Jonas Mulvad Vendelbo',   niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
-    note:'Tidl: HCN Partners (2 år, AD M&A) | Handelsbanken IB M&A (2 år) | Julius Baer Luxembourg (summer) | Ekstern CBS-rådgiver (M&A/Valuation) | Udd: MSc Finance CBS | Harvard',
-    photo:'Pictures/Jonas Mulvad Vendelbo (implementeret).jpeg' },
   // Associates
   { name:'Valdemar Stengaard',      niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
     note:'',
     photo:'Pictures/Valdemar Stengaard (implementeret).jpeg' },
   { name:'Magnus Johansen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
-    note:'Gruppe 1 med Casper Jul. Tidl: Handelsbanken CF (Part-time Analyst) | Grant Thornton FAS | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
+    note:'Gruppe 1 med Casper Jul | Tidl: Handelsbanken CF (Part-time Analyst) | Tidl: Grant Thornton FAS | Udd: MSc Finance & Accounting CBS (kurser: IB, Equity Securities Analysis, Futures/Options & Fin. Risk) | Exchange Boston Uni',
     photo:'Pictures/Magnus Johansen (implementeret).jpeg' },
   { name:'Martin Andersen',         niveau:'Associate',         titel:'Associate',                             firma:'Danske Bank IB',
-    note:'',
+    note:'Udd: MSc Finance & Accounting CBS (speciale: Valuation of Stelton A/S, 12-tal) | Deals: Better Collective dual listing, Svitzer demerger, STOK/A&M Capital, Autorola 50%, Davidsens/Kesko EUR 190m',
     photo:'Pictures/Martin Andersen (implementeret).jpeg' },
   // Analysts
   { name:'Christian Dahl',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
@@ -223,7 +231,7 @@ const PEOPLE = [
     note:'Tidl: Credit Suisse IB London (Summer Analyst, Healthcare & Consumer - tilbudt fuldtid UBS) | CataCap PE | Tofte & Co IB (1½ år) | Udd: MSc Finance & Strategic Mgmt CBS | Exchange MIT Sloan + Harvard',
     photo:'Pictures/Bavendra Rajendra (implementeret).jpeg' },
   { name:'Mathilde Saigal',         niveau:'Analyst',           titel:'Analyst, Leveraged Finance',            firma:'Danske Bank IB',
-    note:'Leveraged Finance (ikke CF). Tidl: Nordea Markets C&I (3 år - RM Large Corporates, Analyst) | Nordea Operations (3½ år) | Udd: MSc Finance & Strategic Mgmt CBS',
+    note:'Leveraged Finance (ikke CF) | Tidl: Nordea Markets C&I (3 år – RM Large Corporates, Analyst) | Tidl: Nordea Operations (3½ år) | Udd: MSc Finance & Strategic Mgmt CBS',
     photo:'Pictures/Mathilde Saigal (implementeret).jpeg' },
   { name:'Anders C. Jakobsen',      niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
     note:'Tidl: Nykredit Derivatives (Student) | Jyske Bank CIB (Student) | Udd: MSc Finance & Investments CBS | LSE Summer School | BSc Aarhus Uni | Exchange UNSW Sydney',
@@ -235,7 +243,7 @@ const PEOPLE = [
     note:'Tidl: AIP Management Junior Analyst (1½ år) | Carnegie (Equity Research & Sales) | Nordea AM (Student, Group Risk) | Udd: MSc Finance & Accounting CBS',
     photo:'Pictures/Marcus Christensen (implementeret).jpeg' },
   { name:'Lukas Hvidkjær',          niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
-    note:'Tidl: DSV M&A team (2½ år - inkl. EUR 14,3 mia. Schenker-deal!) | Udd: MSc Finance & Accounting CBS',
+    note:'Tiltrådt sommer 2024 | Tidl: DSV M&A team (2½ år – EUR 14,3 mia. Schenker-deal!) | Udd: BSc International Business CBS → MSc Finance & Accounting CBS | Arbejder på ECM- og M&A-transaktioner',
     photo:'Pictures/Lukas Hvidkjær (implementeret).jpeg' },
   { name:'Frederik Emil Haven',     niveau:'Analyst',           titel:'Analyst',                               firma:'Danske Bank IB',
     note:'Tidl: Waterland PE (Student Analyst, 2½ år) | Accunia Credit Mgmt (1½ år) | Udd: MSc Finance & Accounting CBS | Exchange Boston Uni',
@@ -244,6 +252,181 @@ const PEOPLE = [
     note:'Tidl: FIH Partners IB Analyst (2 år, M&A) | Slättö RE PE (Intern) | Grant Thornton TAS | Deloitte Audit (1½ år) | Udd: MSc Finance & Accounting CBS',
     photo:'Pictures/Julius B. Sørensen (implementeret).jpeg' },
 ];
+
+/* ──────────────────────────────────────────────
+   PEOPLE CARD TIMELINE HELPERS
+────────────────────────────────────────────── */
+const PERSON_LOGO_MAP = [
+  // Banks & advisors
+  { k:'Danske Bank',        d:'danskebank.com' },
+  { k:'Goldman Sachs',      d:'goldmansachs.com' },
+  { k:'SEB',                d:'sebgroup.com' },
+  { k:'Carnegie',           d:'carnegiegroup.com' },
+  { k:'Nordea',             d:'nordea.com' },
+  { k:'Handelsbanken',      d:'handelsbanken.com' },
+  { k:'Jyske Bank',         d:'jyskebank.dk' },
+  { k:'Nykredit',           d:'nykredit.dk' },
+  { k:'ING',                d:'ing.com' },
+  { k:'Mizuho',             d:'mizuho-fg.com' },
+  { k:'Lloyds',             d:'lloydsbank.com' },
+  { k:'Clearwater',         d:'clearwaterinternational.com' },
+  { k:'FIH',                d:'fih.dk' },
+  { k:'Capitalmind',        d:'capitalmind.com' },
+  { k:'Julius Baer',        d:'juliusbaer.com' },
+  { k:'Credit Suisse',      d:'credit-suisse.com' },
+  { k:'UBS',                d:'ubs.com' },
+  { k:'Kromann Reumert',    d:'kromannreumert.com' },
+  { k:'Tofte',              d:'tofte.dk' },
+  { k:'Accunia',            d:'accunia.com' },
+  { k:'Waterland',          d:'waterland.com' },
+  { k:'Slättö',             d:'slatto.com' },
+  // Consulting & advisory
+  { k:'Monitor Deloitte',   d:'deloitte.com' },
+  { k:'Deloitte',           d:'deloitte.com' },
+  { k:'KPMG',               d:'kpmg.com' },
+  { k:'Grant Thornton',     d:'grantthornton.com' },
+  { k:'Ramboll',            d:'ramboll.com' },
+  { k:'ATRIUM',             d:'atriumpartners.dk' },
+  // PE & asset management
+  { k:'Novo Holdings',      d:'novoholdings.com' },
+  { k:'CataCap',            d:'catacap.dk' },
+  { k:'AIP Management',     d:'aipmanagement.com' },
+  { k:'Thylander',          d:'thylander.dk' },
+  // Corporates
+  { k:'Pandora',            d:'pandoragroup.com' },
+  { k:'Falck',              d:'falck.com' },
+  { k:'DSV',                d:'dsv.com' },
+  { k:'Hess',               d:'hess.com' },
+  { k:'DONG',               d:'orsted.com' },
+  { k:'emmerys',            d:'emmerys.dk' },
+  // Education
+  { k:'CBS',                d:'cbs.dk' },
+  { k:'KU',                 d:'ku.dk' },
+  { k:'Aarhus Uni',         d:'au.dk' },
+  { k:'London Business School', d:'london.edu' },
+  { k:'LBS',                d:'london.edu' },
+  { k:'Harvard',            d:'harvard.edu' },
+  { k:'MIT',                d:'mit.edu' },
+  { k:'ESADE',              d:'esade.edu' },
+  { k:'IMD',                d:'imd.org' },
+  { k:'LSE',                d:'lse.ac.uk' },
+  { k:'Melbourne',          d:'unimelb.edu.au' },
+  { k:'Forsvarsakademiet',  d:'fak.dk' },
+  { k:'Regent',             d:'regents.ac.uk' },
+  { k:'Singapore',          d:'smu.edu.sg' },
+  { k:'UNSW',               d:'unsw.edu.au' },
+  { k:'Boston Uni',         d:'bu.edu' },
+];
+
+function findPersonDomain(text) {
+  const t = text.toLowerCase();
+  for (const { k, d } of PERSON_LOGO_MAP) {
+    if (t.includes(k.toLowerCase())) return d;
+  }
+  return null;
+}
+
+const EDU_RE = /\b(MSc|BSc|MBA|Cand\.|PhD|LLM|HD|Exchange|Stabskursus|IMD|Harvard|ESADE|Regent|INSEAD|LSE|ESCP|HEC)\b/i;
+
+function buildPeopleTimeline(note) {
+  if (!note) return '';
+  const segments = note.split(' | ').map(s => s.trim()).filter(Boolean);
+  const buckets = { prev: [], edu: [], deals: [], note: [] };
+  let prevChain = false;
+
+  for (const seg of segments) {
+    if (/^Tidl:/i.test(seg)) {
+      prevChain = true;
+      buckets.prev.push(seg.replace(/^Tidl:\s*/i, ''));
+    } else if (/^Udd:/i.test(seg)) {
+      prevChain = false;
+      buckets.edu.push(seg.replace(/^Udd:\s*/i, ''));
+    } else if (/^(Deals?:|Nøgle-deals?:)/i.test(seg)) {
+      prevChain = false;
+      buckets.deals.push(seg.replace(/^(Deals?:|Nøgle-deals?:)\s*/i, ''));
+    } else if (EDU_RE.test(seg)) {
+      prevChain = false;
+      buckets.edu.push(seg);
+    } else if (prevChain) {
+      buckets.prev.push(seg);
+    } else {
+      buckets.note.push(seg);
+    }
+  }
+
+  const item = (text, type) => {
+    const domain = findPersonDomain(text);
+    const visual = domain
+      ? `<img class="cb-item-logo" src="${logoUrl(domain, 32)}" alt="" loading="lazy" referrerpolicy="origin" onerror="this.style.display='none'">`
+      : `<div class="cb-item-dot"></div>`;
+    return `<div class="cb-item"><div class="cb-item-visual">${visual}</div><div class="cb-item-text">${text}</div></div>`;
+  };
+
+  let html = '';
+  if (buckets.prev.length) {
+    html += '<div class="cb-sl">Erfaring</div>';
+    buckets.prev.forEach(t => { html += item(t, 'prev'); });
+  }
+  if (buckets.edu.length) {
+    html += '<div class="cb-sl">Uddannelse</div>';
+    buckets.edu.forEach(t => { html += item(t, 'edu'); });
+  }
+  if (buckets.deals.length) {
+    html += '<div class="cb-sl">Nøgle-deals</div>';
+    buckets.deals.forEach(t => { html += item(t, 'deals'); });
+  }
+  if (buckets.note.length) {
+    html += '<div class="cb-sl">Info</div>';
+    buckets.note.forEach(t => { html += item(t, 'note'); });
+  }
+  return html;
+}
+
+/* ──────────────────────────────────────────────
+   OFFLINE STATUS & SYNC QUEUE
+────────────────────────────────────────────── */
+const OFFLINE_QUEUE_KEY = 'ibprep_offline_queue';
+
+function updateOnlineStatus() {
+  const pill = document.getElementById('offline-pill');
+  if (pill) pill.style.display = navigator.onLine ? 'none' : 'flex';
+  if (!navigator.onLine) {
+    // Reinitialise icons in case the pill just appeared
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+
+async function flushOfflineQueue() {
+  if (!navigator.onLine) return;
+  const queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+  if (!queue.length) return;
+
+  // Need a logged-in user to push to Firestore
+  const u = window.auth && window.auth.currentUser;
+  if (!u) return;
+
+  const docRef = window.doc(window.db, 'users', u.uid);
+  const updates = {};
+  queue.forEach(({ cardId, data }) => { updates[`cards.${cardId}`] = data; });
+
+  try {
+    await window.updateDoc(docRef, updates).catch(async () => {
+      await window.setDoc(docRef, { cards: Object.fromEntries(
+        queue.map(({ cardId, data }) => [cardId, data])
+      )});
+    });
+    localStorage.removeItem(OFFLINE_QUEUE_KEY);
+    toast(`☁️ ${queue.length} svar synkroniseret`);
+  } catch (e) {
+    console.warn('[Sync] Flush failed:', e);
+  }
+}
+
+window.addEventListener('online',  () => { updateOnlineStatus(); flushOfflineQueue(); });
+window.addEventListener('offline', () => { updateOnlineStatus(); toast('✈️ Offline — svar gemmes lokalt'); });
+
+// Run once on startup
+document.addEventListener('DOMContentLoaded', updateOnlineStatus);
 
 /* ──────────────────────────────────────────────
    FIREBASE & SYNC LOGIC
@@ -295,13 +478,19 @@ if (window.auth) {
 
 async function loadUserData() {
   if (!user) return;
-  const docRef = window.doc(window.db, "users", user.uid);
-  const docSnap = await window.getDoc(docRef);
-  if (docSnap.exists()) {
-    cardData = docSnap.data().cards || {};
-  } else {
-    // New user
-    await window.setDoc(docRef, { cards: {} });
+  try {
+    const docRef = window.doc(window.db, "users", user.uid);
+    const docSnap = await window.getDoc(docRef);
+    if (docSnap.exists()) {
+      cardData = docSnap.data().cards || {};
+    } else {
+      // New user — only write if we're online
+      if (navigator.onLine) await window.setDoc(docRef, { cards: {} });
+    }
+    // Flush any pending offline writes now that we're authenticated + online
+    if (navigator.onLine) flushOfflineQueue();
+  } catch (e) {
+    console.warn('[loadUserData] Offline or error:', e);
   }
 }
 
@@ -315,14 +504,28 @@ async function syncCard(cardId, rating) {
     cardData = local;
     return;
   }
-  
+
   if (!cardData[cardId]) cardData[cardId] = { ratings: [] };
   cardData[cardId].ratings.push(rating);
   cardData[cardId].lastSeen = Date.now();
-  
+
+  // Offline → queue for later sync (SM-2 data already saved to localStorage)
+  if (!navigator.onLine) {
+    const queue = JSON.parse(localStorage.getItem(OFFLINE_QUEUE_KEY) || '[]');
+    // Upsert: replace existing entry for same cardId with latest data
+    const idx = queue.findIndex(q => q.cardId === cardId);
+    const entry = { cardId, data: cardData[cardId], ts: Date.now() };
+    if (idx >= 0) queue[idx] = entry; else queue.push(entry);
+    localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+    return;
+  }
+
   const docRef = window.doc(window.db, "users", user.uid);
   await window.updateDoc(docRef, {
     [`cards.${cardId}`]: cardData[cardId]
+  }).catch(async () => {
+    // If updateDoc fails (e.g. doc doesn't exist yet) fall back to setDoc
+    await window.setDoc(docRef, { cards: { [cardId]: cardData[cardId] } });
   });
 }
 
@@ -578,6 +781,9 @@ const ALL_CARDS = [
   })),
   ...(typeof KNOWLEDGE_2 !== 'undefined' ? KNOWLEDGE_2 : []).map((k, i) => ({
     id: `k2_${i}`, type: 'knowledge', ...k,
+  })),
+  ...(typeof DEAL_CARDS !== 'undefined' ? DEAL_CARDS : []).map((k, i) => ({
+    id: `dl_${i}`, type: 'knowledge', ...k,
   })),
 ];
 
@@ -862,34 +1068,29 @@ function renderPeopleBack(c, meta) {
   document.getElementById('cb-knowledge').style.display = 'none';
   document.getElementById('cback').style.setProperty('--deck-color', meta.color);
 
-  // Back avatar (small)
   const cbAv = document.getElementById('cb-initials');
   const cbPh = document.getElementById('cb-photo');
-  if (c.photo) { 
-    cbPh.src = c.photo; 
-    cbPh.style.display = ''; 
-    cbPh.style.objectPosition = c.photoCrop ? c.photoCrop : 'top center';
-    cbAv.style.display = 'none'; 
-  }
-  else { 
-    applyAv(cbAv, c.name); 
-    cbAv.style.display = ''; 
-    cbPh.style.display = 'none'; 
+  if (c.photo) {
+    cbPh.src = c.photo;
+    cbPh.style.display = '';
+    cbPh.style.objectPosition = c.photoCrop || 'center 25%';
+    cbAv.style.display = 'none';
+  } else {
+    applyAv(cbAv, c.name);
+    cbAv.style.display = '';
+    cbPh.style.display = 'none';
   }
 
   document.getElementById('cb-name').textContent  = c.name;
-  document.getElementById('cb-title').textContent = c.titel||'';
-  if (c.note) {
-    document.getElementById('cb-note').innerHTML  = c.note.split(' | ').join('<br><br>');
-  } else {
-    document.getElementById('cb-note').innerHTML  = '';
-  }
+  document.getElementById('cb-title').textContent = c.titel || '';
 
   const chip = document.getElementById('cb-level');
   chip.textContent = c.niveau;
-  chip.className   = 'level-chip ' + (LEVEL_CLASS[c.niveau]||'');
+  chip.className   = 'level-chip ' + (LEVEL_CLASS[c.niveau] || '');
 
   document.getElementById('cb-deck-tag').textContent = meta.name;
+  document.getElementById('cb-timeline').innerHTML = buildPeopleTimeline(c.note);
+  lucide.createIcons();
 }
 
 function companyLogoMarkup(c, size = 72, cls = 'company-logo') {
@@ -1239,6 +1440,7 @@ function showView(id) {
   if (id==='v-browse') renderBrowse();
   if (id==='v-dashboard') renderDashboard();
   if (id==='v-flows' && typeof renderFlows === 'function') renderFlows();
+  if (id==='v-market-map' && typeof renderMarketMap === 'function') renderMarketMap();
 }
 function goHome() { renderHome(); showView('v-home'); }
 
