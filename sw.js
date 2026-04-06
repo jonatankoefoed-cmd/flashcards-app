@@ -3,7 +3,7 @@
    Offline-first caching for plane/no-network study
 ═══════════════════════════════════════════════ */
 // Bump this when deploying changes that must invalidate previously cached assets.
-const CACHE_NAME = 'ibprep-v4';
+const CACHE_NAME = 'ibprep-v5';
 
 const PRECACHE_ASSETS = [
   '/',
@@ -47,19 +47,22 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
   /* Local files → cache-first (works fully offline) */
-  if (url.origin === self.location.origin) {
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-          return res;
-        }).catch(() => caches.match('/index.html')); // fallback to shell
-      })
-    );
-    return;
-  }
+	  if (url.origin === self.location.origin) {
+	    e.respondWith(
+	      caches.match(e.request).then(cached => {
+	        if (cached) return cached;
+	        return fetch(e.request).then(res => {
+	          // Avoid caching 404/500 etc. Otherwise a missing asset can get "stuck" offline.
+	          if (res && res.ok) {
+	            const clone = res.clone();
+	            caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+	          }
+	          return res;
+	        }).catch(() => caches.match('/index.html')); // fallback to shell
+	      })
+	    );
+	    return;
+	  }
 
   /* External assets (fonts, icons) → network-first, fall back to cache */
   const isCacheable =
@@ -67,18 +70,20 @@ self.addEventListener('fetch', e => {
     url.hostname.includes('fonts.gstatic.com') ||
     url.hostname.includes('unpkg.com');
 
-  if (isCacheable) {
-    e.respondWith(
-      fetch(e.request)
-        .then(res => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-          return res;
-        })
-        .catch(() => caches.match(e.request))
-    );
-    return;
-  }
+	  if (isCacheable) {
+	    e.respondWith(
+	      fetch(e.request)
+	        .then(res => {
+	          if (res && res.ok) {
+	            const clone = res.clone();
+	            caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
+	          }
+	          return res;
+	        })
+	        .catch(() => caches.match(e.request))
+	    );
+	    return;
+	  }
 
   /* Firebase & everything else → network only, fail silently */
   // (Firebase has its own offline persistence layer)
