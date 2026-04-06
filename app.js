@@ -894,11 +894,35 @@ const PERSON_LOGO_MAP = [
 ];
 
 function findPersonDomain(text) {
-  const t = text.toLowerCase();
+  const haystack = ` ${normalizeLogoText(text)} `;
+  let best = null;
+
   for (const { k, d } of PERSON_LOGO_MAP) {
-    if (t.includes(k.toLowerCase())) return d;
+    const needle = normalizeLogoText(k);
+    if (!needle) continue;
+
+    const rx = new RegExp(`(^|[^a-z0-9])${escapeRegex(needle)}(?=$|[^a-z0-9])`);
+    const match = haystack.match(rx);
+    if (!match || match.index == null) continue;
+
+    const index = match.index;
+    if (!best || index < best.index || (index === best.index && needle.length > best.needle.length)) {
+      best = { index, needle, domain: d };
+    }
   }
-  return null;
+
+  return best ? best.domain : null;
+}
+
+function normalizeLogoText(value = '') {
+  return String(value)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+function escapeRegex(value = '') {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function escapeHtml(value = '') {
