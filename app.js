@@ -194,9 +194,9 @@ const PEOPLE = [
   { name:'Maria Malmborg Christensen', niveau:'Director',       titel:'Head of Corporate Advisory DK',          firma:'Danske Bank IB',
     note:'Head of Corp. Advisory DK siden aug 2024 | Tidl: Monitor Deloitte Senior Manager M&A Consulting (People Lead) | Tidl: Pandora Manager Global Strategy & BD | Tidl: Clearwater International DK (Analyst→Associate Director) | Udd: MSc Applied Economics & Finance CBS (2012-14)',
     photo:'Pictures/Maria Malmborg Christensen.jpeg' },
-  { name:'Olav Jørgensen',           niveau:'Director',          titel:'Director, Corporate Finance',            firma:'Danske Bank IB',
-    note:'12+ år i Danske Bank | Tidl: KPMG Corporate Finance Manager | "Talented individual with strong skills within finance and IB"',
-    photo:'Pictures/Olav Jørgensen.jpeg' },
+	  { name:'Olav Jørgensen',           niveau:'Director',          titel:'Director, Corporate Finance',            firma:'Danske Bank IB',
+	    note:'12+ år i Danske Bank | Tidl: KPMG Corporate Finance Manager | "Talented individual with strong skills within finance and IB"',
+	    photo:'Pictures/Olav Jorgensen.jpeg' },
   // Associate Directors
   { name:'Casper Jul Rask Jensen',  niveau:'Associate Director',titel:'Associate Director',                    firma:'Danske Bank IB',
     note:'10+ år i Danske Bank CF (student analyst → AD) | Tidl: Hess Corporation | Udd: MSc Finance & Accounting CBS | Exchange ESADE & Regent\'s London',
