@@ -98,7 +98,7 @@
 
   <main class="study-main">
     <div class="scene" id="scene">
-      <div class="card" id="flashcard" onclick="flipCard()">
+      <div class="card" id="flashcard">
 
         <!-- ── FRONT ── -->
         <div class="cface cfront" id="cfront">
@@ -132,18 +132,29 @@
 
           <!-- People back -->
           <div id="cb-people">
-            <div class="cb-phead">
-              <div class="cb-pavatar">
-                <img class="av-photo av-sm" id="cb-photo" src="" alt="" style="display:none"/>
-                <div class="av-initials av-sm" id="cb-initials"></div>
+            <div class="cb-people-scroll" id="cb-people-scroll" data-scrollable="true">
+              <div class="cb-phead">
+                <div class="cb-pavatar">
+                  <img class="av-photo av-sm" id="cb-photo" src="" alt="" style="display:none"/>
+                  <div class="av-initials av-sm" id="cb-initials"></div>
+                </div>
+                <div class="cb-phead-info">
+                  <div class="cb-name-row">
+                    <h2 class="cb-name" id="cb-name"></h2>
+                    <div class="level-chip" id="cb-level"></div>
+                  </div>
+                  <p class="cb-title" id="cb-title"></p>
+                </div>
               </div>
-              <div class="cb-phead-info">
-                <h2 class="cb-name" id="cb-name"></h2>
-                <div class="level-chip" id="cb-level"></div>
+
+              <div class="cb-overview-card" id="cb-overview-card">
+                <div class="cb-overview-label">High-level overview</div>
+                <p class="cb-overview" id="cb-overview"></p>
+                <div class="cb-team-context" id="cb-team-context" style="display:none"></div>
               </div>
+
+              <div class="cb-profile-sections" id="cb-profile-sections"></div>
             </div>
-            <p class="cb-title" id="cb-title"></p>
-            <div class="cb-timeline" id="cb-timeline"></div>
           </div>
 
           <!-- Knowledge back -->
