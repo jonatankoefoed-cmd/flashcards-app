@@ -2,7 +2,8 @@
    IB Prep · Service Worker
    Offline-first caching for plane/no-network study
 ═══════════════════════════════════════════════ */
-const CACHE_NAME = 'ibprep-v3';
+// Bump this when deploying changes that must invalidate previously cached assets.
+const CACHE_NAME = 'ibprep-v4';
 
 const PRECACHE_ASSETS = [
   '/',
