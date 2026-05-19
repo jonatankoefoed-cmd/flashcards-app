@@ -1475,6 +1475,39 @@ const KNOWLEDGE = [
 
 ];
 
+const MULTIPLES_CONTEXT_EXAMPLES = {
+  'EV/EBITDA: SaaS (Software as a Service)': '<br><br><strong>Nordisk eksempel:</strong> Trustpilot er en god listed platform-/software-reference, hvor EV/Sales giver mere mening end ren EBITDA, fordi værdien ligger i skalerbar toplinje, gross margin og vejen til profitabilitet. SimCorp er en mere moden software-reference, hvor retention, mission-critical workflow og margin-kvalitet forklarer premium software-multipler.',
+  'EV/EBITDA: Industrielle selskaber': '<br><br><strong>Nordisk eksempel:</strong> NKT og Rockwool illustrerer to forskellige industri-lenses: NKT læses meget gennem backlog, kabelkapacitet og execution, mens Rockwool læses gennem byggemarked, pricing power og energi-/råvareeksponering. Begge kræver normaliseret EBITDA gennem cyklus.',
+  'Multipler for Banker & Finans': '<br><br><strong>Nordisk eksempel:</strong> Danske Bank, Nordea og Jyske Bank sammenlignes typisk på P/B, P/E, ROE, CET1-buffer og tabsniveauer. En bank kan se billig ud på P/B, men kun være billig reelt, hvis ROE kan overstige cost of equity over tid.',
+  'EV/EBITDA: Consumer Staples': '<br><br><strong>Nordisk eksempel:</strong> Carlsberg og Royal Unibrew læses på EV/EBITDA og P/E, men premium/rabat afhænger af brandstyrke, pris/mix, volumen, geografisk eksponering og cash conversion. Orkla er en bredere nordisk food/reference for lavere vækst og defensiv cash flow.',
+  'EV/EBITDA: Pharma & Healthcare': '<br><br><strong>Nordisk eksempel:</strong> Novo Nordisk læses primært som quality growth via P/E og pipeline/markedsstørrelse, Genmab mere som royalty- og pipelinecase, Zealand Pharma mere via EV/Sales/rNPV, og Coloplast/Demant som medtech med recurring procedure- eller replacement-demand.',
+  'Sector Multiples: Energy, Renewables & Olie/Gas': '<br><br><strong>Nordisk eksempel:</strong> Ørsted er renewables/project-DCF, hvor WACC, capex og farm-down economics er centrale. Equinor og Aker BP er olie/gas-referencer, hvor reserver, lifting cost, oliepris og EV/EBITDAX betyder mere end klassisk EV/EBITDA alene.',
+  'Sector Multiples: Insurance': '<br><br><strong>Nordisk eksempel:</strong> Tryg, Alm. Brand og Sampo læses på P/E, P/B, Solvency II og combined ratio. En lav combined ratio over tid kan retfærdiggøre højere P/B, fordi underwriting profit er mere kvalitativ end tilfældigt investeringsafkast.',
+  'Sector Multiples: Transport, Logistics & Shipping': '<br><br><strong>Nordisk eksempel:</strong> DSV er asset-light logistics og får typisk en anden multiple-logik end Mærsk. DSV handler om gross profit, conversion margin og M&A-integration; Mærsk handler mere om container cycle, fleet/asset value og mid-cycle earnings.',
+  'Sector Multiples: Construction & Building Products': '<br><br><strong>Nordisk eksempel:</strong> Rockwool er building products med pricing power og margin-fokus, mens Per Aarsleff og MT Højgaard er contractor-/project-risk cases, hvor backlog-kvalitet, working capital og tabsgivende projekter er vigtigere end toplinjevækst alene.',
+  'Kontrolpræmie i M&A': '<br><br><strong>Nordisk eksempel:</strong> I en public take-private eller et strategisk opkøb, fx en storaktionær der vil købe et børsnoteret dansk selskab helt af markedet, betales der normalt præmie for kontrol, adgang til synergier og muligheden for at gennemføre ændringer uden minoritetsaktionærer.',
+  'Hvornår bruges EV/Revenue?': '<br><br><strong>Nordisk eksempel:</strong> Trustpilot og Zealand Pharma er gode cases: begge kan have værdi, som EBITDA ikke fanger rent. For Trustpilot handler analysen om skalerbar revenue quality; for Zealand handler den om pipeline, kommercialisering og peak-sales potentiale.',
+  'Hvad justeres EBITDA for i M&A?': '<br><br><strong>Nordisk eksempel:</strong> I en dansk mid-market services- eller industrivirksomhed kan add-backs være ejerløn, engangsomkostninger, tabt/vundet kunde, run-rate prisstigninger eller carve-out costs. Ved 10x EV/EBITDA bliver DKK 5 mio. normaliseret EBITDA til DKK 50 mio. enterprise value.',
+  'EV/EBITDA vs P/E — Hvornår bruges hvilken?': '<br><br><strong>Nordisk eksempel:</strong> DSV er et godt EV/EBITDA/P/E-eksempel, fordi driften kan sammenlignes kapitalstruktur-neutralt med andre logistics peers. Danske Bank er modsat et P/B/P/E-eksempel, fordi funding og renter er en del af selve forretningen.',
+  'EV Bridge: Hvordan går man fra Equity Value til Enterprise Value?': '<br><br><strong>Nordisk eksempel:</strong> GN Store Nord viser hvorfor EV kan afvige meget fra equity value, når gæld og leases fylder. Mærsk kan i perioder være det modsatte eksempel, hvor net cash/asset backing gør equity-to-EV bridge central for at forstå den reelle driftsværdi.',
+  'Football Field Valuation: Hvad er det, og hvordan læses det?': '<br><br><strong>Nordisk eksempel:</strong> På en DSV/Schenker- eller Coloplast/Kerecis-lignende analyse ville football field typisk vise trading comps, precedent transactions, DCF og måske broker/analyst views side om side, så klienten ser en range frem for ét falsk præcist tal.',
+  'DCF vs. Comps vs. Precedent Transactions — Hvornår stoler man mest på hvad?': '<br><br><strong>Nordisk eksempel:</strong> Ørsted kræver ofte mere DCF/project economics end rene trading comps, fordi hvert offshore-projekt har særskilt capex, timing og WACC. Carlsberg er nemmere at triangulere mod globale beverage comps, fordi peer-gruppen er mere moden og sammenlignelig.',
+  'LTM vs. NTM Multiples — Bør du benytte historik eller estimater?': '<br><br><strong>Nordisk eksempel:</strong> Vestas, Ørsted og NKT er ofte mere relevante på forward/NTM, fordi ordreindgang, margin recovery og projektleverancer ændrer earnings-base hurtigt. For mere stabile staples som Carlsberg kan LTM stadig være nyttig som sanity check.',
+  'WACC — Komponenter og typiske ranges': '<br><br><strong>Nordisk eksempel:</strong> En regulated infrastructure asset som Copenhagen Airports eller et fjernvarmenet bør normalt have lavere WACC end en offshore wind developer som Ørsted, hvor project delays, merchant power exposure og supply-chain risk løfter equity risk premium.',
+  'Terminal Value: Gordon Growth vs. Exit Multiple Method': '<br><br><strong>Nordisk eksempel:</strong> For Carlsberg eller Rockwool vil en exit multiple ofte være intuitiv, fordi peers handles på EV/EBITDA/P/E. For regulated infrastructure kan Gordon Growth give mening, hvis cash flows er lange, stabile og inflationslinkede.',
+  'Sector Multiples: Utilities & Infrastructure': '<br><br><strong>Nordisk eksempel:</strong> Copenhagen Airports, TDC Net/fiber assets og nordiske fjernvarme-/netaktiver læses ofte som infrastructure: stabilitet, reguleret eller kontraktlig cash flow, capex pipeline, debt capacity og concession/regulatory risk.',
+  'Sector Multiples: Real Estate / Ejendomsselskaber': '<br><br><strong>Nordisk eksempel:</strong> Jeudan, Castellum og Catena er gode P/NAV- og implied yield-cases. Kontor, logistics og residential kan ikke bare sammenlignes på samme EBITDA-multiple, fordi cap rates, vacancy, WAULT og LTV driver værdien.',
+  'Sector Multiples: Telecom Operations': '<br><br><strong>Nordisk eksempel:</strong> TDC Net, Telia og Telenor viser forskellen mellem retail telco og infrastructure-like fiber/tower assets. Retail handler om ARPU, churn og konkurrence; net/fiber handler mere om capex, penetration, kontraktlængde og FCF.',
+  'Implied vs. Paid Multiples i Precedent Transactions': '<br><br><strong>Nordisk eksempel:</strong> Hvis en strategisk køber betaler en høj paid multiple for et nordisk medtech- eller softwaretarget, kan den være højere end trading comps, fordi køber indregner kontrol, cost synergies, revenue synergies og platform value.',
+  'Accretion / Dilution (EPS Impact)': '<br><br><strong>Nordisk eksempel:</strong> I en DSV/Schenker-lignende handel afhænger accretion/dilution af købspris, finansieringsmix, renter, skat og synergy timing. En handel kan være strategisk rigtig, men stadig kortsigtet dilutive, hvis finansieringsomkostninger og integration rammer EPS før synergierne.'
+};
+
+function addMultiplesContextExample(card) {
+  if (card.deckId !== 'multiples') return card;
+  const example = MULTIPLES_CONTEXT_EXAMPLES[card.q];
+  return example ? { ...card, a: `${card.a}${example}` } : card;
+}
+
 /* ──────────────────────────────────────────────
    BUILD MASTER CARD ARRAY
 ────────────────────────────────────────────── */
@@ -1483,7 +1516,7 @@ const ALL_CARDS = [
     ...p, id: `p-${personCardKey(p)}`, type: 'people', deckId: 'people',
   })),
   ...KNOWLEDGE.filter(k => k.deckId !== 'c25').map((k, i) => ({
-    id: `k${i}`, type: 'knowledge', ...k,
+    id: `k${i}`, type: 'knowledge', ...addMultiplesContextExample(k),
   })),
   ...COMPANY_CARDS.map((c, i) => ({
     id: `c${i}`, type: 'company', deckId: 'c25', ...c, ...(COMPANY_MARKET_DATA[c.name] || {}),
