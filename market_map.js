@@ -18,10 +18,39 @@ const MARKET_MAP = {
       { name:'Citigroup',           domain:'citigroup.com',        tag:'Joint FA m. DB på Svitzer demerger & APMH/Concentric SEK 8,6 mia.' },
       { name:'BNP Paribas',         domain:'bnpparibas.com',       tag:'Co-lead Ørsted DKK 60 mia. Stærk European DCM/ECM franchise.' },
       { name:'Jefferies',           domain:'jefferies.com',        tag:'Co-lead Coloplast DKK 9,2 mia (Sole GC=DB), Better Collective, Zealand. Mid-cap specialist.' },
+      { name:'Deutsche Bank',        domain:'db.com',               tag:'Global co-lead på Netcompany IPO sammen med Danske Bank og Morgan Stanley. Relevant når dansk ECM kræver international distribution.' },
+      { name:'Handelsbanken',        domain:'handelsbanken.com',    tag:'Nordisk co-bookrunner på bl.a. Harvia IPO. Typisk samarbejdspartner/konkurrent i nordiske mid-cap ECM-syndikater.' },
+      { name:'SB1 Markets',          domain:'sb1markets.no',        tag:'Norsk ECM/DCM-hus. Co-bookrunner med DB på Catena directed issue; relevant i nordiske listed real estate og infrastructure cases.' },
+      { name:'Van Lanschot Kempen',  domain:'vanlanschotkempen.com',tag:'Benelux/nordisk ECM-specialist. Co-bookrunner med DB på Catena; stærk i listed real estate og mid-cap distribution.' },
       { name:'Nordea',              domain:'nordea.com',           tag:'Største nordiske rival. Joint FA Novozymes/Chr. Hansen. Co-lead mange danske ECM deals.' },
       { name:'Carnegie',            domain:'carnegie.se',          tag:'Nordisk M&A/ECM boutique. Direkte konkurrent i mid-market. Flere DB-folk er tidl. Carnegie.' },
+      { name:'FIH Partners',         domain:'fih.dk',               tag:'Stærk dansk independent M&A-boutique og Prospera-topnavn. Efter ABG-købet er FIH/ABG en endnu stærkere DK-rival.' },
       { name:'SEB',                 domain:'seb.se',               tag:'Nordisk universal bank. Sole GC Röko IPO (DB som JBR). Atilla, Knaack & Ulrik = tidl. SEB.' },
       { name:'ABG Sundal Collier',  domain:'abgsc.com',            tag:'Nordisk niche-IB. Konkurrent i mid-cap ECM/M&A. Mangler cross-border reach vs DB+DC.' },
+    ]
+  },
+  process_partners: {
+    title: 'Procespartnere',
+    subtitle: 'Legal, due diligence, settlement og andre rådgivere man møder i execution',
+    icon: 'network',
+    color: '#0D9488',
+    entities: [
+      { name:'Gorrissen Federspiel', domain:'gorrissenfederspiel.com', tag:'Dansk Tier 1 law firm. Typisk klient- eller modpartscounsel i større danske M&A, ECM og governance-sager.' },
+      { name:'Kromann Reumert',      domain:'kromannreumert.com',      tag:'Dansk top-tier legal house. Relevant på public M&A, IPOs, SPA-forhandlinger, DD og regulatoriske spørgsmål.' },
+      { name:'Plesner',              domain:'plesner.com',             tag:'Dansk premium counsel. Ofte tæt på større corporate, PE og capital markets-transaktioner.' },
+      { name:'Accura',               domain:'accura.dk',               tag:'M&A- og PE-tungt dansk advokathus. Vigtigt navn i sponsorprocesser, vendor DD og SPA-workstreams.' },
+      { name:'Bruun & Hjejle',       domain:'bruunhjejle.dk',          tag:'Dansk Tier 1 counsel med stærk transaktions- og tvistprofil. Relevant i større danske premium deals.' },
+      { name:'Moalem Weitemeyer',    domain:'moalemweitemeyer.com',    tag:'Dansk counsel på Freudenberg/Nilfisk. Specialiseret corporate/M&A og capital markets execution.' },
+      { name:'A&O Shearman',         domain:'aoshearman.com',          tag:'International counsel på Freudenberg/Nilfisk. Dukker op når public M&A eller financing har cross-border kompleksitet.' },
+      { name:'Baker McKenzie',       domain:'bakermckenzie.com',       tag:'Rådgiver for joint bookrunners på Catena share issue. Global legal platform med ECM- og tax-kapacitet.' },
+      { name:'Castrén & Snellman',   domain:'castren.fi',              tag:'Finsk top-tier counsel for bookrunners på Harvia IPO. Relevant i nordiske IPOs med lokal legal execution.' },
+      { name:'Borenius',             domain:'borenius.com',            tag:'Finsk counsel for issuer på Harvia IPO. God reference for lokal selskabs- og prospektjura i Finland.' },
+      { name:'Krogerus',             domain:'krogerus.com',            tag:'Legal advisor på Attendo healthcare Finland. Relevant i finsk M&A og sector carve-outs.' },
+      { name:'Deloitte',             domain:'deloitte.com',            tag:'Big Four FDD/commercial DD/tax/ESG. Ofte synlig internt i processen selv når public announcement kun nævner banker og lawyers.' },
+      { name:'EY',                   domain:'ey.com',                  tag:'FDD, tax, separation, carve-out og vendor assistance. Tæt på QoE, net debt, NWC og SPA schedules.' },
+      { name:'PwC',                  domain:'pwc.com',                 tag:'Financial, tax og operational DD. Relevant i både PE buy-side, sell-side VDD og IPO readiness.' },
+      { name:'KPMG',                 domain:'kpmg.com',                tag:'Corporate finance, FDD og tax DD. Typisk workstream-partner omkring normalized EBITDA, NWC og carve-out accounts.' },
+      { name:'Nasdaq Copenhagen',    domain:'nasdaq.com',              tag:'Børs, listing venue og disclosure-ramme. Central i IPOs, dual listings, ABBs og public market mechanics.' },
     ]
   },
   pe_sponsors: {
@@ -71,9 +100,9 @@ function renderMarketMap() {
   main.innerHTML = `
     <div class="mm-hero">
       <h1 class="mm-hero-title">Market Map</h1>
-      <p class="mm-hero-sub">Finansielt økosystem omkring Danske Bank IB — konkurrenter, PE-fonde og nøgleklienter.</p>
+      <p class="mm-hero-sub">Finansielt økosystem omkring Danske Bank IB — konkurrenter, procespartnere, PE-fonde og nøgleklienter.</p>
     </div>
-    ${['competitors','pe_sponsors','key_clients'].map(key => {
+    ${['competitors','process_partners','pe_sponsors','key_clients'].map(key => {
       const cat = MARKET_MAP[key];
       return `
         <section class="mm-section" style="--mm-color:${cat.color}">

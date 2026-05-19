@@ -3,7 +3,7 @@
    Offline-first caching for plane/no-network study
 ═══════════════════════════════════════════════ */
 // Bump this when deploying changes that must invalidate previously cached assets.
-const CACHE_NAME = 'ibprep-v5';
+const CACHE_NAME = 'ibprep-v6';
 
 const PRECACHE_ASSETS = [
   '/',
