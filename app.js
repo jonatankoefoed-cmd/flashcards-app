@@ -82,9 +82,19 @@ let currentDeckTitle = "";
 let stats = { new:0, due:0, done:0 };
 let currentSessionWeak = false;
 
-// Helper: Get unique ID for a card
+// Helper: Get stable unique ID for a card
+function personCardKey(person = {}) {
+  return String(person.personId || person.name || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 function getCardId(card) {
-  if (card.type === 'person') return `p-${card.name}`;
+  if (card.type === 'person' || card.type === 'people') return card.id || `p-${personCardKey(card)}`;
   if (card.deckId === 'c25') return `c-${card.name}`;
   if (card.id) return `k-${card.id}`;
   return `k-${card.q ? card.q.substring(0, 20) : (card.question ? card.question.substring(0,20) : Math.random())}`;
@@ -157,16 +167,21 @@ const PEOPLE = [
     name:'Atilla Olesen',
     niveau:'Leadership',
     titel:'Head of Investment Banking',
+    seniorityLabel:'Head of IB siden feb. 2021',
+    tenureLabel:'Danske Bank siden feb. 2017 · ca. 9 år 3 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Overordnet leder af Investment Banking på tværs af Norden og drivkraft bag Forward \'28-ambitionen om en mere fuldt dækkende investeringsbank.',
     experience:[
-      'Head of Investment Banking & Securities med ansvar på tværs af M&A, ECM og DCM.',
-      'EVP Global Head of Asset Management, Danske Bank (2020-2021).',
-      'Tidligere karriere hos SEB, Gudme Raaschou Asset Management, Nordea Markets og GE Financial.'
+      'Head of Investment Banking / Group CLT, Danske Bank (feb. 2021-nu; ca. 5 år 3 mdr. pr. maj 2026).',
+      'EVP Global Head of Asset Management, Danske Bank (feb. 2020-feb. 2021; ca. 1 år).',
+      'Global Head of Distribution, Asset Management, Danske Bank (feb. 2017-feb. 2020; ca. 3 år).',
+      'Associate, Corporate Finance, Danske Bank (aug. 2000-jun. 2005; ca. 4 år 11 mdr.).',
+      'Tidligere SEB (2007-2017), Gudme Raaschou Asset Management (2005-2007) og Nordea Markets ECM (2005).'
     ],
     deals:[],
     education:[
-      'Cand.jur., Københavns Universitet.',
+      'Master of Law / LL.M. Securities Law, Københavns Universitet (1994-2000).',
       'High Performance Leadership Program, IMD Business School (2014).'
     ],
     personalPoints:[
@@ -181,10 +196,13 @@ const PEOPLE = [
     name:'Christian Lindholm',
     niveau:'Leadership',
     titel:'Co-Head Corporate Finance DK',
+    seniorityLabel:'Co-Head',
+    tenureLabel:'Danske Bank CF siden 1998 · ca. 28 år pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Co-head for dansk Corporate Finance og en nøglefigur på flere af afdelingens største offentlige mandater inden for både ECM og M&A.',
     experience:[
-      'Danske Bank-profil med mere end to årtiers intern erfaring og central rolle i offentlige transaktioner.',
+      'Director / Co-Head i Danske Bank Corporate Finance (1998-nu; ca. 28 år pr. maj 2026).',
       'Arbejder i spændingsfeltet mellem execution, regulatoriske krav og board-level rådgivning.',
       'Bruges aktivt i rekruttering og synlighed omkring teamet.'
     ],
@@ -212,20 +230,24 @@ const PEOPLE = [
     name:'Thomas Knaack',
     niveau:'Leadership',
     titel:'Co-Head Corporate Finance DK',
+    seniorityLabel:'Managing Director / Co-Head',
+    tenureLabel:'Danske Bank CF siden okt. 2014 · ca. 11 år 7 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Co-head for dansk Corporate Finance med kommercielt og relationsdrevet fokus, især på origination, bestyrelsesdialog og større danske M&A-mandater.',
     experience:[
-      'Tiltrådte Danske Bank i oktober 2014 og har mere end 15 års M&A-rådgivningserfaring.',
-      'Tidligere Director i SEB Enskilda med fokus på M&A og ECM.',
-      'Medstifter og CEO i emmerys, hvor han stod for turnaround af kæden efter konkurs.'
+      'Managing Director og Co-Head of Corporate Finance, Danske Bank (okt. 2014-nu; ca. 11 år 7 mdr. pr. maj 2026).',
+      'Director, SEB Enskilda (nov. 1999-maj 2011; ca. 11 år 7 mdr.) med fokus på M&A og ECM.',
+      'Co-owner & CEO, emmerys (maj 2011-okt. 2014; ca. 3 år 6 mdr.) med turnaround efter konkurs.',
+      'Associate / attorney-at-law, Lett, Vilstrup & Partnere (feb. 1997-nov. 1999; ca. 2 år 10 mdr.).'
     ],
     deals:[
       'SKAKO Vibration / FCDE (EUR 37,5 mio.).',
       'Forenede Holding / FSAB.'
     ],
     education:[
-      'MBA, London Business School.',
-      'Cand.jur., Københavns Universitet.'
+      'MBA, London Business School (2005-2007).',
+      'Cand.jur., Københavns Universitet (1991-1997).'
     ],
     personalPoints:[
       'Skiller sig ud med reel founder/CEO-turnaround-erfaring fra emmerys, ikke kun ren advisory-baggrund.',
@@ -239,17 +261,22 @@ const PEOPLE = [
     name:'Henrik Ljungstrom',
     niveau:'Managing Director',
     titel:'Managing Director (London)',
+    seniorityLabel:'Managing Director siden sep. 2024',
+    tenureLabel:'Danske Bank siden okt. 2017 · ca. 8 år 7 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'London-baseret MD med fokus på loan syndications og leveraged finance, hvor han forbinder nordisk dealflow med internationale gældsmarkeder.',
     experience:[
-      'Ansvarlig for leveraged loan underwriting og distribution fra London.',
-      'Tidligere VP hos ING samt Associate Director hos Mizuho.',
-      'Tidligere roller hos Lloyds Banking Group, Bank of Scotland, KBC og Accenture.'
+      'Managing Director, Danske Bank Loan Syndications / Investment Banking (sep. 2024-nu; ca. 1 år 8 mdr. pr. maj 2026).',
+      'Director, Danske Bank Loan Syndications / Capital Markets (okt. 2017-sep. 2024; ca. 7 år).',
+      'Vice President, ING Loan Syndication Sales (nov. 2014-sep. 2017; ca. 2 år 11 mdr.).',
+      'Associate Director, Mizuho Corporate Bank (jan. 2013-okt. 2014; ca. 1 år 10 mdr.).',
+      'Tidligere Lloyds Banking Group, Bank of Scotland, KBC Financial Products og Accenture (2005-2012).'
     ],
     deals:[],
     education:[
-      'MSc in Banking & International Finance, Cass Business School.',
-      'BSc in Economics, University of Kent.'
+      'MSc Banking & International Finance, Cass Business School (2004-2005).',
+      'BSc Economics, University of Kent (2000-2004).'
     ],
     personalPoints:[
       'Hans edge er kombinationen af nordisk sponsorforståelse og reel The City-distributionserfaring.',
@@ -262,14 +289,23 @@ const PEOPLE = [
     name:'Bjarke Skovgaard',
     niveau:'Managing Director',
     titel:'Managing Director',
+    seniorityLabel:'Managing Director siden nov. 2024',
+    tenureLabel:'Danske Bank LC&I siden nov. 2024 · ca. 1 år 6 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Senior MD med baggrund i både advisory og corporate M&A; offentlig profil er relativt diskret sammenlignet med flere peers.',
     experience:[
-      'Tidligere Director i SEB Corporate Finance med eksponering mod M&A, ECM og family office-opgaver.',
-      'Tidligere Senior M&A Specialist i DONG Energy / Ørsted.'
+      'Managing Director, Danske Bank Corporate Finance (nov. 2024-nu; ca. 1 år 6 mdr. pr. maj 2026).',
+      'Director / family office, M&A, ECM og ownership advisory, SEB (jul. 2021-nov. 2024; ca. 3 år 5 mdr.).',
+      'Vice President / Associate / Analyst, SEB Investment Banking (jan. 2012-jul. 2021; ca. 9 år 7 mdr.).',
+      'Senior M&A Specialist, DONG Energy / Ørsted (aug. 2015-aug. 2017; ca. 2 år).'
     ],
     deals:[],
-    education:[],
+    education:[
+      'MSc Finance & Strategic Management, Copenhagen Business School (2009-2011).',
+      'BSc Economics and Business Administration, Copenhagen Business School (2006-2009).',
+      'Wallenberg Institute / SEB leadership program (aug. 2021-aug. 2022).'
+    ],
     personalPoints:[],
     teamContext:'I Danske Banks kompakte seniorlag er denne type profil typisk tæt på board-rådgivning og lavprofileret eksekvering på krævende situationer.',
     photo:'Pictures/Bjarke Skovgaard (implementeret).jpeg'
@@ -278,17 +314,21 @@ const PEOPLE = [
     name:'Christian Blinkenberg',
     niveau:'Managing Director',
     titel:'Co-Head Corporate Finance DK (London)',
+    seniorityLabel:'Co-Head',
+    tenureLabel:'Danske Bank CF siden sep. 2013 · ca. 12 år 8 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Senior cross-border M&A-profil med kombination af top-tier bank- og advokatbaggrund, særligt relevant på juridisk og internationalt komplekse mandater.',
     experience:[
-      'Tidligere Executive Director hos Goldman Sachs International.',
-      'Tidligere M&A-advokat hos Kromann Reumert.',
+      'Co-Head Corporate Finance Denmark, Danske Bank (sep. 2013-nu; ca. 12 år 8 mdr. pr. maj 2026).',
+      'Executive Director, Goldman Sachs International (jul. 2007-sep. 2013; ca. 6 år 3 mdr.).',
+      'M&A-advokat, Kromann Reumert (jun. 2000-jul. 2005; ca. 5 år 2 mdr.).',
       'Indgår i seniorgruppen omkring komplekse, grænseoverskridende transaktioner.'
     ],
     deals:[],
     education:[
-      'MBA.',
-      'Cand.jur.'
+      'MBA Finance (2005-2007).',
+      'Law / Cand.jur.-baggrund (1994-2000).'
     ],
     personalPoints:[
       'Kombinerer M&A-jura og Goldman Sachs-eksekvering, hvilket er særligt relevant på dokumenttunge cross-border processer.'
@@ -302,11 +342,14 @@ const PEOPLE = [
     name:'Jesper Buchardt',
     niveau:'Managing Director',
     titel:'Managing Director',
+    seniorityLabel:'Managing Director siden apr. 2024',
+    tenureLabel:'Danske Bank CF siden sep. 2016 · ca. 9 år 8 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Langvarig Danske Bank-profil i dansk M&A, som rykkede op til MD i 2024 efter mange år i Corporate Finance-teamet.',
     experience:[
-      'Managing Director siden april 2024.',
-      'Director i Danske Bank Corporate Finance fra 2016 til 2024.',
+      'Managing Director, Danske Bank Corporate Finance (apr. 2024-nu; ca. 2 år 1 mdr. pr. maj 2026).',
+      'Director, Danske Bank Corporate Finance (sep. 2016-jun. 2024; ca. 7 år 10 mdr.).',
       'Mangeårig erfaring med dansk M&A-eksekvering.'
     ],
     deals:[
@@ -324,10 +367,14 @@ const PEOPLE = [
     name:'Ulrik Rasmussen',
     niveau:'Managing Director',
     titel:'Managing Director',
+    seniorityLabel:'Managing Director',
+    tenureLabel:'Danske Bank CF siden jun. 2016 · ca. 9 år 11 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Erfaren senior MD med lang SEB-baggrund og profil til større, internationale M&A-processer.',
     experience:[
-      'Tidligere Managing Director hos SEB i cirka 15 år (2001-2016).',
+      'Managing Director, Danske Bank Corporate Finance (jun. 2016-nu; ca. 9 år 11 mdr. pr. maj 2026).',
+      'Managing Director, SEB (feb. 2001-maj 2016; ca. 15 år 4 mdr.).',
       'Indgår i Danske Banks seniorgruppe omkring større og mere komplekse mandater.'
     ],
     deals:[],
@@ -342,11 +389,14 @@ const PEOPLE = [
     name:'Christian Hansen',
     niveau:'Managing Director',
     titel:'MD, Global Co-Head ECM',
+    seniorityLabel:'Global Co-Head ECM',
+    tenureLabel:'Danske Bank ECM siden ca. 2017 · ca. 9 år pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Global Co-Head ECM og en af de mest centrale profiler i nordisk equity capital markets med ledende roller på rekordstore danske emissioner.',
     experience:[
       'Global Co-Head of ECM sammen med Fredrik Segenmark i Stockholm.',
-      'Hentet fra Nordea, hvor han var Head of ECM Denmark / Senior Manager.',
+      'Hentet fra Nordea omkring 2017, hvor han var Head of ECM Denmark / Senior Manager.',
       'Offentlig stemme for Danske Banks ECM-franchise og equity story-disciplin.'
     ],
     deals:[
@@ -370,15 +420,21 @@ const PEOPLE = [
     name:'Filip R. Monefeldt',
     niveau:'Director',
     titel:'Head of Corporate Advisory / Director',
+    seniorityLabel:'Director / Head of Corporate Advisory',
+    tenureLabel:'Danske Bank CF siden sep. 2017 · ca. 8 år 8 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Head of Corporate Advisory med fokus på det strategiske arbejde før den formelle M&A- eller ECM-proces starter.',
     experience:[
-      'Har forladt og senere genindtrådt i Danske Bank Investment Banking som Head of Corporate Advisory.',
-      'Tidligere erfaring fra Carnegie Investment Banking, Handelsbanken Equity Research og Nykredit Credit Research.'
+      'Corporate Finance (M&A og ECM), Danske Bank (sep. 2017-nu; ca. 8 år 8 mdr. pr. maj 2026).',
+      'Investment Banking, Carnegie Investment Bank (mar. 2011-aug. 2017; ca. 6 år 6 mdr.).',
+      'Assistant Analyst, Handelsbanken Equity Research (jul. 2010-feb. 2011; ca. 8 mdr.).',
+      'Assistant Analyst, Nykredit Credit Research (jul. 2009-jun. 2010; ca. 1 år).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.'
+      'MSc Finance & Accounting, Copenhagen Business School.',
+      'BSc Economics and Business Administration, Copenhagen Business School.'
     ],
     personalPoints:[
       'Hans særkende er kombinationen af advisory, ECM/M&A og research, hvilket gør ham mere strategisk end rent procesdrevet.'
@@ -390,17 +446,22 @@ const PEOPLE = [
     name:'Janus Nygaard',
     niveau:'Director',
     titel:'Director',
+    seniorityLabel:'Director',
+    tenureLabel:'Danske Bank CF siden maj 2017 · ca. 9 år pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Direktør med stærk analytisk og akademisk profil, kombineret med operationel og strategisk erfaring fra både rådgivning og corporate-side roller.',
     experience:[
-      'Tidligere Senior Associate i Carnegie Corporate Finance.',
-      'Tidligere Business Development Director i Falck med fokus på Group M&A & Strategy.',
-      'Har også tidlig erfaring fra Skanol og Junior Consult.'
+      'Director, Corporate Finance, Danske Bank (maj 2017-nu; ca. 9 år pr. maj 2026).',
+      'Business Development Director, Falck Group M&A & Strategy (aug. 2015-apr. 2017; ca. 1 år 9 mdr.).',
+      'Senior Associate, Carnegie Investment Bank (apr. 2011-aug. 2015; ca. 4 år 5 mdr.).',
+      'Tidligere Core Strategy, Junior Consult, Skanol og undervisning på Aarhus School of Business (2006-2011).'
     ],
     deals:[],
     education:[
-      'Finance-baggrund fra Aarhus Universitet / Aarhus BSS.',
-      'Yderligere finance-eksponering fra University of Florida.',
+      'MSc Finance & International Business, Aarhus School of Business (2005-2010).',
+      'Finance-ophold / master year (2009-2010).',
+      'Yderligere finance-eksponering fra University of Florida (2007-2008).',
       'Tidligere Teaching Assistant i makro- og mikroøkonomi.'
     ],
     personalPoints:[
@@ -413,15 +474,22 @@ const PEOPLE = [
     name:'Christian D. Helvind',
     niveau:'Director',
     titel:'Director',
+    seniorityLabel:'Director siden jun. 2025',
+    tenureLabel:'Danske Bank CF siden jun. 2025 · ca. 11 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Senior execution-director med tyngde i due diligence, datarum og fremdrift i komplekse processer.',
     experience:[
-      'Ti år i ATRIUM Partners, fra Analyst til Director.',
-      'Tidligere erfaring fra Ramboll Management Consulting og Eksportrådet i Atlanta.'
+      'Director, Danske Bank Corporate Finance (jun. 2025-nu; ca. 11 mdr. pr. maj 2026).',
+      'Director / Associate Director / Associate / Analyst, ATRIUM Partners (aug. 2015-maj 2025; ca. 9 år 10 mdr.).',
+      'Project Assistant, Ramboll Management Consulting (feb. 2014-jul. 2015; ca. 1 år 6 mdr.).',
+      'Commercial Assistant, Eksportrådet i Atlanta (jul. 2013-jan. 2014; ca. 7 mdr.).'
     ],
     deals:[],
     education:[
-      'MSc Economics, Københavns Universitet.'
+      'MSc Economics, Københavns Universitet (2014-2016).',
+      'BSc Economics, Københavns Universitet (2010-2013).',
+      'Boston University Summer School, Corporate Financial Management (2012).'
     ],
     personalPoints:[],
     teamContext:'Kildematerialet placerer ham i execution-laget omkring due diligence, koordinering og tværfunktionel projektledelse tæt på signing.',
@@ -432,12 +500,15 @@ const PEOPLE = [
     name:'Maria Malmborg Christensen',
     niveau:'Director',
     titel:'Head of Corporate Advisory DK',
+    seniorityLabel:'Head of Corporate Advisory DK siden aug. 2024',
+    tenureLabel:'Danske Bank Corporate Advisory siden aug. 2024 · ca. 1 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Leder Corporate Advisory Denmark og bringer både management consulting-, corporate strategy- og transaction advisory-erfaring ind i teamets bestyrelsesnære arbejde.',
     experience:[
-      'Head of Corporate Advisory Denmark siden august 2024.',
-      'Tidligere Senior Manager & People Lead i M&A Consulting hos Monitor Deloitte.',
-      'Tidligere Manager i Global Strategy & Business Development hos Pandora.',
+      'Head of Corporate Advisory Denmark, Danske Bank (aug. 2024-nu; ca. 1 år 9 mdr. pr. maj 2026).',
+      'Senior Manager & People Lead, M&A Consulting hos Monitor Deloitte.',
+      'Manager, Global Strategy & Business Development hos Pandora.',
       'Karrierevej fra Analyst til Associate Director hos Clearwater International Denmark.'
     ],
     deals:[],
@@ -450,39 +521,30 @@ const PEOPLE = [
     ],
     photo:'Pictures/Maria Malmborg Christensen.jpeg'
   },
-  {
-    name:'Olav Jørgensen',
-    niveau:'Director',
-    titel:'Director, Corporate Finance',
-    firma:'Danske Bank IB',
-    overview:'Langvarig Danske Bank-direktør med profil i krydsfeltet mellem corporate finance, kapitalmarkeder og investor-orienteret kommunikation.',
-    experience:[
-      'Mere end 12 år i Danske Bank.',
-      'Tidligere Manager i KPMG Corporate Finance.'
-    ],
-    deals:[],
-    education:[],
-    personalPoints:[
-      'OSINT-kilderne peger på en usædvanlig dobbeltrolle mellem corporate finance og investor relations til bankens egne investorer.',
-      'Det gør ham mere relevant på kapitalstruktur, rapportering og markedskommunikation end en klassisk execution-director.'
-    ],
-    photo:'Pictures/Olav Jorgensen.jpeg'
-  },
   // Associate Directors
   {
     name:'Casper Jul Rask Jensen',
     niveau:'Associate Director',
     titel:'Associate Director',
+    seniorityLabel:'Associate Director siden aug. 2023',
+    tenureLabel:'Danske Bank siden sep. 2015 · ca. 10 år 8 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Associate Director med klassisk intern Danske Bank-udviklingskurve fra student analyst til deal captain-niveau.',
     experience:[
-      'Har været i Danske Bank Corporate Finance i mere end et årti og arbejdet sig op fra student analyst.',
-      'Tidligere erfaring fra Hess Corporation.'
+      'Associate Director, Corporate Finance, Danske Bank (aug. 2023-nu; ca. 2 år 9 mdr. pr. maj 2026).',
+      'Associate, Corporate Finance, Danske Bank (sep. 2020-aug. 2023; ca. 3 år).',
+      'Analyst, Corporate Finance, Danske Bank (sep. 2017-aug. 2020; ca. 3 år).',
+      'Student Analyst, Corporate Finance, Danske Bank (aug. 2016-aug. 2017; ca. 1 år).',
+      'Student Assistant, Financial Statement Analysis & Corporate Rating, Danske Bank (sep. 2015-aug. 2016; ca. 1 år).',
+      'Student Assistant, Hess Corporation (jan. 2015-sep. 2015; ca. 9 mdr.).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.',
-      'Udveksling på ESADE og Regent\'s London.'
+      'MSc Finance & Accounting, Copenhagen Business School (2015-2017).',
+      'BSc Economics & Business Administration, Copenhagen Business School (2012-2015).',
+      'ESADE Business & Law School summer programme (2016).',
+      'Regent\'s University London exchange, Finance (2014).'
     ],
     personalPoints:[
       'Hans vigtigste differentiator er den meget lange interne rejse fra student analyst til Associate Director, hvilket giver stor institutionel hukommelse.'
@@ -494,12 +556,17 @@ const PEOPLE = [
     name:'Peter Christian Jensen',
     niveau:'Associate Director',
     titel:'Associate Director',
+    seniorityLabel:'Associate Director siden sep. 2024',
+    tenureLabel:'Danske Bank CF siden aug. 2018 · ca. 7 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Associate Director med stærk execution-profil på nyere danske og nordiske M&A-processer.',
     experience:[
-      'Tidligere Investment Banking Analyst hos FIH Partners med fokus på M&A.',
-      'Tidligere erfaring fra Nykredit inden for Capital & Risk.',
-      'Arbejder i den del af teamet, der håndterer tunge VDR-processer og management presentations.'
+      'Associate Director, Danske Bank Corporate Finance (sep. 2024-nu; ca. 1 år 8 mdr. pr. maj 2026).',
+      'Associate, Danske Bank Corporate Finance (sep. 2021-sep. 2024; ca. 3 år).',
+      'Analyst, Danske Bank Corporate Finance (aug. 2018-sep. 2021; ca. 3 år 2 mdr.).',
+      'Analyst, FIH Partners M&A (nov. 2016-mar. 2018; ca. 1 år 5 mdr.).',
+      'Student Assistant, Nykredit Capital & Risk (feb. 2016-nov. 2016; ca. 10 mdr.).'
     ],
     deals:[
       'A.P. Moller Holding / Concentric (SEK 8,6 mia.).',
@@ -508,8 +575,9 @@ const PEOPLE = [
       'Better Collective dual listing.'
     ],
     education:[
-      'MSc Applied Economics & Finance, Copenhagen Business School med fokus på derivater og finansielle instrumenter.',
-      'Udveksling på Singapore Management University.'
+      'MSc Applied Economics & Finance, Copenhagen Business School (2016-2018).',
+      'BSc Economics and Business Administration, Copenhagen Business School (2013-2016).',
+      'Exchange, Singapore Management University (2015).'
     ],
     personalPoints:[
       'Kilderne peger på en håndværksnær execution-profil med styrke i IM-materiale, VDR-struktur og diligence-forberedelse.'
@@ -518,40 +586,58 @@ const PEOPLE = [
   },
   {
     name:'Frederik Uggerhøj',
-    niveau:'Associate Director',
-    titel:'Associate Director',
+    niveau:'Associate',
+    titel:'Associate',
+    seniorityLabel:'Associate siden aug. 2023',
+    tenureLabel:'Danske Bank LC&I siden maj 2019 · ca. 7 år pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
-    overview:'Associate Director med intern Danske Bank-erfaring og execution-tyngde på tværs af klassiske mid-market processer.',
+    overview:'Associate med intern Danske Bank-erfaring og execution-tyngde på tværs af klassiske mid-market processer.',
     experience:[
-      'Mere end seks år i Danske Bank Corporate Finance fra junior analyst til Associate Director.',
-      'Tidligere student i Capitalmind M&A og Business Development-erfaring fra Connected Cars.',
-      'Har også perspektiv fra familiefirmaet Uggerhøj Biler.'
+      'Associate, Corporate Finance, Danske Bank LC&I (aug. 2023-nu; ca. 2 år 9 mdr. pr. maj 2026).',
+      'Analyst, Corporate Finance, Danske Bank LC&I (sep. 2020-aug. 2023; ca. 3 år).',
+      'Junior Analyst, Corporate Finance, Danske Bank LC&I (maj 2019-aug. 2020; ca. 1 år 4 mdr.).',
+      'M&A Analyst, Capitalmind (okt. 2018-apr. 2019; ca. 7 mdr.).',
+      'Business Developer, Connected Cars (aug. 2017-sep. 2018; ca. 1 år 2 mdr.).',
+      'Uggerhøj Biler-roller fra car detailer til business developer (2004-2017).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Strategic Management, Copenhagen Business School.'
+      'MSc Finance & Strategic Management, Copenhagen Business School (2018-2020).',
+      'BSc Business Finance, San Diego State University (2013-2017).',
+      'HEC Paris M&A Summer School Program (2017).',
+      'Harvard Business School, Leading with Finance (2017).',
+      'INSEAD, Strategy in the Age of Digital Disruption (2017).'
     ],
     personalPoints:[
       'Kombinerer intern bankexecution med et konkret perspektiv fra familieejet virksomhedsmiljø.',
       'Pilotcertifikatet er det klareste personlige særtræk i profilen og gør ham lettere at huske.'
     ],
-    teamContext:'Associate Director-klyngen måles typisk på execution speed, modelkvalitet og evnen til at omsætte strategi til konkret procesmateriale.',
+    teamContext:'Associate-laget måles typisk på execution speed, modelkvalitet og evnen til at omsætte strategi til konkret procesmateriale.',
     photo:'Pictures/Frederik Uggerhøj (implementeret).jpeg'
   },
   {
     name:'Anders Højlund',
     niveau:'Associate Director',
     titel:'Associate Director',
+    seniorityLabel:'Associate Director siden jun. 2025',
+    tenureLabel:'Danske Bank CF siden sep. 2020 · ca. 5 år 8 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Associate Director med stærk execution-baggrund og central rolle i rekruttering til First Year Analyst-programmet.',
     experience:[
-      'Tidligere Analyst / Associate hos Clearwater International Corporate Finance.',
-      'Tidligere student hos Jyske Bank i Market Risk & Models.',
-      'Tidligere erfaring fra Ramboll Management Consulting og som Teaching Assistant på Aarhus Universitet.'
+      'Associate Director, Corporate Finance, Danske Bank (jun. 2025-nu; ca. 11 mdr. pr. maj 2026).',
+      'Associate, Corporate Finance, Danske Bank (aug. 2022-jun. 2025; ca. 2 år 11 mdr.).',
+      'Analyst, Corporate Finance, Danske Bank (sep. 2020-aug. 2022; ca. 2 år).',
+      'Associate / Analyst, Clearwater International Corporate Finance (aug. 2018-aug. 2020; ca. 2 år 1 mdr.).',
+      'Student Analyst, Jyske Bank Market Risk & Models (feb. 2018-aug. 2018; ca. 7 mdr.).',
+      'Tidligere Ramboll Management Consulting og Teaching Assistant på Aarhus Universitet (2016-2018).'
     ],
     deals:[],
     education:[
-      'MSc Finance, Aarhus Universitet.'
+      'MSc Finance, Aarhus Universitet (2018-2020).',
+      'BSc Economics and Business Administration, Aarhus Universitet (2015-2018).',
+      'Barcelona Graduate School of Economics Summer School, Finance (2019).'
     ],
     personalPoints:[
       'Er central i analyst-hiring og dermed en nøglefigur for, hvordan teamet selekterer og former juniorlaget.'
@@ -563,6 +649,9 @@ const PEOPLE = [
     name:'Valdemar Stengaard',
     niveau:'Associate',
     titel:'Associate',
+    seniorityLabel:'Associate',
+    tenureLabel:'Danske Bank CF siden aug. 2022 · ca. 3 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Associate i execution-laget mellem analytikerproduktion og egentligt delansvar for transaktionsforløb.',
     experience:[],
@@ -576,54 +665,43 @@ const PEOPLE = [
     name:'Magnus Johansen',
     niveau:'Associate',
     titel:'Associate',
+    seniorityLabel:'Associate siden sep. 2024',
+    tenureLabel:'Danske Bank CF siden jun. 2021 · ca. 4 år 11 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Associate med baggrund i både corporate finance og transaction services og med klassisk finance-uddannelse fra CBS.',
     experience:[
-      'Tidligere Part-time Analyst i Handelsbanken Corporate Finance.',
-      'Tidligere erfaring fra Grant Thornton FAS.'
+      'Associate, Danske Bank Corporate Finance (sep. 2024-nu; ca. 1 år 8 mdr. pr. maj 2026).',
+      'Analyst, Danske Bank Corporate Finance (aug. 2021-sep. 2024; ca. 3 år 2 mdr.).',
+      'Student Analyst, Danske Bank Corporate Finance (jun. 2021-aug. 2021; ca. 3 mdr.).',
+      'Part-time Analyst, Handelsbanken Corporate Finance (jan. 2020-feb. 2021; ca. 1 år 2 mdr.).',
+      'Analyst, Grant Thornton Financial Advisory Services (feb. 2019-jan. 2020; ca. 1 år).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.',
+      'MSc Finance & Accounting, Copenhagen Business School (2019-2021).',
+      'BSc Economics and Business Administration, Copenhagen Business School (2016-2019).',
       'Relevante kurser i Investment Banking, Equity Securities Analysis, Futures / Options / Financial Risk og Investment Analysis.',
-      'Udveksling på Boston University.'
+      'Bachelor exchange, Boston University Questrom School of Business (2018).'
     ],
     personalPoints:[],
     teamContext:'I associate-laget ligger fokus typisk på at gå fra ren modelbygning til mere selvstændig kvalitetssikring og procesansvar.',
     photo:'Pictures/Magnus Johansen (implementeret).jpeg'
-  },
-  {
-    name:'Martin Andersen',
-    niveau:'Associate',
-    titel:'Associate',
-    firma:'Danske Bank IB',
-    overview:'Associate, der arbejder på tværs af M&A og ECM og allerede er navngivet på flere konkrete danske mandater.',
-    experience:[
-      'Arbejder på tværs af både M&A- og ECM-opgaver i Danske Banks danske team.'
-    ],
-    deals:[
-      'Better Collective dual listing.',
-      'A.P. Møller-Mærsk / Svitzer demerger.',
-      'STOK Emballage / A&M Capital.',
-      'Autorola Group 50%-transaktion.',
-      'Davidsens Tømmerhandel / Kesko (EUR 190 mio.).'
-    ],
-    education:[
-      'MSc Finance & Accounting, Copenhagen Business School.',
-      'Speciale om valuation af Stelton A/S med topkarakter.'
-    ],
-    personalPoints:[],
-    photo:'Pictures/Martin Andersen (implementeret).jpeg'
   },
   // Analysts
   {
     name:'Christian Dahl',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'third',
+    seniorityLabel:'Third-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2023 · ca. 2 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst i execution-maskinrummet med en usædvanlig kombination af klassisk finansarbejde og tydelig humanistisk / filosofisk refleksion.',
     experience:[
-      'Arbejder som analyst med modeller, præsentationer og selskabsanalyser under højt tidspres.'
+      'Analyst, Danske Bank Corporate Finance (aug. 2023-nu; ca. 2 år 9 mdr. pr. maj 2026).',
+      'Tidligere Corporate Finance Student Analyst internt før fuldtidsrollen.'
     ],
     deals:[],
     education:[],
@@ -636,20 +714,27 @@ const PEOPLE = [
     photo:'Pictures/Christian Dahl (implementeret).jpeg'
   },
   {
-    name:'Mikkel R. Christensen',
+    name:'Mikkel Ravn Christensen',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'second',
+    seniorityLabel:'Second-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2024 · ca. 1 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst med usædvanlig buy-side-baggrund fra både PE og real estate-investeringer før Investment Banking.',
     experience:[
-      'Tidligere Investment Analyst hos Novo Holdings i cirka to år.',
-      'Tidligere erfaring fra Thylander Private Equity Real Estate og Gottlieb+Partners.',
-      'Har også været Instructor i statistik på CBS.'
+      'Analyst, Corporate Finance, Danske Bank (aug. 2024-nu; ca. 1 år 9 mdr. pr. maj 2026).',
+      'Investment Analyst, Novo Holdings (aug. 2022-aug. 2024; ca. 2 år).',
+      'Analyst, Thylander Private Equity Real Estate (apr. 2021-aug. 2022; ca. 1 år 5 mdr.).',
+      'Analyst, Gottlieb+Partners (sep. 2019-apr. 2021; ca. 1 år 8 mdr.).',
+      'Instructor i statistik, CBS Department of Finance (jul. 2020-jun. 2022; ca. 2 år).'
     ],
     deals:[],
     education:[
       'MSc Finance & Accounting, Copenhagen Business School.',
-      'Udveksling i Melbourne.'
+      'MSc exchange, University of Melbourne.',
+      'BSc Economics and Business Administration, Copenhagen Business School.'
     ],
     personalPoints:[
       'Kommer ind i analyst-laget med markant mere buy-side- og principal-erfaring end mange peers.',
@@ -661,16 +746,26 @@ const PEOPLE = [
     name:'Bavendra Rajendra',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'second',
+    seniorityLabel:'Second-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2024 · ca. 1 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst med international pre-IB-profil på tværs af London-banking og private equity.',
     experience:[
-      'Tidligere Summer Analyst i Credit Suisse Investment Banking, Healthcare & Consumer, med efterfølgende UBS-tilbud.',
-      'Tidligere erfaring fra CataCap Private Equity og Tofte & Co Investment Banking.'
+      'Analyst, Corporate Finance, Danske Bank (aug. 2024-nu; ca. 1 år 9 mdr. pr. maj 2026).',
+      'Investment Banking Summer Analyst, Credit Suisse Healthcare & Consumer (jun. 2023-aug. 2023; ca. 3 mdr.) med efterfølgende UBS-tilbud.',
+      'Private Equity Analyst, CataCap (sep. 2022-jun. 2023; ca. 10 mdr.).',
+      'Investment Banking Associate / Analyst, Tofte & Company (jan. 2021-jul. 2022; ca. 1 år 7 mdr.).',
+      'Analyst / Senior Analyst, Nordic Knowledge Partners (sep. 2019-maj 2020; ca. 9 mdr.).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Strategic Management, Copenhagen Business School.',
-      'Udveksling / akademisk eksponering via MIT Sloan og Harvard.'
+      'MSc Finance & Strategic Management, Copenhagen Business School (2022-2024).',
+      'BSc Economics and Business Administration, Copenhagen Business School (2018-2021).',
+      'BSc exchange, MIT Sloan School of Management (2020).',
+      'BSc exchange, Harvard University (2020).',
+      'BSc summer school, London School of Economics (2019).'
     ],
     personalPoints:[
       'Kombinerer tidlig London-eksponering med både dansk mid-market advisory og PE-erfaring.',
@@ -679,57 +774,51 @@ const PEOPLE = [
     photo:'Pictures/Bavendra Rajendra (implementeret).jpeg'
   },
   {
-    name:'Mathilde Saigal',
-    niveau:'Analyst',
-    titel:'Analyst, Leveraged Finance',
+    name:'Anders Calmar Jakobsen',
+    personId:'anders-calmar-jakobsen',
+    niveau:'Associate',
+    titel:'Associate',
+    seniorityLabel:'Associate siden sep. 2025',
+    tenureLabel:'Danske Bank CF siden feb. 2022 · ca. 4 år 3 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
-    overview:'Analyst i Leveraged Finance snarere end klassisk Corporate Finance, med fokus på gældsstruktur, covenants og debt capacity.',
+    overview:'Associate med klassisk intern progression fra Student Analyst til Analyst og Associate i Danske Bank Corporate Finance.',
     experience:[
-      'Arbejder i spændingsfeltet mellem sponsor-drevne M&A-processer og de faktiske realiteter på gældsmarkederne.',
-      'Tidligere cirka tre år i Nordea Markets C&I som RM Large Corporates / Analyst.',
-      'Tidligere cirka tre et halvt år i Nordea Operations.'
+      'Associate, Corporate Finance, Danske Bank (sep. 2025-nu; ca. 8 mdr. pr. maj 2026).',
+      'Analyst, Corporate Finance, Danske Bank (aug. 2022-aug. 2025; ca. 3 år 1 mdr.).',
+      'Student Analyst, Corporate Finance, Danske Bank (feb. 2022-aug. 2022; ca. 7 mdr.).',
+      'Student Assistant, Nykredit Derivatives (jan. 2021-jan. 2022; ca. 1 år 1 mdr.).',
+      'Student Assistant, Jyske Bank Corporate and Institutional Banking (jan. 2020-jan. 2021; ca. 1 år).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Strategic Management, Copenhagen Business School.'
-    ],
-    personalPoints:[
-      'Hendes relevans ligger i at kunne oversætte sponsorambitioner til faktisk debt capacity, covenant headroom og finansierbarhed.',
-      'Det personlige særtræk i kilderne er ikke hobbyer, men en tydelig specialisering i LevFin frem for klassisk CF.'
-    ],
-    teamContext:'LevFin-rollen er central, når M&A-caser skal oversættes til gældsstruktur, covenant headroom og syndikerbar finansiering.',
-    photo:'Pictures/Mathilde Saigal (implementeret).jpeg'
-  },
-  {
-    name:'Anders C. Jakobsen',
-    niveau:'Analyst',
-    titel:'Analyst',
-    firma:'Danske Bank IB',
-    overview:'Analyst med tydelig kapitalmarkeds- og derivatives-baggrund fra bankverdenen før Corporate Finance.',
-    experience:[
-      'Tidligere student i Nykredit Derivatives.',
-      'Tidligere student i Jyske Bank CIB.'
-    ],
-    deals:[],
-    education:[
-      'MSc Finance & Investments, Copenhagen Business School.',
-      'LSE Summer School.',
-      'BSc fra Aarhus Universitet.',
-      'Udveksling på UNSW Sydney.'
+      'MSc Finance & Investments, Copenhagen Business School (sep. 2020-jun. 2022).',
+      'LSE Summer School, Advanced Corporate Finance (jul. 2021-aug. 2021).',
+      'BSc Economics and Business Administration, Aarhus University (sep. 2017-jun. 2020).',
+      'Exchange semester, UNSW Business School (aug. 2019-dec. 2019).'
     ],
     personalPoints:[],
-    teamContext:'Som analyst arbejder han i det lag, der bygger og opdaterer de finansielle modeller og præsentationer, som resten af processen hviler på.',
+    teamContext:'Som ny Associate er han særlig relevant for modelstruktur, valuation-standarder og analytisk disciplin i daglig execution.',
     photo:'Pictures/Anders C. Jakobsen (implementeret).jpeg'
   },
   {
-    name:'Laura P. Pedersen',
+    name:'Laura Povline Pedersen',
+    personId:'laura-p-pedersen',
     niveau:'Analyst',
-    titel:'Analyst (1. år)',
+    titel:'Analyst',
+    analystYear:'first',
+    seniorityLabel:'First-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2025 · ca. 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'First-year analyst i den danske Corporate Finance-platform og del af det nye analyst-kuld, som bærer den tungeste daglige produktionsbyrde.',
     experience:[],
     deals:[],
-    education:[],
+    education:[
+      'Cand.merc.FIR, Copenhagen Business School.',
+      'HA jur., Copenhagen Business School.',
+      'Speciale om kapitalstruktur i nordiske børsnoterede selskaber.'
+    ],
     personalPoints:[],
     teamContext:'First-year analysts i teamet rekrutteres primært fra CBS og KU og arbejder typisk med modeller, deck-formattering, benchmark-analyser og datarum under tæt senior sparring.',
     photo:'Pictures/Laura P. Pedersen (implementeret).jpeg'
@@ -738,16 +827,26 @@ const PEOPLE = [
     name:'Marcus Christensen',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'third',
+    seniorityLabel:'Third-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2023 · ca. 2 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst med baggrund i både infrastruktur / asset management, equity research og risikoorienterede markets-miljøer.',
     experience:[
-      'Tidligere Junior Analyst i AIP Management.',
-      'Tidligere erfaring fra Carnegie Equity Research & Sales.',
-      'Tidligere student i Nordea Asset Management, Group Risk.'
+      'Investment Banking Analyst, Danske Bank Corporate Finance (aug. 2023-nu; ca. 2 år 9 mdr. pr. maj 2026).',
+      'Junior Analyst, AIP Management (dec. 2021-jun. 2023; ca. 1 år 7 mdr.).',
+      'Analyst Assistant, Carnegie Investment Bank Equity Research & Sales (feb. 2021-dec. 2021; ca. 11 mdr.).',
+      'Student Analyst, Nordea Asset Management Group Risk & Compliance (jul. 2020-feb. 2021; ca. 8 mdr.).',
+      'Student Assistant / temporary hire, Nordea Operations (aug. 2017-jul. 2020; ca. 3 år).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.'
+      'MSc Finance & Accounting, Copenhagen Business School (sep. 2021-jun. 2023).',
+      'BSc European Business, Copenhagen Business School (2018-jun. 2021).',
+      'Exchange, Northampton Community College (2015).',
+      'FMVA, Corporate Finance Institute.',
+      'Bloomberg Market Concepts.'
     ],
     personalPoints:[
       'Har været synlig omkring rekruttering og virker tæt knyttet til teamets outward-facing analyst pipeline.'
@@ -755,20 +854,30 @@ const PEOPLE = [
     photo:'Pictures/Marcus Christensen (implementeret).jpeg'
   },
   {
-    name:'Lukas Hvidkjær',
+    name:'Lukas Peter Hvidkjær',
+    personId:'lukas-hvidkjaer',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'second',
+    seniorityLabel:'Second-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2024 · ca. 1 år 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst som kom ind i Danske Bank efter tung in-house M&A-erfaring fra DSV og arbejder på tværs af ECM og M&A.',
     experience:[
-      'Tiltrådte i sommeren 2024.',
-      'Tidligere cirka to et halvt år i DSV\'s M&A-team.',
-      'Deltog i arbejdet omkring DSVs opkøb af DB Schenker (EUR 14,3 mia.).'
+      'Analyst, Corporate Finance, Danske Bank (aug. 2024-nu; ca. 1 år 9 mdr. pr. maj 2026).',
+      'Junior Analyst, M&A and Strategic Projects, DSV (jan. 2022-aug. 2024; ca. 2 år 8 mdr.).',
+      'Deltog i arbejdet omkring DSVs opkøb af DB Schenker (EUR 14,3 mia.).',
+      'Digital Sales Associate / Student Assistant, Saxo Bank (jan. 2020-dec. 2021; ca. 2 år).',
+      'Intern, CooperGenomics, London (aug. 2018-jul. 2019; ca. 1 år).'
     ],
     deals:[],
     education:[
-      'BSc International Business, Copenhagen Business School.',
-      'MSc Finance & Accounting, Copenhagen Business School.'
+      'MSc Finance & Accounting, Copenhagen Business School (sep. 2022-jun. 2024).',
+      'Visiting student, Finance, Università Bocconi (sep. 2021-jan. 2022).',
+      'BSc International Business, Copenhagen Business School (sep. 2019-aug. 2022).',
+      'Danske Bank Analyst Program (okt. 2024).',
+      'Financial Modeling & Valuation Analyst.'
     ],
     personalPoints:[
       'Kommer ind i analyst-laget med usædvanligt direkte in-house M&A-erfaring fra en megadeal-kontekst.',
@@ -780,35 +889,53 @@ const PEOPLE = [
     name:'Frederik Emil Haven',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'first',
+    seniorityLabel:'First-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2025 · ca. 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst med baggrund i både private equity og credit management før Danske Bank.',
     experience:[
-      'Tidligere Student Analyst hos Waterland Private Equity i cirka to et halvt år.',
-      'Tidligere erfaring fra Accunia Credit Management i cirka halvandet år.'
+      'Analyst, Corporate Finance, Danske Bank (aug. 2025-nu; ca. 9 mdr. pr. maj 2026).',
+      'Student Analyst, Waterland Private Equity (jan. 2023-jun. 2025; ca. 2 år 6 mdr.).',
+      'Student Analyst, Lindgaard / Pedersen A/S (jan. 2014-jun. 2025; ca. 11 år 6 mdr.).',
+      'Assistant Analyst, Accunia Credit Management (aug. 2021-dec. 2022; ca. 1 år 5 mdr.).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.',
-      'Udveksling på Boston University.'
+      'MSc Finance & Accounting (FIR), Copenhagen Business School (2023-2025).',
+      'BSc International Business, Copenhagen Business School (2020-2023).',
+      'Exchange, Boston University (2022).',
+      'Financial Modeling & Valuation Analyst.',
+      'Masterclass i Audit & Assurance.'
     ],
     personalPoints:[],
     teamContext:'Analyst-kohorten driver den daglige produktion af peer work, modeller og præsentationer på tværs af både M&A og ECM.',
     photo:'Pictures/Frederik Emil Haven (implementeret).jpeg'
   },
   {
-    name:'Julius B. Sørensen',
+    name:'Julius Bjørnlund Sørensen',
+    personId:'julius-b-soerensen',
     niveau:'Analyst',
     titel:'Analyst',
+    analystYear:'first',
+    seniorityLabel:'First-year Analyst',
+    tenureLabel:'Danske Bank CF siden aug. 2025 · ca. 9 mdr. pr. maj 2026',
+    sourceAsOf:'maj 2026',
     firma:'Danske Bank IB',
     overview:'Analyst med bred pre-IB-baggrund på tværs af M&A, real estate PE, transaction services og revision.',
     experience:[
-      'Tidligere Investment Banking Analyst hos FIH Partners i cirka to år.',
-      'Tidligere internship i Slättö Real Estate Private Equity.',
-      'Tidligere erfaring fra Grant Thornton TAS og Deloitte Audit.'
+      'Investment Banking Analyst, Danske Bank (aug. 2025-nu; ca. 9 mdr. pr. maj 2026).',
+      'Investment Intern, Slättö Real Estate Private Equity (mar. 2025-jun. 2025; ca. 4 mdr.).',
+      'Investment Banking Analyst, FIH Partners M&A (mar. 2023-feb. 2025; ca. 2 år).',
+      'Transaction Advisory Services, Grant Thornton Denmark (mar. 2022-feb. 2023; ca. 1 år).',
+      'Audit, Deloitte (aug. 2020-mar. 2022; ca. 1 år 8 mdr.) og Grant Thornton Denmark (sep. 2019-aug. 2020; ca. 1 år).'
     ],
     deals:[],
     education:[
-      'MSc Finance & Accounting, Copenhagen Business School.'
+      'MSc Finance & Accounting, Copenhagen Business School (2023-2025).',
+      'HD 2, Financial and Management Accounting, Copenhagen Business School (2021-2023).',
+      'HD 1, Business Administration, Copenhagen Business School (2019-2021).'
     ],
     personalPoints:[],
     teamContext:'Denne type analyst-profil er typisk stærk på modeldisciplin, QoE-forståelse og de mange iterationssløjfer i et aktivt data room.',
@@ -1343,8 +1470,8 @@ const KNOWLEDGE = [
    BUILD MASTER CARD ARRAY
 ────────────────────────────────────────────── */
 const ALL_CARDS = [
-  ...PEOPLE.map((p, i) => ({
-    id: `p${i}`, type: 'people', deckId: 'people', ...p,
+  ...PEOPLE.map(p => ({
+    ...p, id: `p-${personCardKey(p)}`, type: 'people', deckId: 'people',
   })),
   ...KNOWLEDGE.filter(k => k.deckId !== 'c25').map((k, i) => ({
     id: `k${i}`, type: 'knowledge', ...k,
@@ -1393,6 +1520,57 @@ const LEVEL_CLASS = {
   'Associate Director':'lvl-AD','Associate':'lvl-Associate','Analyst':'lvl-Analyst'
 };
 const LEVEL_ORDER = ['Leadership','Managing Director','Executive Director','Director','Associate Director','Associate','Analyst'];
+const ANALYST_YEAR_LABELS = {
+  third: 'Third-year Analyst',
+  second: 'Second-year Analyst',
+  first: 'First-year Analyst',
+};
+const ANALYST_YEAR_ORDER = { third: 0, second: 1, first: 2 };
+
+function personSeniorityLabel(person = {}) {
+  if (person.analystYear && ANALYST_YEAR_LABELS[person.analystYear]) {
+    return ANALYST_YEAR_LABELS[person.analystYear];
+  }
+  return person.seniorityLabel || '';
+}
+
+function buildPersonTitleLine(person = {}) {
+  const seniority = personSeniorityLabel(person);
+  return [person.titel, seniority, person.tenureLabel]
+    .filter(Boolean)
+    .filter((part, index, parts) => parts.indexOf(part) === index)
+    .join(' · ');
+}
+
+function personLevelSortValue(person = {}) {
+  const base = LEVEL_ORDER.indexOf(person.niveau);
+  const levelValue = base === -1 ? LEVEL_ORDER.length : base;
+  const analystValue = person.niveau === 'Analyst'
+    ? (ANALYST_YEAR_ORDER[person.analystYear] ?? 9)
+    : 0;
+  return [levelValue, analystValue, person.name || ''];
+}
+
+function sortPeopleCards(a, b) {
+  const av = personLevelSortValue(a);
+  const bv = personLevelSortValue(b);
+  return av[0] - bv[0] || av[1] - bv[1] || av[2].localeCompare(bv[2], 'da');
+}
+
+function personMatchesQuery(person = {}, query = '') {
+  if (!query) return true;
+  const text = [
+    person.name,
+    person.niveau,
+    person.titel,
+    person.firma,
+    personSeniorityLabel(person),
+    person.tenureLabel,
+    ...(person.experience || []),
+    ...(person.education || []),
+  ].filter(Boolean).join(' ').toLowerCase();
+  return text.includes(query);
+}
 
 /* ──────────────────────────────────────────────
    SM-2 ENGINE
@@ -1659,7 +1837,7 @@ function renderPeopleBack(c, meta) {
   }
 
   document.getElementById('cb-name').textContent  = c.name;
-  document.getElementById('cb-title').textContent = c.titel || '';
+  document.getElementById('cb-title').textContent = buildPersonTitleLine(c);
 
   const chip = document.getElementById('cb-level');
   chip.textContent = c.niveau;
@@ -2007,7 +2185,7 @@ function renderBrowse() {
     const meta = DECK_META[did];
     const dc = cards.filter(c => c.deckId===did && (
       !q ||
-      (c.type==='people' && (c.name.toLowerCase().includes(q)||c.niveau.toLowerCase().includes(q))) ||
+      (c.type==='people' && personMatchesQuery(c, q)) ||
       (c.type==='company' && (
         c.name.toLowerCase().includes(q) ||
         c.ticker.toLowerCase().includes(q) ||
@@ -2023,7 +2201,7 @@ function renderBrowse() {
     sec.className = 'browse-section';
 
     if (did === 'people') {
-      dc.sort((a,b)=>LEVEL_ORDER.indexOf(a.niveau)-LEVEL_ORDER.indexOf(b.niveau));
+      dc.sort(sortPeopleCards);
       sec.innerHTML = `<div class="browse-section-title">${meta.name}</div><div class="browse-grid" id="bg-${did}"></div>`;
       main.appendChild(sec);
       const grid = sec.querySelector(`#bg-${did}`);
@@ -2032,12 +2210,14 @@ function renderBrowse() {
         const [c1,c2]=palette(c.name);
         const pc = document.createElement('div');
         pc.className='pc';
+        const seniority = c.analystYear ? personSeniorityLabel(c) : '';
         pc.innerHTML=`
           <div class="av-initials av-sm" style="background:linear-gradient(135deg,${c1},${c2})">${initials(c.name)}</div>
           ${due?'<div class="pc-due-dot"></div>':''}
           <div class="pc-name">${c.name}</div>
           <div class="level-chip ${LEVEL_CLASS[c.niveau]||''}" style="font-size:11px;padding:3px 10px">${c.niveau}</div>
-          <div class="pc-firm">${c.firma}</div>
+          ${seniority ? `<div class="level-chip ${LEVEL_CLASS[c.niveau]||''}" style="font-size:11px;padding:3px 10px">${seniority}</div>` : ''}
+          <div class="pc-firm">${c.tenureLabel || c.firma}</div>
           <div class="pc-sr">${isNew(c.sr)?'New':isDue(c.sr)?'Due':c.sr.nextDue?`Next: ${c.sr.nextDue}`:''}</div>`;
         pc.onclick=()=>{ goHome(); startStudy(did); const idx=deck.findIndex(x=>x.id===c.id); if(idx>=0){cur=idx;renderCard(true);renderDots();} };
         grid.appendChild(pc);
@@ -2249,7 +2429,7 @@ init();
 ────────────────────────────────────────────── */
 
 function getWeakCards() {
-  const allCards = [...PEOPLE.map(p => ({...p, type:'person'})), ...KNOWLEDGE.map(k => ({...k, type:'knowledge'})), ...COMPANY_CARDS.map(c => ({...c, type:'company', deckId:'c25'}))];
+  const allCards = ALL_CARDS;
   return allCards
     .map(c => ({ card: c, id: getCardId(c), score: getCardScore(getCardId(c)) }))
     .filter(item => item.score < 4.0) // Alt under "Good" (4) er svagt
@@ -2273,7 +2453,7 @@ function renderWeakCardsUI() {
       el.className = 'weak-card-mini';
       
       let visual = '';
-      if (c.type === 'person') {
+      if (c.type === 'person' || c.type === 'people') {
         const initialsStr = c.name.split(' ').map(n=>n[0]).join('').substring(0,2);
         visual = c.photo 
           ? `<img src="${c.photo}" class="weak-mini-av">`

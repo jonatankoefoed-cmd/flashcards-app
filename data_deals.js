@@ -131,7 +131,7 @@ const DEAL_CARDS = [
 <li><strong>DB rolle:</strong> Financial Adviser til Davidsens</li>
 <li><strong>Sektor:</strong> Byggematerialer</li>
 </ul>
-<em>Martin Andersen & Peter Christian Jensen navngivet. Typisk mid-market sell-side mandat.</em>` },
+<em>Peter Christian Jensen navngivet. Typisk mid-market sell-side mandat.</em>` },
 
   /* ── 10  STOK Emballage ── */
   { deckId:'deals',
@@ -145,7 +145,7 @@ const DEAL_CARDS = [
 <li><strong>DB rolle:</strong> <em>Exclusive Financial Adviser</em></li>
 <li><strong>Sektor:</strong> Emballage / Distribution</li>
 </ul>
-<em>Deal-team inkl. Jesper Buchardt, Peter Christian Jensen, Martin Andersen. Viser DB's mid-market sell-side styrke.</em>` },
+<em>Deal-team inkl. Jesper Buchardt og Peter Christian Jensen. Viser DB's mid-market sell-side styrke.</em>` },
 
   /* ── 11  Molslinjen / EQT ── */
   { deckId:'deals',
