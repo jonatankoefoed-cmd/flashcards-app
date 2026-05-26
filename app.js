@@ -1177,7 +1177,7 @@ if (window.auth) {
       if (loginBtn) loginBtn.style.display = 'flex';
       if (userInfo) userInfo.style.display = 'none';
     }
-    renderDecks();
+    renderHome();
   });
 }
 
@@ -2319,6 +2319,7 @@ function showView(id) {
   if (id==='v-dashboard') renderDashboard();
   if (id==='v-flows' && typeof renderFlows === 'function') renderFlows();
   if (id==='v-market-map' && typeof renderMarketMap === 'function') renderMarketMap();
+  if (id==='v-analyst-training' && typeof renderAnalystTraining === 'function') renderAnalystTraining();
 }
 function goHome() { renderHome(); showView('v-home'); }
 
@@ -2451,6 +2452,7 @@ function toast(msg) {
   clearTimeout(toastT);
   toastT=setTimeout(()=>t.classList.remove('show'),2200);
 }
+function showToast(msg) { toast(msg); }
 
 /* ──────────────────────────────────────────────
    KEYBOARD SHORTCUTS
@@ -2477,11 +2479,16 @@ init();
 ────────────────────────────────────────────── */
 
 function getWeakCards() {
-  const allCards = ALL_CARDS;
-  return allCards
-    .map(c => ({ card: c, id: getCardId(c), score: getCardScore(getCardId(c)) }))
-    .filter(item => item.score < 4.0) // Alt under "Good" (4) er svagt
-    .sort((a,b) => a.score - b.score)
+  const data = load();
+  return ALL_CARDS
+    .map(c => {
+      const sr = getSR(data, c.id);
+      const lastRating = sr.lastRating == null ? 5 : sr.lastRating;
+      const weakness = (sr.learnAgain ? 2 : 0) + Math.max(0, 4 - lastRating) + Math.max(0, 2.3 - sr.ef);
+      return { card: { ...c, sr }, id: c.id, sr, score: lastRating, weakness };
+    })
+    .filter(item => item.sr.reps > 0 && (item.sr.learnAgain || item.sr.lastRating <= 2 || item.sr.ef < 2.2))
+    .sort((a,b) => b.weakness - a.weakness)
     .slice(0, 8);
 }
 
@@ -2536,10 +2543,22 @@ function studyWeak() {
 }
 
 function startStudyManual(cardsToStudy, title) {
-  sessionCards = [...cardsToStudy];
-  currentIndex = 0;
-  currentDeckTitle = title;
+  const data = load();
+  deck = cardsToStudy.map(c => {
+    const master = ALL_CARDS.find(x => x.id === c.id) || c;
+    return { ...master, sr: getSR(data, master.id) };
+  });
+  activeDeck = null;
+  cur = 0;
+  flipped = false;
+  sessDone = 0;
+  sessGood = 0;
+  const metaColor = '#7C3AED';
+  document.getElementById('sh-name').textContent = title;
+  document.getElementById('study-bar').style.borderBottom = `2px solid ${metaColor}`;
+  document.getElementById('prog-fill').style.background = metaColor;
   showView('v-study');
+  renderCard(true);
   updateProgress();
-  renderCard();
+  renderDots();
 }

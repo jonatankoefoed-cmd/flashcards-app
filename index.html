@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <meta name="referrer" content="origin"/>
-  <title>IB Prep · Flashcards</title>
+  <title>IB Prep · Analyst Training</title>
   <meta name="theme-color" content="#0057B8"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
@@ -40,6 +40,9 @@
           </button>
         </div>
       </div>
+      <button class="ghost-btn" onclick="showView('v-analyst-training')">
+        <i data-lucide="graduation-cap" width="15" height="15"></i> Analyst Lab
+      </button>
       <button class="ghost-btn" onclick="showView('v-flows')">
         <i data-lucide="git-branch" width="15" height="15"></i> Processer
       </button>
@@ -264,6 +267,15 @@
   <main class="market-map-main" id="market-map-main"></main>
 </div>
 
+<!-- ══════════ ANALYST TRAINING VIEW ══════════ -->
+<div id="v-analyst-training" class="view">
+  <header class="bar">
+    <button class="back-btn" onclick="goHome()"><i data-lucide="arrow-left" width="18" height="18"></i></button>
+    <span class="bar-title">Analyst Training Lab</span>
+  </header>
+  <main class="analyst-main" id="analyst-main"></main>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Firebase SDKs -->
@@ -308,6 +320,7 @@
 <script src="app.js"></script>
 <script src="process_flows.js"></script>
 <script src="market_map.js"></script>
+<script src="analyst_training.js"></script>
 
 <!-- Service Worker registration -->
 <script>
