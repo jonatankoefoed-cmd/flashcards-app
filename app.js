@@ -29,6 +29,11 @@ const DECK_META = {
     icon:'git-merge', desc:'Incitamenter og interessekonflikter',
     color:'#D97706', colorLt:'#FFFBEB',
   },
+  field_dynamics: {
+    id:'field_dynamics', name:'Field Dynamics Top 50', nameShort:'Field Dyn.',
+    icon:'network', desc:'Kurateret top-50 om aktører, incitamenter og praktiske konflikter',
+    color:'#0F766E', colorLt:'#CCFBF1',
+  },
   c25: {
     id:'c25', name:'Top 50 Selskaber (C25/Large)', nameShort:'Top 50',
     icon:'briefcase', desc:'Store danske børsnavne, industrier, valuation og aktuelle fokusområder',
@@ -70,7 +75,7 @@ const DECK_META = {
     color:'#0D9488', colorLt:'#CCFBF1',
   },
 };
-const DECK_ORDER = ['people','multiples','c25','db','stakeholders','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit','deals'];
+const DECK_ORDER = ['people','multiples','c25','db','stakeholders','field_dynamics','ma_process','ecm_abb','dcm_financing','pe_bnb','cases','toolkit','deals'];
 
 // --- Global State & Firebase ---
 let user = null;
@@ -1524,6 +1529,9 @@ const ALL_CARDS = [
   ...(typeof KNOWLEDGE_2 !== 'undefined' ? KNOWLEDGE_2 : []).map((k, i) => ({
     id: `k2_${i}`, type: 'knowledge', ...k,
   })),
+  ...(typeof FIELD_DYNAMICS_CARDS !== 'undefined' ? FIELD_DYNAMICS_CARDS : []).map(k => ({
+    type: 'knowledge', ...k,
+  })),
   ...(typeof DEAL_CARDS !== 'undefined' ? DEAL_CARDS : []).map((k, i) => ({
     id: `dl_${i}`, type: 'knowledge', ...k,
   })),
@@ -2229,11 +2237,9 @@ function renderBrowse() {
       !q ||
       (c.type==='people' && personMatchesQuery(c, q)) ||
       (c.type==='company' && (
-        c.name.toLowerCase().includes(q) ||
-        c.ticker.toLowerCase().includes(q) ||
-        c.sector.toLowerCase().includes(q) ||
-        c.industry.toLowerCase().includes(q) ||
-        c.focus.toLowerCase().includes(q)
+        [c.name, c.ticker, c.sector, c.industry, c.focus]
+          .filter(Boolean)
+          .some(value => String(value).toLowerCase().includes(q))
       )) ||
       (c.type==='knowledge' && c.q.toLowerCase().includes(q))
     ));
